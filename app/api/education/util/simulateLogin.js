@@ -1,11 +1,12 @@
 /**
  * new SimulateLogin(arguments)
  * SimulateLogin return a cookie
- * @param {string} username
- * @param {string} password
- * @param {function} callback(cookie)
- * @param {string} simulateIp
- * @param {string} yourCookie
+ * @param {object}
+   * @param {string} username
+   * @param {string} password
+   * @param {function} callback(cookie)
+   * @param {string} simulateIp
+   * @param {string} yourCookie
  */
 
 var cheerio = require("cheerio");
@@ -27,18 +28,33 @@ var browserMsg = {
 };
 var count = 0;
 
-function SimulateLogin (username, password, callback, simulateIp, yourCookie) {
-  this.username = username;
-  this.password = password;
-  this.callback = callback;
-  this.simulateIp = simulateIp;
-  this.yourCookie = yourCookie;
-  this.cookie = '';
+function SimulateLogin (params) {
+  this.username = params.username;
+  this.password = params.password;
+  this.callback = params.callback;
+  this.simulateIp = params.simulateIp;
+  this.cookie = params.yourCookie;
+  var _this = this;
+  if (_this.cookie) {
+    _this.getInformation(function(needCookie) {
+      if (needCookie) {
+        _this.cookie = '';
+        _this.getCookie();
+      } else {
+        _this.callback({
+          cookie: _this.cookie
+        });
+      }
+    });
+    return;
+  }
+  _this.getCookie();
+}
+SimulateLogin.prototype.getCookie = function() {
   var _this = this;
   if (_this.simulateIp) {
-    browserMsg['X-Forwarded-For'] = simulateIp;
+    browserMsg['X-Forwarded-For'] = _this.simulateIp;
   }
-
   superagent
     .post(url.login_url)
     .set(browserMsg)
@@ -102,12 +118,15 @@ SimulateLogin.prototype.handlerLogin = function (captcha) {
     .set("Cookie", _this.cookie)
     .redirects(0)
     .end((err, response) => {
-      // console.log(response);
       if (response.headers.location == "http://jwzx.hrbust.edu.cn/academic/index_new.jsp" || response.headers.location == "http://jwzx.hrbust.edu.cn/academic/index.jsp") {
         //  all is good
         count ++;
         console.log(count, 'requst is good');
-        _this.getInformation(function(name) {
+        // _this.callback({
+        //   cookie: _this.cookie
+        // });
+        console.log(11111111111);
+        _this.getInformation(function (name) {
           _this.callback({
             cookie: _this.cookie,
             username: name
@@ -118,7 +137,7 @@ SimulateLogin.prototype.handlerLogin = function (captcha) {
         _this.handlerError((error) => {
           if (error.match(/验证码/)) {
             // handler captcha again, then handler login again
-            _this.handlerCaptcha(function(captcha) {
+            _this.handlerCaptcha(function (captcha) {
               _this.handlerLogin(captcha);
             });
             return;
@@ -153,24 +172,49 @@ SimulateLogin.prototype.handlerError = function (callback) {
       }
     });
 }
-SimulateLogin.prototype.getInformation = function(callback) {
+SimulateLogin.prototype.getInformation = function (callback) {
   // http://jwzx.hrbust.edu.cn/academic/listLeft.do
   // http://jwzx.hrbust.edu.cn/academic/showHeader.do
+  console.log("2222222222dsadsa");
+  // callback(false);
+  // console.log(this.cookie);
   superagent
     .get(url.indexHeader)
     .charset()
     .set(browserMsg)
     .set("Cookie", this.cookie)
+    .redirects(0)
     .end((err, response, body) => {
       if (err) {
         console.log('get index is error');
+        callback(true);
+
       } else {
         var body = response.text;
-        console.log(body);
+        // console.log(body);
         var $ = cheerio.load(body);
         var result = $('#greeting span').text();
-        callback(result);
+        // console.log(result);
+        callback(false)
       }
     });
 }
+// SimulateLogin.prototype.verifyCookie = function () {
+//   superagent
+//     .get("http://jwzx.hrbust.edu.cn/academic/showHeader.do")
+//     .charset()
+//     .set(browserMsg)
+//     .set("Cookie", this.cookie)
+//     .end((err, response, body) => {
+//       if (err) {
+//         console.log('get index is error');
+//       } else {
+//         var body = response.text;
+//         console.log(body);
+//         // var $ = cheerio.load(body);
+//         // var result = $('#greeting span').text();
+//         // callback(result);
+//       }
+//     });
+// }
 exports.SimulateLogin = SimulateLogin;

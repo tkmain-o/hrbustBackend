@@ -19,7 +19,7 @@ function getCourse(req, res) {
   console.log(req.query.cookie);
   var username = req.query.username;
   var password = req.query.password;
-  var cookie = req.query.cookie;
+  var yourCookie = req.query.cookie;
   // course.simulateLogin("1305010420", "232331199301180823");
   var simulateIp = req.headers['x-forwarded-for'] ||
     req.connection.remoteAddress ||
@@ -28,12 +28,23 @@ function getCourse(req, res) {
 
   // console.log(req.headers['user-agent'],111);
   var agent = req.headers['user-agent'];
-  course.getCourse(username, password, function(result) {
-    console.log(result);
-    res.send(result.username);
-  }, simulateIp, cookie);
-  // course.getCourse(req.query.username, req.query.password, simulateIp, "JSESSIONID=2DB6FA6085959E4F27184DCFC529591B.LB01")
-    // console.log(course.test);
+  var getCourseParmas = {
+    username,
+    password,
+    callback: function(result) {
+      // console.log(result);
+      if (result.error) {
+        log.error(error, 'error get course');
+        res.status(500).send(error);
+        return;
+      }
+      res.json(result);
+    },
+    simulateIp,
+    // yourCookie
+    yourCookie: "JSESSIONID=DE7C8BE40BF5655DF19C52B43F7514F4.LB01"
+  }
+  course.getCourse(getCourseParmas);
 }
 
 
@@ -45,7 +56,7 @@ function home(req, res) {
   res.render('api/education/home');
 }
 router.get('/', home);
-router.post('/course', getCourse);
+// router.post('/course', getCourse);
 router.get('/course', getCourse);
 
 module.exports = router;

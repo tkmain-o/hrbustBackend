@@ -21,7 +21,6 @@ var browserMsg = {
 
 
 function getStudentId(cookie, callback) {
-  console.log(cookie);
   superagent
     .get("http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000")
     .charset()
@@ -35,32 +34,29 @@ function getStudentId(cookie, callback) {
         var $ = cheerio.load(body);
         var str = $(".button")[0].attribs.onclick;
         var query = str.match(/do\?(\S*)sectionType=/)[1];
-        console.log(query);
-        console.log($(".button")[0].attribs.onclick);
 
         // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=COMBINE"
         // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=BASE"
-        var urlFollower = "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?" + query + "sectionType=COMBINE";
-        callback(urlFollower);
+        var getCourseUrl = "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?" + query + "sectionType=COMBINE";
+        callback(getCourseUrl);
       }
     });
 }
-function getFollower(urlFollower, cookie, callback) {
-  console.log(cookie);
+
+function handlerGetCourse(getCourseUrl, cookie, callback) {
   superagent
-    .get(urlFollower)
+    .get(getCourseUrl)
     .charset()
     .set(browserMsg)
     .set("Cookie", cookie)
     .end((err, response, body) => {
       if (err) {
-        loginHandlerInner(usernameW, passwordW, callback);
+        callback(err);
       } else {
         var body = response.text;
-        var $ = cheerio.load(body);
+        var $ = cheerio.load(body, {decodeEntities: false});
         var result = {};
         var timetableArr = [];
-        // timetableArr.content = [];
         var noArrangementArr = [];
         $("#timetable tr") && $("#timetable tr").each((i, e) => {
           timetableArr[i] = [];
@@ -73,7 +69,14 @@ function getFollower(urlFollower, cookie, callback) {
             return;
           }
           $(e).children('td') && $(e).children('td').each((j, ele) => {
-            timetableArr[i].push($(ele).text());
+            if ($(ele).html() == '&nbsp;') {
+              timetableArr[i].push(null);
+            } else {
+              var html = $(ele).html();
+              html = html.replace(/(&lt;)|(&gt;)|(;.)/g, "");
+              var arr = html.split('<br>');
+              timetableArr[i].push(arr);
+            }
           })
         });
         $('#noArrangement tr') && $('#noArrangement tr').each((i, e) => {
@@ -86,27 +89,36 @@ function getFollower(urlFollower, cookie, callback) {
           }
           $(e).children('td') && $(e).children('td').each((j, ele) => {
             var str = $(ele).text();
-            strF = str.replace(/(\s+)|(javascript(.*);)/g, "");;
+            strF = str.replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, "");;
             noArrangementArr[i].push(strF);
           })
         });
         result = Object.assign(result, { timetableArr, noArrangementArr });
-        // console.log(noArrangementArr);
         callback(result);
       }
     });
 }
 
 
-function getCourse(u, p, callback, simulateIp, yourCookie, cookie) {
-
-  new SimulateLogin('1305010420' ,'232331199301180823', function(result) {
-    if (result.error) {
-      console.log(error);
-    } else {
-      console.log(cookie);
-    }
-    callback(result);
-  }, simulateIp, yourCookie);
+function getCourse(params) {
+  var SimulateLoginParams = {
+    username: '1305010420' ,
+    password: '232331199301180823',
+    callback: function(result) {
+      if (result.error) {
+        console.log(error);
+      } else {
+        console.log(result.cookie);
+      }
+      getStudentId(result.cookie, function(getCourseUrl) {
+        handlerGetCourse(getCourseUrl, result.cookie, function(result) {
+          params.callback(result);
+        }) 
+      })
+    },
+    simulateIp: params.simulateIp,
+    yourCookie: params.yourCookie
+  }
+  new SimulateLogin(SimulateLoginParams);
 }
 exports.getCourse = getCourse;
