@@ -36,8 +36,8 @@ function SimulateLogin (params) {
   this.cookie = params.yourCookie;
   var _this = this;
   if (_this.cookie) {
-    _this.getInformation(function(needCookie) {
-      if (needCookie) {
+    _this.getInformation(function(error) {
+      if (error) {
         _this.cookie = '';
         _this.getCookie();
       } else {
@@ -125,8 +125,14 @@ SimulateLogin.prototype.handlerLogin = function (captcha) {
         // _this.callback({
         //   cookie: _this.cookie
         // });
-        console.log(11111111111);
-        _this.getInformation(function (name) {
+        _this.getInformation(function (error, name) {
+          if (error) {
+            _this.callback({
+              cookie: _this.cookie,
+              error
+            });
+            return;
+          }
           _this.callback({
             cookie: _this.cookie,
             username: name
@@ -175,11 +181,8 @@ SimulateLogin.prototype.handlerError = function (callback) {
 SimulateLogin.prototype.getInformation = function (callback) {
   // http://jwzx.hrbust.edu.cn/academic/listLeft.do
   // http://jwzx.hrbust.edu.cn/academic/showHeader.do
-  console.log("2222222222dsadsa");
-  // callback(false);
-  // console.log(this.cookie);
   superagent
-    .get(url.indexHeader)
+    .get("http://jwzx.hrbust.edu.cn/academic/showHeader.do")
     .charset()
     .set(browserMsg)
     .set("Cookie", this.cookie)
@@ -188,33 +191,13 @@ SimulateLogin.prototype.getInformation = function (callback) {
       if (err) {
         console.log('get index is error');
         callback(true);
-
       } else {
         var body = response.text;
-        // console.log(body);
         var $ = cheerio.load(body);
         var result = $('#greeting span').text();
-        // console.log(result);
-        callback(false)
+        console.log(result, "headers");
+        callback(false, result)
       }
     });
 }
-// SimulateLogin.prototype.verifyCookie = function () {
-//   superagent
-//     .get("http://jwzx.hrbust.edu.cn/academic/showHeader.do")
-//     .charset()
-//     .set(browserMsg)
-//     .set("Cookie", this.cookie)
-//     .end((err, response, body) => {
-//       if (err) {
-//         console.log('get index is error');
-//       } else {
-//         var body = response.text;
-//         console.log(body);
-//         // var $ = cheerio.load(body);
-//         // var result = $('#greeting span').text();
-//         // callback(result);
-//       }
-//     });
-// }
 exports.SimulateLogin = SimulateLogin;
