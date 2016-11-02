@@ -1,7 +1,9 @@
-var course = require('./edu-course');
 var log = require('bole')('customers/router');
 var express = require('express');
 var router = new express.Router();
+
+var course = require('./edu-course');
+var eduLogin = require('./edu-login');
 
 function getCourse(req, res) {
   // console.log(req.query.username+'a');
@@ -33,10 +35,34 @@ function getCourse(req, res) {
   course.getCourse(getCourseParmas);
 }
 
-
-function createCourse(req, res) {
-  res.status(201).send();
+function login(req, res) {
+  var username = req.query.username;
+  var password = req.query.password;
+  var yourCookie = req.query.cookie;
+  var simulateIp = req.headers['x-forwarded-for'] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    req.connection.socket.remoteAddress;
+  var loginParmas = {
+    username,
+    password,
+    callback: function(result) {
+      if (result.error) {
+        log.error(result.error, 'error get course');
+        res.status(500).send(result.error);
+        return;
+      }
+      res.json(result);
+    },
+    simulateIp,
+    yourCookie,
+  }
+  eduLogin.login(loginParmas);
 }
+
+// function createCourse(req, res) {
+//   res.status(201).send();
+// }
 
 function home(req, res) {
   res.render('api/education/home');
@@ -44,5 +70,6 @@ function home(req, res) {
 router.get('/', home);
 // router.post('/course', getCourse);
 router.get('/course', getCourse);
+router.get('/login', login);
 
 module.exports = router;
