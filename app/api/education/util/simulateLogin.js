@@ -18,7 +18,9 @@ var url = {
   login_url: "http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp",
   captcha_url: "http://jwzx.hrbust.edu.cn/academic/getCaptcha.do",
   check_url: "http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?",
-  indexHeader: "http://jwzx.hrbust.edu.cn/academic/showHeader.do"
+  index: "http://jwzx.hrbust.edu.cn/academic/index_new.jsp",
+  indexHeader: "http://jwzx.hrbust.edu.cn/academic/showHeader.do",
+  indexListLeft: "http://jwzx.hrbust.edu.cn/academic/listLeft.do"
 };
 // 浏览器请求报文头部部分信息
 var browserMsg = {
@@ -33,22 +35,19 @@ function SimulateLogin (params) {
   this.password = params.password;
   this.callback = params.callback;
   this.simulateIp = params.simulateIp;
-  this.cookie = params.yourCookie;
+  this.cookie = params.yourCookie || '';
   var _this = this;
-  if (_this.cookie) {
-    _this.getInformation(function(error) {
-      if (error) {
-        _this.cookie = '';
-        _this.getCookie();
-      } else {
-        _this.callback({
-          cookie: _this.cookie
-        });
-      }
-    });
-    return;
-  }
-  _this.getCookie();
+  _this.getWeek(function(error) {
+    if (error) {
+      _this.cookie = '';
+      _this.getCookie();
+    } else {
+      _this.callback({
+        cookie: _this.cookie,
+        thisWeek: _this.thisWeek
+      });
+    }
+  });
 }
 SimulateLogin.prototype.getCookie = function() {
   var _this = this;
@@ -122,21 +121,9 @@ SimulateLogin.prototype.handlerLogin = function (captcha) {
         //  all is good
         count ++;
         console.log(count, 'requst is good');
-        // _this.callback({
-        //   cookie: _this.cookie
-        // });
-        _this.getInformation(function (error, name) {
-          if (error) {
-            _this.callback({
-              cookie: _this.cookie,
-              error
-            });
-            return;
-          }
-          _this.callback({
-            cookie: _this.cookie,
-            username: name
-          });
+        _this.callback({
+          cookie: _this.cookie,
+          thisWeek: _this.thisWeek
         });
       } else {
         // handler error
@@ -178,11 +165,12 @@ SimulateLogin.prototype.handlerError = function (callback) {
       }
     });
 }
-SimulateLogin.prototype.getInformation = function (callback) {
+SimulateLogin.prototype.getWeek = function (callback) {
   // http://jwzx.hrbust.edu.cn/academic/listLeft.do
   // http://jwzx.hrbust.edu.cn/academic/showHeader.do
+  var _this = this;
   superagent
-    .get("http://jwzx.hrbust.edu.cn/academic/showHeader.do")
+    .get(url.indexListLeft)
     .charset()
     .set(browserMsg)
     .set("Cookie", this.cookie)
@@ -194,9 +182,13 @@ SimulateLogin.prototype.getInformation = function (callback) {
       } else {
         var body = response.text;
         var $ = cheerio.load(body);
-        var result = $('#greeting span').text();
-        console.log(result, "headers");
-        callback(false, result)
+        var result = $('#date span').text();
+        _this.thisWeek = result.replace(/\s/g, "");
+        if ($("#menu li").length == 0) {
+          callback(true);
+        } else {
+          callback(false);
+        }
       }
     });
 }

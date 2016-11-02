@@ -34,7 +34,6 @@ function getStudentId(cookie, callback) {
         var $ = cheerio.load(body);
         var str = $(".button")[0].attribs.onclick;
         var query = str.match(/do\?(\S*)sectionType=/)[1];
-
         // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=COMBINE"
         // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=BASE"
         var getCourseUrl = "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?" + query + "sectionType=COMBINE";
@@ -56,44 +55,44 @@ function handlerGetCourse(getCourseUrl, cookie, callback) {
         var body = response.text;
         var $ = cheerio.load(body, {decodeEntities: false});
         var result = {};
-        var timetableArr = [];
-        var noArrangementArr = [];
+        var courseArrange = [];
+        var noArrangement = [];
         $("#timetable tr") && $("#timetable tr").each((i, e) => {
-          timetableArr[i] = [];
+          courseArrange[i] = [];
           if (i == 0) {
             $(e).children('th') && $(e).children('th').each((j, ele) => {
               if (!j == 0) {
-                timetableArr[i].push($(ele).text());
+                courseArrange[i].push($(ele).text());
               }
             });
             return;
           }
           $(e).children('td') && $(e).children('td').each((j, ele) => {
             if ($(ele).html() == '&nbsp;') {
-              timetableArr[i].push(null);
+              courseArrange[i].push(null);
             } else {
               var html = $(ele).html();
               html = html.replace(/(&lt;)|(&gt;)|(;.)/g, "");
               var arr = html.split('<br>');
-              timetableArr[i].push(arr);
+              courseArrange[i].push(arr);
             }
           })
         });
         $('#noArrangement tr') && $('#noArrangement tr').each((i, e) => {
-          noArrangementArr[i] = [];
+          noArrangement[i] = [];
           if (i == 0) {
             $(e).children('th') && $(e).children('th').each((j, ele) => {
-              noArrangementArr[i].push($(ele).text());
+              noArrangement[i].push($(ele).text());
             });
             return;
           }
           $(e).children('td') && $(e).children('td').each((j, ele) => {
             var str = $(ele).text();
             strF = str.replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, "");;
-            noArrangementArr[i].push(strF);
+            noArrangement[i].push(strF);
           })
         });
-        result = Object.assign(result, { timetableArr, noArrangementArr });
+        result = Object.assign(result, { courseArrange, noArrangement });
         callback(result);
       }
     });
@@ -102,19 +101,20 @@ function handlerGetCourse(getCourseUrl, cookie, callback) {
 
 function getCourse(params) {
   var SimulateLoginParams = {
-    username: '1305010420' ,
-    password: '232331199301180823',
+    username: params.username,
+    password: params.password,
     callback: function(result) {
       if (result.error) {
-        console.log(error);
+        params.callback({
+          error: result.error
+        });
       } else {
-        console.log(result.cookie);
+        getStudentId(result.cookie, function(getCourseUrl) {
+          handlerGetCourse(getCourseUrl, result.cookie, function(res) {
+            params.callback(Object.assign(res, {thisWeek: result.thisWeek}));
+          }) 
+        })
       }
-      getStudentId(result.cookie, function(getCourseUrl) {
-        handlerGetCourse(getCourseUrl, result.cookie, function(result) {
-          params.callback(result);
-        }) 
-      })
     },
     simulateIp: params.simulateIp,
     yourCookie: params.yourCookie
