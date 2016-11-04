@@ -5,7 +5,7 @@ var router = new express.Router();
 var eduCourse = require('./edu-course');
 var eduLogin = require('./edu-login');
 var eduGetName = require('./edu-getName');
-
+var eduGetExam = require('./edu-getExam');
 
 function handlerParams(req, callback) {
   var username = req.query.username;
@@ -61,6 +61,18 @@ function getUserName(req, res) {
   })
   eduGetName.getUserName(getNameParmas);
 }
+
+function getExam(req, res) {
+  var getNameParmas = handlerParams(req, function(result) {
+    if (result.error) {
+      log.error(result.error, 'error get course');
+      res.status(500).send(result.error);
+      return;
+    }
+    res.json(result);
+  })
+  eduGetExam.getExam(getNameParmas);
+}
 // function createCourse(req, res) {
 //   res.status(201).send();
 // }
@@ -73,5 +85,6 @@ router.get('/', home);
 router.get('/getCourse', getCourse);
 router.get('/login', login);
 router.get('/getUserName', getUserName);
+router.get('/getExam', getExam);
 
 module.exports = router;
