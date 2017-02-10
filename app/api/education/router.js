@@ -29,7 +29,7 @@ function getCourse(req, res) {
     // console.log(result);
     if (result.error) {
       log.error(result.error, 'error get course');
-      res.status(500).send(result.error);
+      res.status(400).send(result.error);
       return;
     }
     res.json(result);
@@ -41,8 +41,8 @@ function getCourse(req, res) {
 function login(req, res) {
   var loginParmas = handlerParams(req, function(result) {
     if (result.error) {
-      log.error(result.error, 'error get course');
-      res.status(500).send(result.error);
+      log.error(result.error, 'error login');
+      res.status(400).send(result.error);
       return;
     }
     res.json(result);
@@ -53,8 +53,8 @@ function login(req, res) {
 function getUserName(req, res) {
   var getNameParmas = handlerParams(req, function(result) {
     if (result.error) {
-      log.error(result.error, 'error get course');
-      res.status(500).send(result.error);
+      log.error(result.error, 'error get userName');
+      res.status(400).send(result.error);
       return;
     }
     res.json(result);
@@ -65,8 +65,8 @@ function getUserName(req, res) {
 function getExam(req, res) {
   var getNameParmas = handlerParams(req, function(result) {
     if (result.error) {
-      log.error(result.error, 'error get course');
-      res.status(500).send(result.error);
+      log.error(result.error, 'error get exam');
+      res.status(400).send(result.error);
       return;
     }
     res.json(result);
