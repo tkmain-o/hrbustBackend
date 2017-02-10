@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./app/server.js | bistre"
+    "start": "node ./app/server.js | bistre",
+    "pro": "pm2 restart ./app/server.js --name='xy-hrbust'"
   },
   "author": "",
   "license": "ISC",
