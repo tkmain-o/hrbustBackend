@@ -34,8 +34,6 @@ function handleGrade(cookie, year, term) {
           const body = response.text;
           const $ = cheerio.load(body);
           const datalist = $('.datalist').find('tr');
-          // console.log(datalist);
-          // console.log($());
           const result = {};
           result.data = [];
 
