@@ -76,16 +76,26 @@ function getExam(req, res) {
 }
 
 function getGrade(req, res) {
-  var getGradeParmas = handlerParams(req, function(result) {
-    if (result.error) {
-      log.error(result.error, 'error get exam');
-      res.status(400).send(result.error);
-      return;
+  var getGradeParmas = {
+    username: req.body.username,
+    password: req.body.password,
+    year: req.body.year,
+    term: req.body.term,
+    yourCookie: req.cookie,
+    simulateIp: req.headers['x-forwarded-for'] ||
+      req.connection.remoteAddress ||
+      req.socket.remoteAddress ||
+      req.connection.socket.remoteAddress,
+    callback: function(result) {
+      if (result.error) {
+        log.error(result.error, 'error get exam');
+        res.status(400).send(result.error);
+        return;
+      }
+      res.json(result);
     }
-    res.json(result);
-  })
-  getGradeParmas.year = req.query.year;
-  getGradeParmas.term = req.query.term;
+  };
+
   eduGetGrade.getGrade(getGradeParmas);
 }
 // function createCourse(req, res) {
@@ -101,6 +111,6 @@ router.get('/getCourse', getCourse);
 router.get('/login', login);
 router.get('/getUserName', getUserName);
 router.get('/getExam', getExam);
-router.get('/getGrade', getGrade);
+router.post('/getGrade', getGrade);
 
 module.exports = router;
