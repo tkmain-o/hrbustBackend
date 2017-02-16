@@ -4,7 +4,7 @@ var DEV = process.env.NODE_ENV === 'dev';
 
 config.express = {
   port: process.env.EXPRESS_PORT || 4001,
-  ip: '0.0.0.0'
+  ip: '127.0.0.1'
 };
 
 if (PRODUCTION) {
