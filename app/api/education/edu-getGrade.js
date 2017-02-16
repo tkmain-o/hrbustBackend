@@ -13,13 +13,16 @@ const browserMsg = {
 
 function handleGrade(cookie, year, term) {
   const promise = new Promise((resolve, reject) => {
+    const data = {};
+    if (year && term) {
+      data.year = year;
+      data.term = term;
+      data.para = 0;
+    }
     superagent
-      .get("http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=")
+      .post("http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020")
       .charset()
-      // .data({
-      //   year,
-      //   term,
-      // })
+      .send(data)
       .set(browserMsg)
       .set("Cookie", cookie)
       .end((err, response, body) => {
