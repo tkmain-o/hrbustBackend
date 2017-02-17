@@ -73,7 +73,7 @@ SimulateLogin.prototype.getCookie = function() {
     });
 }
 SimulateLogin.prototype.handlerCaptcha = function (callback) {
-  console.log(this.cookie,'this is test');
+  // console.log(this.cookie,'this is test');
   var _this = this;
   superagent
     .get(url.captcha_url)
