@@ -2,8 +2,9 @@ var log = require('bole')('customers/router');
 var express = require('express');
 var router = new express.Router();
 
-var eduCourse = require('./edu-course');
 var eduLogin = require('./edu-login');
+
+var eduGetCourse = require('./edu-getCourse');
 var eduGetName = require('./edu-getName');
 var eduGetExam = require('./edu-getExam');
 var eduGetGrade = require('./edu-getGrade');
@@ -37,7 +38,7 @@ function getCourse(req, res) {
     res.json(result);
   });
 
-  eduCourse.getCourse(getCourseParmas);
+  eduGetCourse.getCourse(getCourseParmas);
 }
 
 function login(req, res) {
@@ -77,7 +78,6 @@ function getExam(req, res) {
 }
 
 function getGrade(req, res) {
-  console.log(req.body);
   var getGradeParmas = {
     username: req.query.username,
     password: req.query.password,

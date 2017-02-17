@@ -92,7 +92,7 @@ function handlerGetCourse(getCourseUrl, cookie, callback) {
             noArrangement[i].push(strF);
           })
         });
-        result = Object.assign(result, { courseArrange, noArrangement });
+        result = Object.assign(result, { courseArrange, noArrangement, cookie });
         callback(result);
       }
     });
@@ -112,7 +112,7 @@ function getCourse(params) {
         getStudentId(result.cookie, function(getCourseUrl) {
           handlerGetCourse(getCourseUrl, result.cookie, function(res) {
             params.callback(Object.assign(res, {thisWeek: result.thisWeek}));
-          }) 
+          });
         })
       }
     },
