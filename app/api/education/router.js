@@ -76,12 +76,13 @@ function getExam(req, res) {
 }
 
 function getGrade(req, res) {
+  console.log(req.body);
   var getGradeParmas = {
-    username: req.body.username,
-    password: req.body.password,
-    year: req.body.year,
-    term: req.body.term,
-    yourCookie: req.cookie,
+    username: req.query.username,
+    password: req.query.password,
+    year: req.query.year,
+    term: req.query.term,
+    yourCookie: req.query.cookie,
     simulateIp: req.headers['x-forwarded-for'] ||
       req.connection.remoteAddress ||
       req.socket.remoteAddress ||
@@ -111,6 +112,7 @@ router.get('/getCourse', getCourse);
 router.get('/login', login);
 router.get('/getUserName', getUserName);
 router.get('/getExam', getExam);
-router.post('/getGrade', getGrade);
+// router.post('/getGrade', getGrade);
+router.get('/getGrade', getGrade);
 
 module.exports = router;
