@@ -7,6 +7,7 @@ var eduLogin = require('./edu-login');
 var eduGetName = require('./edu-getName');
 var eduGetExam = require('./edu-getExam');
 var eduGetGrade = require('./edu-getGrade');
+var eduGetWeek = require('./edu-getWeek');
 
 function handlerParams(req, callback) {
   var username = req.query.username;
@@ -99,6 +100,17 @@ function getGrade(req, res) {
 
   eduGetGrade.getGrade(getGradeParmas);
 }
+
+function getWeek(req, res) {
+  eduGetWeek.getWeek().then((result) => {
+    if (result.error) {
+      log.error(result.error, 'error get exam');
+      res.status(400).send(result.error);
+      return;
+    }
+    res.json(result);
+  });
+}
 // function createCourse(req, res) {
 //   res.status(201).send();
 // }
@@ -114,5 +126,6 @@ router.get('/getUserName', getUserName);
 router.get('/getExam', getExam);
 // router.post('/getGrade', getGrade);
 router.get('/getGrade', getGrade);
+router.get('/getWeek', getWeek);
 
 module.exports = router;
