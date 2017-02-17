@@ -49,6 +49,7 @@ function handleGrade(cookie, year, term) {
             });
             result.data.push(innerTexts);
           });
+          result.cookie = cookie;
           resolve(result);
         }
       });
@@ -68,8 +69,8 @@ function getGrade(params) {
       } else {
         handleGrade(result.cookie, params.year, params.term).then((result) => {
           params.callback(result);
-        }).catch(function () {
-          console.log("Promise Rejected");
+        }).catch(function (error) {
+          console.log("Promise Rejected", error);
         });
       }
     },
