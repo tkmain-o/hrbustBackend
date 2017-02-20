@@ -58,25 +58,22 @@ function handlerGetCourse(getCourseUrl, cookie, callback) {
         var courseArrange = [];
         var noArrangement = [];
         $("#timetable tr") && $("#timetable tr").each((i, e) => {
-          courseArrange[i] = [];
           if (i == 0) {
-            $(e).children('th') && $(e).children('th').each((j, ele) => {
-              if (!j == 0) {
-                courseArrange[i].push($(ele).text());
-              }
-            });
             return;
           }
+
+          const course = [];
           $(e).children('td') && $(e).children('td').each((j, ele) => {
             if ($(ele).html() == '&nbsp;') {
-              courseArrange[i].push(null);
+              course.push(null);
             } else {
               var html = $(ele).html();
               html = html.replace(/(&lt;)|(&gt;)|(;.)/g, "");
               var arr = html.split('<br>');
-              courseArrange[i].push(arr);
+              course.push(arr);
             }
           })
+          courseArrange.push(course);
         });
         $('#noArrangement tr') && $('#noArrangement tr').each((i, e) => {
           noArrangement[i] = [];
