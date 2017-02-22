@@ -36,6 +36,7 @@ function handleGrade(cookie, year, term) {
           const datalist = $('.datalist').find('tr');
           const result = {};
           result.data = [];
+          result.gradeTerm = $('option:selected').text().replace(/(\ +)|([ ])|([\r\n])/g, '');
 
           datalist.each((index, item) => {
             if (index === 0) {
