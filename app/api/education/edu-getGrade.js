@@ -36,7 +36,7 @@ function handleGrade(cookie, year, term) {
           const datalist = $('.datalist').find('tr');
           const result = {};
           result.data = [];
-          result.gradeTerm = $('option:selected').text().replace(/(\ +)|([ ])|([\r\n])/g, '');
+          result.gradeTerm = $('option:selected').text().replace(/\s/g, '');
 
           datalist.each((index, item) => {
             if (index === 0) {
@@ -45,7 +45,7 @@ function handleGrade(cookie, year, term) {
             const innerItems = $(item).find('td');
             const innerTexts = [];
             innerItems.each((indexI, itemI) => {
-              let str = $(itemI).text().replace(/(\ +)|([ ])|([\r\n])/g, '');
+              let str = $(itemI).text().replace(/\s/g, '');
               innerTexts.push(str);
             });
             result.data.push(innerTexts);
