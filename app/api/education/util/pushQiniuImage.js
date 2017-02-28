@@ -17,7 +17,13 @@ function pushQiniuImage(url, imageName) {
         page.open(url).then(function(status) {
           const path = `${__dirname}/../newsImages/${imageName}`;
           page.render(path).then(() => {
-            pushQiniu(imageName, path);
+            imagesBucket.putFile(imageName, path, function(err, reply) {
+              resolve();
+              // if (err) {
+              //   return console.error(err);
+              // }
+              // console.dir(reply);
+            });
           });
           page.close();
           ph.exit();
@@ -26,15 +32,6 @@ function pushQiniuImage(url, imageName) {
     });
   });
   return promise;
-}
-
-function pushQiniu(imageName, path) {
-  imagesBucket.putFile(imageName, path, function(err, reply) {
-    // if (err) {
-    //   return console.error(err);
-    // }
-    // console.dir(reply);
-  });
 }
 
 exports.pushQiniuImage = pushQiniuImage;
