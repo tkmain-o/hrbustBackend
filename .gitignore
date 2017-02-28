@@ -2,3 +2,4 @@
 *.log
 node_modules/
 eng.traineddata
+app/api/education/newsImages/
