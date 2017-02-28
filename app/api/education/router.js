@@ -114,7 +114,8 @@ function getWeek(req, res) {
 }
 
 function getNews(req, res) {
-  eduGetNews.getNews().then((result) => {
+  const page = req.query.page;
+  eduGetNews.getNews(page).then((result) => {
     if (result.error) {
       log.error(result.error, 'error get exam');
       res.status(400).send(result.error);
