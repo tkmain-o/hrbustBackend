@@ -10,11 +10,16 @@ const browserMsg = {
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
+function getNews(page) {
+  let url = 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354';
 
-function getNews () {
+  if (page) {
+    url = `${url}&pagingPage=${page}`;
+  }
+
   const promise = new Promise((resolve, reject) => {
     superagent
-      .get('http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354')
+      .get(url)
       .charset()
       .set(browserMsg)
       .end((err, response, body) => {
@@ -40,16 +45,6 @@ function getNews () {
           });
 
           resolve(result);
-          // Promise.all(promiseList).then((values) => {
-          //   values.forEach((item, index) => {
-          //     if (item.error) {
-          //       resolve(item);
-          //     } else {
-          //       result.data[index].content = item.content;
-          //       resolve(result);
-          //     }
-          //   });
-          // });
         }
       });
   });
