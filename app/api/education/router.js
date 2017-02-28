@@ -9,6 +9,7 @@ var eduGetName = require('./edu-getName');
 var eduGetExam = require('./edu-getExam');
 var eduGetGrade = require('./edu-getGrade');
 var eduGetWeek = require('./edu-getWeek');
+var eduGetNews = require('./edu-getNews');
 
 function handlerParams(req, callback) {
   var username = req.query.username;
@@ -111,15 +112,22 @@ function getWeek(req, res) {
     res.json(result);
   });
 }
-// function createCourse(req, res) {
-//   res.status(201).send();
-// }
+
+function getNews(req, res) {
+  eduGetNews.getNews().then((result) => {
+    if (result.error) {
+      log.error(result.error, 'error get exam');
+      res.status(400).send(result.error);
+      return;
+    }
+    res.json(result);
+  });
+}
 
 function home(req, res) {
   res.render('api/education/home');
 }
 router.get('/', home);
-// router.post('/course', getCourse);
 router.get('/getCourse', getCourse);
 router.get('/login', login);
 router.get('/getUserName', getUserName);
@@ -127,5 +135,7 @@ router.get('/getExam', getExam);
 // router.post('/getGrade', getGrade);
 router.get('/getGrade', getGrade);
 router.get('/getWeek', getWeek);
+router.get('/getNews', getNews);
+
 
 module.exports = router;
