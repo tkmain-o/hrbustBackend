@@ -7,7 +7,7 @@ qiniu.config({
   secret_key: 'XzgLuAQHwIlciJMYjLj9bmt3Qdc3Q383S2NDY0ni',
 });
 
-const imagesBucket = qiniu.bucket('haligong-test');
+const imagesBucket = qiniu.bucket('hrbust');
 
 function pushQiniuImage(url, imageName) {
   const promise = new Promise((resolve, reject) => {
