@@ -128,8 +128,7 @@ function getNews(req, res) {
 
 function getCet(req,res){
   const num = req.query.username;
-  console.log(num);
-  eduGetCet.getCet(num).then((result)=>{
+  eduGetCet.getCet(num).then((result) => {
     if(result.error){
       log.error(result.error,'error get cet');
       res.status(400).send(result.error);
