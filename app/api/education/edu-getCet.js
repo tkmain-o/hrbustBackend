@@ -3,7 +3,7 @@ const charset = require('superagent-charset');
 const superagent = require('superagent');
 const cheerio = require('cheerio');
 let excelName = "2016n.xls";
-let list = xlsx.parse('./api/education/util/'+excelName);
+let list = xlsx.parse(__dirname+'/util/'+excelName);
 let data = list[0].data;
 const len = data.length-1;
 function check(user){
