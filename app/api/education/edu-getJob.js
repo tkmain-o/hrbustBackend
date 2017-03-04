@@ -45,7 +45,7 @@ function getJob (page) {
                         imageObj[imageName] = `http://job.hrbust.edu.cn/Companys/${href}`;
                     });
                     thenjsList = thenjsList.series([
-                        function(count){
+                        function(cont){
                             handleUpdateImage(imageObj).then(() => {
                                 cont();
                             });
