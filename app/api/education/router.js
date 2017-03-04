@@ -11,7 +11,7 @@ var eduGetGrade = require('./edu-getGrade');
 var eduGetWeek = require('./edu-getWeek');
 var eduGetNews = require('./edu-getNews');
 var eduGetCet = require('./edu-getCet');
-
+var eduGetJob = require('./edu-getJob');
 function handlerParams(req, callback) {
   var username = req.query.username;
   var password = req.query.password;
@@ -138,6 +138,18 @@ function getCet(req,res){
     res.json(result);
   });
 }
+
+function getJob(req,res) {
+  const page = req.query.page;
+  eduGetJob.getJob(page).then((result) => {
+    if(result.error){
+      log.error(result.error, 'error get job');
+      res.status(400).send(result.error);
+      return;
+    }
+    res.json(result);
+  })
+}
 function home(req, res) {
   res.render('api/education/home');
 }
@@ -150,6 +162,6 @@ router.get('/getExam', getExam);
 router.get('/getGrade', getGrade);
 router.get('/getWeek', getWeek);
 router.get('/getNews', getNews);
-router.get('/getCet',getCet)
-
+router.get('/getCet',getCet);
+router.get('/getJob',getJob);
 module.exports = router;
