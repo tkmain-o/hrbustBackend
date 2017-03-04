@@ -10,6 +10,7 @@ var eduGetExam = require('./edu-getExam');
 var eduGetGrade = require('./edu-getGrade');
 var eduGetWeek = require('./edu-getWeek');
 var eduGetNews = require('./edu-getNews');
+var eduGetCet = require('./edu-getCet');
 
 function handlerParams(req, callback) {
   var username = req.query.username;
@@ -125,6 +126,18 @@ function getNews(req, res) {
   });
 }
 
+function getCet(req,res){
+  const num = req.query.username;
+  console.log(num);
+  eduGetCet.getCet(num).then((result)=>{
+    if(result.error){
+      log.error(result.error,'error get cet');
+      res.status(400).send(result.error);
+      return;
+    }
+    res.json(result);
+  });
+}
 function home(req, res) {
   res.render('api/education/home');
 }
@@ -137,6 +150,6 @@ router.get('/getExam', getExam);
 router.get('/getGrade', getGrade);
 router.get('/getWeek', getWeek);
 router.get('/getNews', getNews);
-
+router.get('/getCet',getCet)
 
 module.exports = router;
