@@ -29,10 +29,6 @@ const getRandomIp = () => {
   return arr.join('.');
 };
 const options = {
-  // 直接拼会出错，使用 encodeURI 
-  // 学信网查询地址示例 http://www.chsi.com.cn/cet/query?zkzh=1233243434&xm=李三
-  // encodeURI 接收一个完整的 URI 作为参数，返回编码过的值
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURI
   encoding: 'utf8',
   headers: {
     'Referer': 'http://www.chsi.com.cn/cet/',
