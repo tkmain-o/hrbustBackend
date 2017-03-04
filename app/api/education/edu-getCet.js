@@ -21,7 +21,6 @@ function check(user){
       name:name
     }
 }
-// check('1602040407');
 const getRandomIp = () => {
   const arr = [];
   for (let i = 0; i < 4; i++) {
