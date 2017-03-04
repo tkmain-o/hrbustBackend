@@ -31,7 +31,6 @@ function handlerParams(req, callback) {
 
 function getCourse(req, res) {
   var getCourseParmas = handlerParams(req, function(result) {
-    // console.log(result);
     if (result.error) {
       log.error(result.error, 'error get course');
       res.status(400).send(result.error);
