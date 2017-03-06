@@ -1,24 +1,24 @@
-var SimulateLogin = require('./util/simulateLogin').SimulateLogin;
+const SimulateLogin = require('./util/simulateLogin').SimulateLogin;
 
 function login(params) {
-  var SimulateLoginParams = {
+  const SimulateLoginParams = {
     username: params.username,
     password: params.password,
-    callback: function(result) {
+    callback(result) {
       if (result.error) {
         params.callback({
-          error: result.error
+          error: result.error,
         });
       } else {
         params.callback({
           cookie: result.cookie,
-          thisWeek: result.thisWeek
+          thisWeek: result.thisWeek,
         });
       }
     },
     simulateIp: params.simulateIp,
-    yourCookie: params.yourCookie
-  }
+    yourCookie: params.yourCookie,
+  };
   new SimulateLogin(SimulateLoginParams);
 }
 exports.login = login;

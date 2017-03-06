@@ -1,32 +1,31 @@
-const cheerio = require("cheerio");
+const cheerio = require('cheerio');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
 
-// 浏览器请求报文头部部分信息
 const browserMsg = {
-  "Accept-Encoding": "gzip, deflate",
-  "Origin": "http://jwzx.hrbust.edu.cn",
+  'Accept-Encoding': 'gzip, deflate',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
 
-function getWeek (params) {
-  const promise = new Promise((resolve, reject) => {
+function getWeek() {
+  const promise = new Promise((resolve) => {
     superagent
-      .get("http://jwzx.hrbust.edu.cn/academic/listLeft.do")
+      .get('http://jwzx.hrbust.edu.cn/academic/listLeft.do')
       .charset()
       .set(browserMsg)
-      .end((err, response, body) => {
+      .end((err, response) => {
         if (err) {
-          console.log('get index is error');
+          console.error('get index is error');
           resolve({
             error: err,
           });
         } else {
-          var body = response.text;
-          var $ = cheerio.load(body);
-          var result = $('#date span').text();
-          thisWeek = result.replace(/\s/g, "");
+          const body = response.text;
+          const $ = cheerio.load(body);
+          const result = $('#date span').text();
+          const thisWeek = result.replace(/\s/g, '');
           resolve({
             thisWeek,
           });

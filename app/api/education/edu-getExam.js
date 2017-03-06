@@ -1,95 +1,95 @@
-var SimulateLogin = require('./util/simulateLogin').SimulateLogin;
-var cheerio = require("cheerio");
-var iconv = require("iconv-lite");
-var charset = require('superagent-charset');
-var superagent = charset(require('superagent'));
+const SimulateLogin = require('./util/simulateLogin').SimulateLogin;
+const cheerio = require('cheerio');
+const iconv = require('iconv-lite');
+const charset = require('superagent-charset');
+const superagent = charset(require('superagent'));
 
-var url = {
-  login_url: "http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp",
-  captcha_url: "http://jwzx.hrbust.edu.cn/academic/getCaptcha.do",
-  check_url: "http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?"
+const url = {
+  login_url: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp',
+  captcha_url: 'http://jwzx.hrbust.edu.cn/academic/getCaptcha.do',
+  check_url: 'http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?'
 };
 
 
 // 浏览器请求报文头部部分信息
-var browserMsg = {
-  "Accept-Encoding": "gzip, deflate",
-  "Origin": "http://jwzx.hrbust.edu.cn",
+const browserMsg = {
+  'Accept-Encoding': 'gzip, deflate',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
 function getStudentId(cookie, callback) {
   superagent
-    .get("http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000")
+    .get('http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000')
     .charset()
     .set(browserMsg)
-    .set("Cookie", cookie)
-    .end((err, response, body) => {
+    .set('Cookie', cookie)
+    .end((err, response) => {
       if (err) {
         loginHandlerInner(usernameW, passwordW, callback);
       } else {
-        var body = response.text;
-        var $ = cheerio.load(body);
-        var str = $(".button")[0].attribs.onclick;
-        var id = str.match(/id=(\S*)&yearid/)[1];
-        console.log(id+"dfsd");
+        const body = response.text;
+        const $ = cheerio.load(body);
+        const str = $('.button')[0].attribs.onclick;
+        const id = str.match(/id=(\S*)&yearid/)[1];
+        // console.log(id+'dfsd');
         callback(id);
       }
     });
 }
 
 
-function getExam (params) {
-  console.log(params.yourCookie);
-  var SimulateLoginParams = {
+function getExam(params) {
+  // console.log(params.yourCookie);
+  const SimulateLoginParams = {
     username: params.username,
     password: params.password,
     simulateIp: params.simulateIp,
     yourCookie: params.yourCookie,
-    callback: function(result) {
+    callback(result) {
       if (result.error) {
         params.callback({
-          error: result.error
+          error: result.error,
         });
       } else {
-        getStudentId(result.cookie, function(id) {
+        getStudentId(result.cookie, (id) => {
           superagent
-            .get("http://jwzx.hrbust.edu.cn/academic/student/exam/index.jsdo?stuid=" + id)
+            .get(`http://jwzx.hrbust.edu.cn/academic/student/exam/index.jsdo?stuid=${id}`)
             .charset()
             .set(browserMsg)
-            .set("Cookie", result.cookie)
+            .set('Cookie', result.cookie)
             .redirects(0)
-            .end((error, response, body) => {
+            .end((error, response) => {
               if (error) {
                 params.callback({
-                  error
+                  error,
                 });
               } else {
-                var body = response.text;
-                var $ = cheerio.load(body);
-                console.log(body+'haha');
-                var examInfo = {};
+                const body = response.text;
+                const $ = cheerio.load(body);
+                // console.log(body+'haha');
+                let examInfo = {};
                 $('.infolist_tab tr') && $('.infolist_tab tr').each((i, e) => {
                   examInfo[i] = [];
-                  if (i == 0) {
+                  if (i === 0) {
                     $(e).children('th') && $(e).children('th').each((j, ele) => {
                       examInfo[i].push($(ele).text());
                     });
                     return;
                   }
                   $(e).children('td') && $(e).children('td').each((j, ele) => {
-                    var str = $(ele).text();
-                    strF = str.replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, "");;
+                    const str = $(ele).text();
+                    const strF = str.replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, '');
                     examInfo[i].push(strF);
-                  })
+                  });
                 });
                 params.callback(examInfo);
               }
             });
         });
       }
-    }
-  }
+    },
+  },
   new SimulateLogin(SimulateLoginParams);
 }
 

@@ -1,18 +1,18 @@
 const SimulateLogin = require('./util/simulateLogin').SimulateLogin;
-const cheerio = require("cheerio");
-const iconv = require("iconv-lite");
+const cheerio = require('cheerio');
+const iconv = require('iconv-lite');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
 
 // 浏览器请求报文头部部分信息
 const browserMsg = {
-  "Accept-Encoding": "gzip, deflate",
-  "Origin": "http://jwzx.hrbust.edu.cn",
+  'Accept-Encoding': 'gzip, deflate',
+  'Origin': 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
 function handleGrade(cookie, year, term) {
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise((resolve) => {
     const data = {};
     if (year && term) {
       data.year = year;
@@ -20,12 +20,12 @@ function handleGrade(cookie, year, term) {
       data.para = 0;
     }
     superagent
-      .post("http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020")
+      .post('http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020')
       .charset()
       .send(data)
       .set(browserMsg)
-      .set("Cookie", cookie)
-      .end((err, response, body) => {
+      .set('Cookie', cookie)
+      .end((err, response) => {
         if (err) {
           resolve({
             error: err,
@@ -45,7 +45,7 @@ function handleGrade(cookie, year, term) {
             const innerItems = $(item).find('td');
             const innerTexts = [];
             innerItems.each((indexI, itemI) => {
-              let str = $(itemI).text().replace(/\s/g, '');
+              const str = $(itemI).text().replace(/\s/g, '');
               innerTexts.push(str);
             });
             result.data.push(innerTexts);
@@ -59,25 +59,26 @@ function handleGrade(cookie, year, term) {
 }
 
 function getGrade(params) {
-  var SimulateLoginParams = {
+  const SimulateLoginParams = {
     username: params.username,
     password: params.password,
-    callback: function(result) {
+    callback(result) {
       if (result.error) {
         params.callback({
-          error: result.error
+          error: result.error,
         });
       } else {
-        handleGrade(result.cookie, params.year, params.term).then((result) => {
-          params.callback(result);
-        }).catch(function (error) {
-          console.log("Promise Rejected", error);
+        handleGrade(result.cookie, params.year, params.term).then((results) => {
+          /* 此处的result报错*/
+          params.callback(results);
+        }).catch((error) => {
+          console.error(error);
         });
       }
     },
     simulateIp: params.simulateIp,
-    yourCookie: params.yourCookie
-  }
+    yourCookie: params.yourCookie,
+  };
   new SimulateLogin(SimulateLoginParams);
 }
 
