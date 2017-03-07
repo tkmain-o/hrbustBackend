@@ -14,10 +14,10 @@ const eduGetCet = require('./edu-getCet');
 const eduGetJob = require('./edu-getJob');
 
 function handlerParams(req, callback) {
-  var username = req.query.username;
-  var password = req.query.password;
-  var yourCookie = req.query.cookie;
-  var simulateIp = req.headers['x-forwarded-for'] ||
+  const username = req.query.username;
+  const password = req.query.password;
+  const yourCookie = req.query.cookie;
+  const simulateIp = req.headers['x-forwarded-for'] ||
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
@@ -26,7 +26,7 @@ function handlerParams(req, callback) {
     password,
     yourCookie,
     simulateIp,
-    callback
+    callback,
   };
 }
 
