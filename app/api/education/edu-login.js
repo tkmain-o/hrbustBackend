@@ -19,6 +19,7 @@ function login(params) {
     simulateIp: params.simulateIp,
     yourCookie: params.yourCookie,
   };
-  new SimulateLogin(SimulateLoginParams);
+  const simulateLogin = new SimulateLogin();
+  simulateLogin(SimulateLoginParams);
 }
 exports.login = login;
