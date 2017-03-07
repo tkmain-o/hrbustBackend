@@ -116,6 +116,7 @@ function getCourse(params) {
     simulateIp: params.simulateIp,
     yourCookie: params.yourCookie,
   };
-  new SimulateLogin(SimulateLoginParams);
+  const simulateLogin = SimulateLogin(SimulateLoginParams);
+  simulateLogin(SimulateLoginParams);
 }
 exports.getCourse = getCourse;
