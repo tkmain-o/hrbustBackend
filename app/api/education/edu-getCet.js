@@ -68,7 +68,7 @@ function getCet(username) {
             total: $result.eq(4).text().trim(),
             listen: $result.eq(6).text().trim(),
             reading: $result.eq(8).text().trim(),
-            writing: $result.eq(10).text().trim()
+            writing: $result.eq(10).text().trim(),
           });
           resolve(result);
         }
