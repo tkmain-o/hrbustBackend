@@ -54,7 +54,8 @@ function getUserName(params) {
       }
     },
   };
-  new SimulateLogin(SimulateLoginParams);
+  const simulateLogin = new SimulateLogin();
+  simulateLogin(SimulateLoginParams);
 }
 
 exports.getUserName = getUserName;

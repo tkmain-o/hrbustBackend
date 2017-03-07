@@ -1,13 +1,13 @@
 const SimulateLogin = require('./util/simulateLogin').SimulateLogin;
 const cheerio = require('cheerio');
-const iconv = require('iconv-lite');
+// const iconv = require('iconv-lite');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
 
 // 浏览器请求报文头部部分信息
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  'Origin': 'http://jwzx.hrbust.edu.cn',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
@@ -79,7 +79,8 @@ function getGrade(params) {
     simulateIp: params.simulateIp,
     yourCookie: params.yourCookie,
   };
-  new SimulateLogin(SimulateLoginParams);
+  const simulateLogin = new SimulateLogin();
+  simulateLogin(SimulateLoginParams);
 }
 
 exports.getGrade = getGrade;
