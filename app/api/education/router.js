@@ -1,17 +1,18 @@
-var log = require('bole')('customers/router');
-var express = require('express');
-var router = new express.Router();
+const log = require('bole')('customers/router');
+const express = require('express');
 
-var eduLogin = require('./edu-login');
+const router = new express.Router();
 
-var eduGetCourse = require('./edu-getCourse');
-var eduGetName = require('./edu-getName');
-var eduGetExam = require('./edu-getExam');
-var eduGetGrade = require('./edu-getGrade');
-var eduGetWeek = require('./edu-getWeek');
-var eduGetNews = require('./edu-getNews');
-var eduGetCet = require('./edu-getCet');
-var eduGetJob = require('./edu-getJob');
+const eduLogin = require('./edu-login');
+const eduGetCourse = require('./edu-getCourse');
+const eduGetName = require('./edu-getName');
+const eduGetExam = require('./edu-getExam');
+const eduGetGrade = require('./edu-getGrade');
+const eduGetWeek = require('./edu-getWeek');
+const eduGetNews = require('./edu-getNews');
+const eduGetCet = require('./edu-getCet');
+const eduGetJob = require('./edu-getJob');
+
 function handlerParams(req, callback) {
   var username = req.query.username;
   var password = req.query.password;

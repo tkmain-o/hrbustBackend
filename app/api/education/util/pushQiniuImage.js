@@ -10,15 +10,15 @@ qiniu.config({
 const imagesBucket = qiniu.bucket('hrbust');
 
 function pushQiniuImage(url, imageName) {
-  const promise = new Promise((resolve, reject) => {
-    phantom.create().then(function(ph) {
-      ph.createPage().then(function(page) {
+  const promise = new Promise((resolve) => {
+    phantom.create().then((ph) => {
+      ph.createPage().then((page) => {
         page.setting('userAgent', 'foo app');
-        page.open(url).then(function(status) {
+        page.open(url).then(() => {
           const path = `${__dirname}/../newsImages/${imageName}`;
           page.render(path).then(() => {
-            imagesBucket.putFile(imageName, path, function(err, reply) {
-              resolve();
+            imagesBucket.putFile(imageName, path, (err) => {
+              resolve(err);
               // if (err) {
               //   return console.error(err);
               // }
