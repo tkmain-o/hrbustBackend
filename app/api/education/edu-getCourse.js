@@ -8,7 +8,7 @@ const SimulateLogin = require('./util/simulateLogin').SimulateLogin;
 const url = {
   login_url: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp',
   captcha_url: 'http://jwzx.hrbust.edu.cn/academic/getCaptcha.do',
-  check_url: 'http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?'
+  check_url: 'http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?',
 };
 
 
@@ -108,7 +108,7 @@ function getCourse(params) {
       } else {
         getStudentId(result.cookie, (getCourseUrl) => {
           handlerGetCourse(getCourseUrl, result.cookie, (res) => {
-            params.callback(Object.assign(res, {thisWeek: result.thisWeek }));
+            params.callback(Object.assign(res, { thisWeek: result.thisWeek }));
           });
         });
       }
