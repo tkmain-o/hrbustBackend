@@ -89,8 +89,9 @@ function getExam(params) {
         });
       }
     },
-  },
-  new SimulateLogin(SimulateLoginParams);
+  };
+  const simulateLogin = SimulateLogin(SimulateLoginParams);
+  simulateLogin(SimulateLoginParams);
 }
 
 exports.getExam = getExam;
