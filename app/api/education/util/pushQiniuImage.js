@@ -1,6 +1,5 @@
 const phantom = require('phantom');
 const qiniu = require('node-qiniu');
-const fs = require('fs');
 
 qiniu.config({
   access_key: '6n1HQs5Yk2UGP7EJ1K3CsXXLbphiUTVvsYIZmncL',
@@ -19,10 +18,6 @@ function pushQiniuImage(url, imageName) {
           page.render(path).then(() => {
             imagesBucket.putFile(imageName, path, (err) => {
               resolve(err);
-              // if (err) {
-              //   return console.error(err);
-              // }
-              // console.dir(reply);
             });
           });
           page.close();
