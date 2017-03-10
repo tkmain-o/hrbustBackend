@@ -17,13 +17,15 @@
     "ejs": "^2.5.2",
     "express": "^4.14.0",
     "iconv-lite": "^0.4.13",
+    "node-libcurl": "^1.1.0",
     "node-qiniu": "^6.2.0",
     "node-xlsx": "^0.7.4",
     "phantom": "^4.0.0",
     "superagent": "^2.3.0",
     "superagent-charset": "^1.1.1",
     "tesseract.js": "^1.0.10",
-    "thenjs": "^2.0.5"
+    "thenjs": "^2.0.5",
+    "xml2json": "^0.11.0"
   },
   "devDependencies": {
     "bistre": "^1.0.1",
