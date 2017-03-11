@@ -5,4 +5,3 @@ app/server.js
 app/api/router.js
 app/api/education/router.js
 app/site/router.js
-app/api/education/util/simulateLogin.js
