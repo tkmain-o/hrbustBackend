@@ -1,6 +1,5 @@
-const SimulateLogin = require('./util/simulateLogin').SimulateLogin;
+const SimulateLogin = require('./util/simulateLogin');
 const cheerio = require('cheerio');
-// const iconv = require('iconv-lite');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
 
@@ -62,25 +61,24 @@ function getGrade(params) {
   const SimulateLoginParams = {
     username: params.username,
     password: params.password,
-    callback(result) {
-      if (result.error) {
-        params.callback({
-          error: result.error,
-        });
-      } else {
-        handleGrade(result.cookie, params.year, params.term).then((results) => {
-          /* 此处的result报错*/
-          params.callback(results);
-        }).catch((error) => {
-          console.error(error);
-        });
-      }
-    },
     simulateIp: params.simulateIp,
     yourCookie: params.yourCookie,
   };
   const simulateLogin = new SimulateLogin();
-  simulateLogin(SimulateLoginParams);
+  simulateLogin.init(SimulateLoginParams).then((result) => {
+    if (result.error) {
+      params.callback({
+        error: result.error,
+      });
+    } else {
+      handleGrade(result.cookie, params.year, params.term).then((results) => {
+        /* 此处的result报错*/
+        params.callback(results);
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+  });
 }
 
 exports.getGrade = getGrade;
