@@ -34,7 +34,9 @@ function getCourse(req, res) {
   var getCourseParmas = handlerParams(req, function(result) {
     if (result.error) {
       log.error(result.error, 'error get course');
-      res.status(400).send(result.error);
+      res.status(400).json({
+        error: result.error,
+      });
       return;
     }
     res.json(result);
@@ -47,7 +49,9 @@ function login(req, res) {
   var loginParmas = handlerParams(req, function(result) {
     if (result.error) {
       log.error(result.error, 'error login');
-      res.status(400).send(result.error);
+      res.status(400).json({
+        error: result.error,
+      });
       return;
     }
     res.json(result);
@@ -59,7 +63,10 @@ function getUserName(req, res) {
   var getNameParmas = handlerParams(req, function(result) {
     if (result.error) {
       log.error(result.error, 'error get userName');
-      res.status(400).send(result.error);
+      log.error(result.error);
+      res.status(400).json({
+        error: result.error,
+      });
       return;
     }
     res.json(result);
@@ -71,7 +78,9 @@ function getExam(req, res) {
   var getExamParmas = handlerParams(req, function(result) {
     if (result.error) {
       log.error(result.error, 'error get exam');
-      res.status(400).send(result.error);
+      res.status(400).json({
+        error: result.error,
+      });
       return;
     }
     res.json(result);
@@ -93,7 +102,9 @@ function getGrade(req, res) {
     callback: function(result) {
       if (result.error) {
         log.error(result.error, 'error get exam');
-        res.status(400).send(result.error);
+        res.status(400).json({
+          error: result.error,
+        });
         return;
       }
       res.json(result);
@@ -107,7 +118,9 @@ function getWeek(req, res) {
   eduGetWeek.getWeek().then((result) => {
     if (result.error) {
       log.error(result.error, 'error get exam');
-      res.status(400).send(result.error);
+      res.status(400).json({
+        error: result.error,
+      });
       return;
     }
     res.json(result);
@@ -119,7 +132,9 @@ function getNews(req, res) {
   eduGetNews.getNews(page).then((result) => {
     if (result.error) {
       log.error(result.error, 'error get exam');
-      res.status(400).send(result.error);
+      res.status(400).json({
+        error: result.error,
+      });
       return;
     }
     res.json(result);
@@ -131,7 +146,9 @@ function getCet(req,res){
   eduGetCet.getCet(num).then((result) => {
     if(result.error){
       log.error(result.error,'error get cet');
-      res.status(400).send(result.error);
+      res.status(400).json({
+        error: result.error,
+      });
       return;
     }
     res.json(result);
@@ -143,7 +160,9 @@ function getJob(req,res) {
   eduGetJob.getJob(page).then((result) => {
     if(result.error){
       log.error(result.error, 'error get job');
-      res.status(400).send(result.error);
+      res.status(400).json({
+        error: result.error,
+      });
       return;
     }
     res.json(result);
