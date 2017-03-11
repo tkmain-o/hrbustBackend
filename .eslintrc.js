@@ -6,5 +6,6 @@ module.exports = {
     "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "radix": ["error", "as-needed"],
     "linebreak-style": 0,
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
   },
 };
