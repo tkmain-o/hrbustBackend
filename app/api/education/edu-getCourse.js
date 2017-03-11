@@ -1,16 +1,8 @@
 const cheerio = require('cheerio');
-const iconv = require('iconv-lite');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
 
-const SimulateLogin = require('./util/simulateLogin').SimulateLogin;
-
-const url = {
-  login_url: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp',
-  captcha_url: 'http://jwzx.hrbust.edu.cn/academic/getCaptcha.do',
-  check_url: 'http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?',
-};
-
+const SimulateLogin = require('./util/simulateLogin');
 
 // 浏览器请求报文头部部分信息
 const browserMsg = {
@@ -116,7 +108,19 @@ function getCourse(params) {
     simulateIp: params.simulateIp,
     yourCookie: params.yourCookie,
   };
-  const simulateLogin = SimulateLogin(SimulateLoginParams);
-  simulateLogin(SimulateLoginParams);
+  const simulateLogin = new SimulateLogin();
+  simulateLogin.init(SimulateLoginParams).then((result) => {
+    if (result.error) {
+      params.callback({
+        error: result.error,
+      });
+    } else {
+      getStudentId(result.cookie, (getCourseUrl) => {
+        handlerGetCourse(getCourseUrl, result.cookie, (res) => {
+          params.callback(Object.assign(res, { thisWeek: result.thisWeek }));
+        });
+      });
+    }
+  });
 }
 exports.getCourse = getCourse;
