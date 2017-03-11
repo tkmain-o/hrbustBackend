@@ -9,187 +9,196 @@
    * @param {string} yourCookie
  */
 
-var cheerio = require("cheerio");
-var charset = require('superagent-charset');
-var superagent = charset(require('superagent'));
-var Tesseract = require('tesseract.js');
+const cheerio = require('cheerio');
+const charset = require('superagent-charset');
+const superagent = charset(require('superagent'));
+const getCaptcha = require('./captcha.js');
+const fs = require('fs');
+const path = require('path');
 
-var url = {
-  login_url: "http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp",
-  captcha_url: "http://jwzx.hrbust.edu.cn/academic/getCaptcha.do",
-  check_url: "http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?",
-  index: "http://jwzx.hrbust.edu.cn/academic/index_new.jsp",
-  indexHeader: "http://jwzx.hrbust.edu.cn/academic/showHeader.do",
-  indexListLeft: "http://jwzx.hrbust.edu.cn/academic/listLeft.do"
+const url = {
+  login_url: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp',
+  captcha_url: 'http://jwzx.hrbust.edu.cn/academic/getCaptcha.do',
+  check_url: 'http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?',
+  index: 'http://jwzx.hrbust.edu.cn/academic/index.jsp',
+  indexHeader: 'http://jwzx.hrbust.edu.cn/academic/showHeader.do',
+  indexListLeft: 'http://jwzx.hrbust.edu.cn/academic/listLeft.do',
+  index_new: 'http://jwzx.hrbust.edu.cn/academic/index_new.jsp',
 };
 // 浏览器请求报文头部部分信息
-var browserMsg = {
-  "Accept-Encoding": "gzip, deflate",
-  "Origin": "http://jwzx.hrbust.edu.cn",
-  "Content-Type": "application/x-www-form-urlencoded",
+const browserMsg = {
+  'Accept-Encoding': 'gzip, deflate',
+  Origin: 'http://jwzx.hrbust.edu.cn',
+  'Content-Type': 'application/x-www-form-urlencoded',
 };
-var count = 0;
+let captchaCount = 0;
 
-function SimulateLogin (params) {
-  this.username = params.username;
-  this.password = params.password;
-  this.callback = params.callback;
-  this.simulateIp = params.simulateIp;
-  this.cookie = params.yourCookie || '';
-  var _this = this;
-  _this.getWeek(function(error) {
-    if (error) {
-      _this.cookie = '';
-      _this.getCookie();
-    } else {
-      _this.callback({
-        cookie: _this.cookie,
-        thisWeek: _this.thisWeek
+function checkCookie(cookie) {
+  const promise = new Promise((resolve) => {
+    const that = this;
+    superagent
+      .get(url.indexListLeft)
+      .charset()
+      .set(browserMsg)
+      .set('Cookie', cookie)
+      .redirects(0)
+      .end((err, response) => {
+        let isValidCookie = false;
+        if (err) {
+          console.error('get index is error');
+          isValidCookie = false;
+        } else {
+          const body = response.text;
+          const $ = cheerio.load(body);
+          const result = $('#date span').text();
+          that.thisWeek = result.replace(/\s/g, '');
+          // 如果 lenght是0 证明未登陆 cookie 失效
+          const flag = $('#menu li').length === 0;
+          isValidCookie = flag ? false : flag;
+        }
+        resolve(isValidCookie);
       });
-    }
   });
-}
-SimulateLogin.prototype.getCookie = function() {
-  var _this = this;
-  if (_this.simulateIp) {
-    browserMsg['X-Forwarded-For'] = _this.simulateIp;
-  }
-  superagent
-    .post(url.login_url)
-    .set(browserMsg)
-    .redirects(0)
-    .end((error, response) => {
-      if (error) {
-        _this.callback({
-          error
-        });
-        return false;
-      }
-      _this.cookie = response.headers["set-cookie"][0].split(';')[0];
-      console.log(_this.cookie);
-      _this.handlerCaptcha(function(captcha) {
-        _this.handlerLogin(captcha);
-      });
-    });
-}
-SimulateLogin.prototype.handlerCaptcha = function (callback) {
-  // console.log(this.cookie,'this is test');
-  var _this = this;
-  superagent
-    .get(url.captcha_url)
-    .buffer(true)
-    .set(browserMsg)
-    .set("Cookie", _this.cookie)
-    .end((error, response, body) => {
-      if (error) {
-        _this.callback({
-          error
-        });
-      } else {
-        var dataBuffer = new Buffer(response.body, 'base64');
-        Tesseract.recognize(dataBuffer)
-          .then((result) => {
-            var text = result.text;
-            text = text.replace(/\s/g, "");
-            // must pure number
-            var ex = (/^[0-9]*$/.test(text));
-            if (!ex) {
-              _this.handlerCaptcha(callback);
-              return;
-            }
-            callback(result.text);
-          })
-      }
-    });
+  return promise;
 }
 
-// Login (登陆)
-SimulateLogin.prototype.handlerLogin = function (captcha) {
-  var _this = this;
-  superagent
-    .post(url.check_url)
-    .send({
-       j_username: _this.username,
-       j_password: _this.password,
-       j_captcha: captcha
-    })
-    .set(browserMsg)
-    .set("Cookie", _this.cookie)
-    .redirects(0)
-    .end((err, response) => {
-      if (response.headers.location == "http://jwzx.hrbust.edu.cn/academic/index_new.jsp" || response.headers.location == "http://jwzx.hrbust.edu.cn/academic/index.jsp") {
-        //  all is good
-        count ++;
-        console.log(count, 'requst is good');
-        _this.callback({
-          cookie: _this.cookie,
-          thisWeek: _this.thisWeek
+class SimulateLogin {
+  init(params) {
+    this.username = params.username;
+    this.password = params.password;
+    this.simulateIp = params.simulateIp;
+    this.cookie = params.yourCookie || '';
+    const that = this;
+
+    const promise = new Promise((resolve) => {
+      that.callback = resolve;
+      checkCookie(that.cookie).then((result) => {
+        if (result.isValidCookie) {
+          that.callback({
+            cookie: that.cookie,
+            thisWeek: that.thisWeek,
+          });
+        } else {
+          that.cookie = '';
+          that.getCookie();
+        }
+      }, that.cookie);
+    });
+    return promise;
+  }
+
+  getCookie() {
+    const that = this;
+    if (that.simulateIp) {
+      browserMsg['X-Forwarded-For'] = that.simulateIp;
+    }
+    superagent
+      .post(url.login_url)
+      .set(browserMsg)
+      .redirects(0)
+      .end((error, response) => {
+        if (error) {
+          that.callback({ error });
+        }
+        that.cookie = response.headers['set-cookie'][0].split(';')[0];
+        console.warn(that.cookie);
+        that.handlerCaptcha().then((captchaText) => {
+          that.handlerLogin(captchaText);
         });
-      } else {
-        // handler error
-        _this.handlerError((error) => {
-          if (error.match(/验证码/)) {
-            // handler captcha again, then handler login again
-            _this.handlerCaptcha(function (captcha) {
-              _this.handlerLogin(captcha);
-            });
-            return;
+      });
+  }
+
+  handlerCaptcha() {
+    const that = this;
+    const promise = new Promise((resolve) => {
+      superagent
+        .get(url.captcha_url)
+        .buffer(true)
+        .set(browserMsg)
+        .set('Cookie', that.cookie)
+        .end((error, response) => {
+          if (error) {
+            that.callback({ error });
           } else {
-            _this.callback({
-              error
+            const dataBuffer = new Buffer(response.body, 'base64');
+            const captchaPath = path.resolve(__dirname, `../captchaImages/${captchaCount}.jpg`);
+            console.warn(`captchaCount: ${captchaCount}`);
+            captchaCount += 1;
+            fs.writeFile(captchaPath, dataBuffer, (err) => {
+              if (err) throw err;
+              getCaptcha(captchaPath).then((result) => {
+                let text = '';
+                console.log(result.error, '---------');
+                if (!result.error) {
+                  text = result ? result.ResultList.Item.Result : '';
+                }
+                fs.unlinkSync(captchaPath);
+                resolve(text);
+              });
             });
-            return false;
           }
         });
-      }
     });
+    return promise;
+  }
+
+  handlerLogin(captcha) {
+    const that = this;
+    superagent
+      .post(url.check_url)
+      .send({
+        j_username: that.username,
+        j_password: that.password,
+        j_captcha: captcha,
+      })
+      .set(browserMsg)
+      .set('Cookie', that.cookie)
+      .redirects(0)
+      .end((err, response) => {
+        const location = response.headers.location;
+        if (location === url.index || location === url.index_new) {
+          console.warn('all is good');
+          that.callback({
+            cookie: that.cookie,
+            thisWeek: that.thisWeek,
+          });
+        } else {
+          // handler error
+          that.handlerError().then((errorText) => {
+            if (errorText.match(/验证码/)) {
+              // handler captcha again, then handler login again
+              that.handlerCaptcha().then((captchaText) => {
+                that.handlerLogin(captchaText);
+              });
+            } else {
+              that.callback({ error: errorText });
+            }
+          });
+        }
+      });
+  }
+
+  handlerError() {
+    const promise = new Promise((resolve) => {
+      superagent
+        .get('http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1')
+        .charset()
+        .set(browserMsg)
+        .set('Cookie', this.cookie)
+        .end((error, response) => {
+          if (error) {
+            resolve(error);
+          } else {
+            const body = response.text;
+            const $ = cheerio.load(body);
+            const errorText = $('#error').text();
+            // console.warn(errorText);
+            resolve(errorText);
+          }
+        });
+    });
+    return promise;
+  }
 }
 
-// handler error
-SimulateLogin.prototype.handlerError = function (callback) {
-  superagent
-    .get("http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1")
-    .charset()
-    .set(browserMsg)
-    .set("Cookie", this.cookie)
-    .end((err, response, body) => {
-      if (err) {
-        callback(error);
-      } else {
-        var body = response.text;
-        var $ = cheerio.load(body);
-        var error = $("#error").text();
-        console.log(error);
-        callback(error);
-        return error;
-      }
-    });
-}
-SimulateLogin.prototype.getWeek = function (callback) {
-  // http://jwzx.hrbust.edu.cn/academic/listLeft.do
-  // http://jwzx.hrbust.edu.cn/academic/showHeader.do
-  var _this = this;
-  superagent
-    .get(url.indexListLeft)
-    .charset()
-    .set(browserMsg)
-    .set("Cookie", this.cookie)
-    .redirects(0)
-    .end((err, response, body) => {
-      if (err) {
-        console.log('get index is error');
-        callback(true);
-      } else {
-        var body = response.text;
-        var $ = cheerio.load(body);
-        var result = $('#date span').text();
-        _this.thisWeek = result.replace(/\s/g, "");
-        if ($("#menu li").length == 0) {
-          callback(true);
-        } else {
-          callback(false);
-        }
-      }
-    });
-}
-exports.SimulateLogin = SimulateLogin;
+module.exports = SimulateLogin;
