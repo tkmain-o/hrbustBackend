@@ -1,8 +1,9 @@
-var express = require('express');
+const express = require('express');
 
-var router = express.Router();
-var app = express();
-var bodyParser = require('body-parser');
+// const router = express.Router();
+const app = express();
+const bodyParser = require('body-parser');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // templat
