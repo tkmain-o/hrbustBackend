@@ -128,7 +128,6 @@ class SimulateLogin {
               if (err) throw err;
               getCaptcha(captchaPath).then((result) => {
                 let text = '';
-                console.log(result.error, '---------');
                 if (!result.error) {
                   text = result ? result.ResultList.Item.Result : '';
                 }

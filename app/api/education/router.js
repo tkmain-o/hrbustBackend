@@ -31,7 +31,7 @@ function handlerParams(req, callback) {
 }
 
 function getCourse(req, res) {
-  var getCourseParmas = handlerParams(req, function(result) {
+  const getCourseParmas = handlerParams(req, (result) => {
     if (result.error) {
       log.error(result.error, 'error get course');
       res.status(400).json({
@@ -46,7 +46,7 @@ function getCourse(req, res) {
 }
 
 function login(req, res) {
-  var loginParmas = handlerParams(req, function(result) {
+  const loginParmas = handlerParams(req, (result) => {
     if (result.error) {
       log.error(result.error, 'error login');
       res.status(400).json({
@@ -60,7 +60,7 @@ function login(req, res) {
 }
 
 function getUserName(req, res) {
-  var getNameParmas = handlerParams(req, function(result) {
+  const getNameParmas = handlerParams(req, (result) => {
     if (result.error) {
       log.error(result.error, 'error get userName');
       log.error(result.error);
@@ -70,12 +70,12 @@ function getUserName(req, res) {
       return;
     }
     res.json(result);
-  })
+  });
   eduGetName.getUserName(getNameParmas);
 }
 
 function getExam(req, res) {
-  var getExamParmas = handlerParams(req, function(result) {
+  const getExamParmas = handlerParams(req, (result) => {
     if (result.error) {
       log.error(result.error, 'error get exam');
       res.status(400).json({
@@ -84,12 +84,12 @@ function getExam(req, res) {
       return;
     }
     res.json(result);
-  })
+  });
   eduGetExam.getExam(getExamParmas);
 }
 
 function getGrade(req, res) {
-  var getGradeParmas = {
+  const getGradeParmas = {
     username: req.query.username,
     password: req.query.password,
     year: req.query.year,
@@ -99,7 +99,7 @@ function getGrade(req, res) {
       req.connection.remoteAddress ||
       req.socket.remoteAddress ||
       req.connection.socket.remoteAddress,
-    callback: function(result) {
+    callback(result) {
       if (result.error) {
         log.error(result.error, 'error get exam');
         res.status(400).json({
@@ -108,7 +108,7 @@ function getGrade(req, res) {
         return;
       }
       res.json(result);
-    }
+    },
   };
 
   eduGetGrade.getGrade(getGradeParmas);
@@ -141,11 +141,11 @@ function getNews(req, res) {
   });
 }
 
-function getCet(req,res){
+function getCet(req, res) {
   const num = req.query.username;
   eduGetCet.getCet(num).then((result) => {
-    if(result.error){
-      log.error(result.error,'error get cet');
+    if (result.error) {
+      log.error(result.error, 'error get cet');
       res.status(400).json({
         error: result.error,
       });
@@ -155,10 +155,10 @@ function getCet(req,res){
   });
 }
 
-function getJob(req,res) {
+function getJob(req, res) {
   const page = req.query.page;
   eduGetJob.getJob(page).then((result) => {
-    if(result.error){
+    if (result.error) {
       log.error(result.error, 'error get job');
       res.status(400).json({
         error: result.error,
@@ -166,7 +166,7 @@ function getJob(req,res) {
       return;
     }
     res.json(result);
-  })
+  });
 }
 function home(req, res) {
   res.render('api/education/home');
@@ -180,6 +180,6 @@ router.get('/getExam', getExam);
 router.get('/getGrade', getGrade);
 router.get('/getWeek', getWeek);
 router.get('/getNews', getNews);
-router.get('/getCet',getCet);
-router.get('/getJob',getJob);
+router.get('/getCet', getCet);
+router.get('/getJob', getJob);
 module.exports = router;
