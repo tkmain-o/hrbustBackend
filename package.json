@@ -9,6 +9,9 @@
     "pro": "export NODE_ENV=production && pm2 restart ./app/server.js --name='xy-hrbust'",
     "lint": "eslint app/"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -34,6 +37,7 @@
     "eslint": "^3.17.0",
     "eslint-config-airbnb-base": "^11.1.1",
     "eslint-plugin-import": "^2.2.0",
+    "pre-commit": "^1.2.2",
     "tape": "^4.6.2"
   }
 }

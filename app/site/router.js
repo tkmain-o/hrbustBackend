@@ -1,13 +1,13 @@
-var express = require('express');
-var join = require('path').join;
+const express = require('express');
+const join = require('path').join;
 
-var router = new express.Router();
+const router = new express.Router();
 
-function home (req, res) {
+function home(req, res) {
   res.render('site/home');
 }
 
-function test (req, res) {
+function test(req, res) {
   res.render('site/test');
 }
 

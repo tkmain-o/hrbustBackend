@@ -20,7 +20,7 @@ function getStudentId(cookie, callback) {
     .set('Cookie', cookie)
     .end((err, response) => {
       if (err) {
-        loginHandlerInner(usernameW, passwordW, callback);
+        // callback(err);
       } else {
         const body = response.text;
         const $ = cheerio.load(body);
