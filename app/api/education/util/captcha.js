@@ -1,39 +1,33 @@
 const parser = require('xml2json');
-const Curl = require('node-libcurl').Curl;
+const request = require('request');
+const fs = require('fs');
 
 function getCaptcha(filePath) {
   const promise = new Promise((resolve) => {
-    const curl = new Curl();
-    const data = [{
-      name: 'file',
-      file: filePath,
-      type: 'image/png',
-    }];
+    const formData = {
+      file: fs.createReadStream(filePath),
+    };
 
-    curl.setOpt(Curl.option.URL, 'http://lab.ocrking.com/ok.html?service=OcrKingForPhoneNumber&language=eng&charset=11&apiKey=ad6be37ba1c990d2faY7WmCyKfGkRcAA90nwglVA4V84JynHFE9lyPIosVFb0PijEwMP9BWgKciII&type=http://t.51chuli.com/contact/d827323fa035a7729w060771msa9211z.gif');
-    curl.setOpt(Curl.option.HTTPPOST, data);
-    curl.perform();
-
-    curl.on('end', function handler(statusCode, body) {
+    request.post({
+      url: 'http://lab.ocrking.com/ok.html?service=OcrKingForPhoneNumber&language=eng&charset=11&apiKey=ad6be37ba1c990d2faY7WmCyKfGkRcAA90nwglVA4V84JynHFE9lyPIosVFb0PijEwMP9BWgKciII&type=http://t.51chuli.com/contact/d827323fa035a7729w060771msa9211z.gif',
+      formData,
+    }, (err, httpResponse, body) => {
+      if (err) {
+        console.error('upload failed:', err);
+        resolve({
+          error: err,
+        });
+      }
       let bodyObj = {};
       try {
         bodyObj = JSON.parse(parser.toJson(body)).Results;
-      } catch (err) {
+      } catch (error) {
         resolve({
-          error: `unknow error: ${err}`,
+          error: `parser toJson error: ${error}`,
         });
       }
       resolve(bodyObj);
-      this.close();
-      // fs.unlinkSync( imageFilename );
-    });
-    curl.on('error', function handler(error) {
-      console.error('handler curl error', error);
-      resolve({
-        error: 'handler curl error',
-      });
-      this.close();
-      // fs.unlinkSync( imageFilename );
+      // console.log('Upload successful!  Server responded with:', bodyObj);
     });
   });
   return promise;
