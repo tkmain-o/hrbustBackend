@@ -3,3 +3,4 @@
 node_modules/
 eng.traineddata
 app/api/education/newsImages/
+app/api/education/captchaImages/
