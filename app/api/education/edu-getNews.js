@@ -80,11 +80,11 @@ function getNews(page) {
             // 串行执行队列任务
             (cont) => {
               handleUpdateImage(imageObj).then(() => {
+                resolve(result);
                 cont();
               });
             },
           ]);
-          resolve(result);
         }
       });
   });
@@ -92,3 +92,4 @@ function getNews(page) {
 }
 
 exports.getNews = getNews;
+exports.getNewsThenjsList = thenjsList;
