@@ -14,7 +14,7 @@ function pushQiniuImage(url, imageName) {
       ph.createPage().then((page) => {
         page.setting('userAgent', 'foo app');
         page.open(url).then(() => {
-          const path = `${__dirname}/../newsImages/${imageName}`;
+          const path = `${__dirname}/../cacheImages/${imageName}`;
           page.render(path).then(() => {
             imagesBucket.putFile(imageName, path, (err) => {
               resolve(err);
