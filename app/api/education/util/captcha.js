@@ -1,4 +1,4 @@
-const parser = require('xml2json');
+const xml2json = require('node-xml2json');
 const request = require('request');
 const fs = require('fs');
 
@@ -20,10 +20,10 @@ function getCaptcha(filePath) {
       }
       let bodyObj = {};
       try {
-        bodyObj = JSON.parse(parser.toJson(body)).Results;
+        bodyObj = JSON.parse(xml2json.parser(body)).Results;
       } catch (error) {
         resolve({
-          error: `parser toJson error: ${error}`,
+          error: `xml2json toJson error: ${error}`,
         });
       }
       resolve(bodyObj);
