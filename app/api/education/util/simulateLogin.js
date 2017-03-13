@@ -54,7 +54,7 @@ function checkCookie(cookie) {
           that.thisWeek = result.replace(/\s/g, '');
           // 如果 lenght是0 证明未登陆 cookie 失效
           const flag = $('#menu li').length === 0;
-          isValidCookie = flag ? false : flag;
+          isValidCookie = !flag;
         }
         resolve(isValidCookie);
       });
@@ -69,11 +69,10 @@ class SimulateLogin {
     this.simulateIp = params.simulateIp;
     this.cookie = params.yourCookie || '';
     const that = this;
-
     const promise = new Promise((resolve) => {
       that.callback = resolve;
-      checkCookie(that.cookie).then((result) => {
-        if (result.isValidCookie) {
+      checkCookie(that.cookie).then((isValidCookie) => {
+        if (isValidCookie) {
           that.callback({
             cookie: that.cookie,
             thisWeek: that.thisWeek,
