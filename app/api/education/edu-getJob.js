@@ -74,11 +74,11 @@ function getJob(page) {
               thenjsList = thenjsList.series([
                 (cont) => {
                   handleUpdateImage(imageObj).then(() => {
+                    resolve(result);
                     cont();
                   });
                 },
               ]);
-              resolve(result);
             }
           });
   });
@@ -86,3 +86,4 @@ function getJob(page) {
 }
 
 exports.getJob = getJob;
+exports.getJobThenjsList = thenjsList;

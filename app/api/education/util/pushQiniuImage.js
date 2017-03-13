@@ -1,5 +1,6 @@
 const phantom = require('phantom');
 const qiniu = require('node-qiniu');
+const fs = require('fs');
 
 qiniu.config({
   access_key: '6n1HQs5Yk2UGP7EJ1K3CsXXLbphiUTVvsYIZmncL',
@@ -8,9 +9,15 @@ qiniu.config({
 
 const imagesBucket = qiniu.bucket('hrbust');
 
+const phantomPagePromise = new Promise((resolve) => {
+  phantom.create().then((ph) => {
+    resolve(ph);
+  });
+});
+
 function pushQiniuImage(url, imageName) {
   const promise = new Promise((resolve) => {
-    phantom.create().then((ph) => {
+    phantomPagePromise.then((ph) => {
       ph.createPage().then((page) => {
         page.setting('userAgent', 'foo app');
         page.open(url).then(() => {
@@ -18,10 +25,14 @@ function pushQiniuImage(url, imageName) {
           page.render(path).then(() => {
             imagesBucket.putFile(imageName, path, (err) => {
               resolve(err);
+              try {
+                fs.unlink(path);
+              } catch (error) {
+                console.error(error);
+              }
             });
+            page.close();
           });
-          page.close();
-          ph.exit();
         });
       });
     });
