@@ -129,7 +129,7 @@ class SimulateLogin {
               getCaptcha(captchaPath).then((result) => {
                 let text = '';
                 if (!result.error) {
-                  text = result ? result.ResultList.Item.Result : '';
+                  text = result ? result.item.result : '';
                 }
                 fs.unlinkSync(captchaPath);
                 resolve(text);

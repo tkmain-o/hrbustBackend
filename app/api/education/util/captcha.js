@@ -19,15 +19,8 @@ function getCaptcha(filePath) {
         });
       }
       let bodyObj = {};
-      try {
-        bodyObj = JSON.parse(xml2json.parser(body)).Results;
-      } catch (error) {
-        resolve({
-          error: `xml2json toJson error: ${error}`,
-        });
-      }
+      bodyObj = xml2json.parser(body).results.resultlist;
       resolve(bodyObj);
-      // console.log('Upload successful!  Server responded with:', bodyObj);
     });
   });
   return promise;
