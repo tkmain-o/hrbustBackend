@@ -1,4 +1,7 @@
 .DS_Store
 *.log
 node_modules/
+
 app/api/education/cacheImages/*.jpg
+app/api/education/util/newsList.json
+app/api/education/util/jobList.json
