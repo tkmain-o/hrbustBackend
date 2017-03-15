@@ -5,7 +5,7 @@ const pushQiniuImage = require('./util/pushQiniuImage').pushQiniuImage;
 const Thenjs = require('thenjs');
 const fs = require('fs');
 
-const imageListPath = `${__dirname}/util/imageList.json`;
+const imageListPath = `${__dirname}/util/newsList.json`;
 
 let thenjsList = Thenjs;
 
@@ -27,9 +27,11 @@ function handleUpdateImage(imageObj) {
     const promiseList = [];
     const result = Object.keys(imageObj).reduce((obj, item) => {
       if (!imageObjJson[item]) {
-        promiseList.push(pushQiniuImage(imageObj[item], item));
+        const imageName = `articleId_${item}.jpg`;
+        const url = `http://jwzx.hrbust.edu.cn/homepage/infoSingleArticle.do?articleId=${item}&columnId=354`;
+        promiseList.push(pushQiniuImage(url, imageName));
         return Object.assign({}, obj, {
-          [item]: imageObj[item],
+          [item]: 1,
         });
       }
       return obj;
@@ -68,12 +70,13 @@ function getNews(page) {
           const imageObj = {};
           $('.articleList a').each((index, item) => {
             const href = $(item).attr('href');
-            const imageName = `articleId_${href.match(/articleId=(\S*)&/)[1]}.jpg`;
+            const imageId = href.match(/articleId=(\S*)&/)[1];
+            const imageName = `articleId_${imageId}.jpg`;
             result.data.push({
               title: $(item).text().replace(/\s/g, ''),
               imageName,
             });
-            imageObj[imageName] = `http://jwzx.hrbust.edu.cn/homepage/${href}`;
+            imageObj[imageId] = 1;
           });
 
           thenjsList = thenjsList.series([
