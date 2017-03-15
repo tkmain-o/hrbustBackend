@@ -5,7 +5,7 @@ const pushQiniuImage = require('./util/pushQiniuImage').pushQiniuImage;
 const Thenjs = require('thenjs');
 const fs = require('fs');
 
-const imageListPath = `${__dirname}/util/jobMes.json`;
+const imageListPath = `${__dirname}/util/jobList.json`;
 let thenjsList = Thenjs;
 
 const browserMsg = {
@@ -25,9 +25,11 @@ function handleUpdateImage(imageObj) {
     const promiseList = [];
     const result = Object.keys(imageObj).reduce((obj, item) => {
       if (!imageObjJson[item]) {
-        promiseList.push(pushQiniuImage(imageObj[item], item));
+        const imageName = `articleId_${item}.jpg`;
+        const url = `http://job.hrbust.edu.cn/Companys/Show.aspx?id=${item}`;
+        promiseList.push(pushQiniuImage(url, imageName));
         return Object.assign({}, obj, {
-          [item]: imageObj[item],
+          [item]: 1,
         });
       }
       return obj;
@@ -64,12 +66,13 @@ function getJob(page) {
               const imageObj = {};
               $('#ordered a').each((index, item) => {
                 const href = $(item).attr('href');
-                const imageName = `jobUrl_${href.match(/\d+/g)[0]}.jpg`;
+                const imageId = href.match(/\d+/g)[0];
+                const imageName = `jobUrl_${imageId}.jpg`;
                 result.data.push({
                   title: $(item).text().trim(),
                   imageName,
                 });
-                imageObj[imageName] = `http://job.hrbust.edu.cn/Companys/${href}`;
+                imageObj[imageId] = 1;
               });
               thenjsList = thenjsList.series([
                 (cont) => {
