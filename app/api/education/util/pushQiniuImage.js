@@ -2,6 +2,7 @@ const phantom = require('phantom');
 const qiniu = require('node-qiniu');
 const fs = require('fs');
 const Thenjs = require('thenjs');
+const log = require('bole')('pushQiniuImage')
 
 let thenjsList = Thenjs;
 qiniu.config({
@@ -10,6 +11,8 @@ qiniu.config({
 });
 
 const imagesBucket = qiniu.bucket('hrbust');
+let phantomCount = 0;
+
 function pushQiniuImage(url, imageName) {
   const promise = new Promise((resolve) => {
     thenjsList = thenjsList.series([
@@ -21,11 +24,13 @@ function pushQiniuImage(url, imageName) {
               const path = `${__dirname}/../cacheImages/${imageName}`;
               page.render(path).then(() => {
                 imagesBucket.putFile(imageName, path, (err) => {
+                  phantomCount += 1;
+                  log.info(`finised phantom count:${phantomCount}`);
                   resolve(err);
                   try {
-                    fs.unlink(path);
+                    fs.unlinkSync(path);
                   } catch (error) {
-                    console.error(error);
+                    log.error(error);
                   }
                 });
                 page.close();
