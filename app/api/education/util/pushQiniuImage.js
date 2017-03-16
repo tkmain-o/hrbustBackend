@@ -2,7 +2,7 @@ const phantom = require('phantom');
 const qiniu = require('node-qiniu');
 const fs = require('fs');
 const Thenjs = require('thenjs');
-const log = require('bole')('pushQiniuImage')
+const log = require('bole')('pushQiniuImage');
 
 let thenjsList = Thenjs;
 qiniu.config({
