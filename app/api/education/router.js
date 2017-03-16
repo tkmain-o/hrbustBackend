@@ -12,6 +12,7 @@ const eduGetWeek = require('./edu-getWeek');
 const eduGetNews = require('./edu-getNews');
 const eduGetCet = require('./edu-getCet');
 const eduGetJob = require('./edu-getJob');
+const library = require('./edu-library');
 
 
 function handleParams(req, callback) {
@@ -118,6 +119,14 @@ function getJob(req, res) {
   });
 }
 
+function libraryRouter(req, res) {
+  const keyValue = req.query.keyValue;
+  const page = req.query.page;
+  library(keyValue, page).then((result) => {
+    handleRes(result, res);
+  });
+}
+
 function home(req, res) {
   res.render('api/education/home');
 }
@@ -132,4 +141,6 @@ router.get('/getWeek', getWeek);
 router.get('/getNews', getNews);
 router.get('/getCet', getCet);
 router.get('/getJob', getJob);
+router.get('/library', libraryRouter);
+
 module.exports = router;
