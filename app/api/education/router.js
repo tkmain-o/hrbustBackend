@@ -13,7 +13,8 @@ const eduGetNews = require('./edu-getNews');
 const eduGetCet = require('./edu-getCet');
 const eduGetJob = require('./edu-getJob');
 
-function handlerParams(req, callback) {
+
+function handleParams(req, callback) {
   const username = req.query.username;
   const password = req.query.password;
   const yourCookie = req.query.cookie;
@@ -30,60 +31,43 @@ function handlerParams(req, callback) {
   };
 }
 
+function handleRes(result, res) {
+  if (result.error) {
+    log.error(result.error, 'error handleRes');
+    res.status(400).json({
+      error: result.error,
+    });
+    return;
+  }
+  res.json(result);
+}
+
+
 function getCourse(req, res) {
-  const getCourseParmas = handlerParams(req, (result) => {
-    if (result.error) {
-      log.error(result.error, 'error get course');
-      res.status(400).json({
-        error: result.error,
-      });
-      return;
-    }
-    res.json(result);
+  const getCourseParmas = handleParams(req, (result) => {
+    handleRes(result, res);
   });
 
   eduGetCourse.getCourse(getCourseParmas);
 }
 
 function login(req, res) {
-  const loginParmas = handlerParams(req, (result) => {
-    if (result.error) {
-      log.error(result.error, 'error login');
-      res.status(400).json({
-        error: result.error,
-      });
-      return;
-    }
-    res.json(result);
+  const loginParmas = handleParams(req, (result) => {
+    handleRes(result, res);
   });
   eduLogin.login(loginParmas);
 }
 
 function getUserName(req, res) {
-  const getNameParmas = handlerParams(req, (result) => {
-    if (result.error) {
-      log.error(result.error, 'error get userName');
-      log.error(result.error);
-      res.status(400).json({
-        error: result.error,
-      });
-      return;
-    }
-    res.json(result);
+  const getNameParmas = handleParams(req, (result) => {
+    handleRes(result, res);
   });
   eduGetName.getUserName(getNameParmas);
 }
 
 function getExam(req, res) {
-  const getExamParmas = handlerParams(req, (result) => {
-    if (result.error) {
-      log.error(result.error, 'error get exam');
-      res.status(400).json({
-        error: result.error,
-      });
-      return;
-    }
-    res.json(result);
+  const getExamParmas = handleParams(req, (result) => {
+    handleRes(result, res);
   });
   eduGetExam.getExam(getExamParmas);
 }
@@ -100,14 +84,7 @@ function getGrade(req, res) {
       req.socket.remoteAddress ||
       req.connection.socket.remoteAddress,
     callback(result) {
-      if (result.error) {
-        log.error(result.error, 'error get exam');
-        res.status(400).json({
-          error: result.error,
-        });
-        return;
-      }
-      res.json(result);
+      handleRes(result, res);
     },
   };
 
@@ -116,58 +93,31 @@ function getGrade(req, res) {
 
 function getWeek(req, res) {
   eduGetWeek.getWeek().then((result) => {
-    if (result.error) {
-      log.error(result.error, 'error get exam');
-      res.status(400).json({
-        error: result.error,
-      });
-      return;
-    }
-    res.json(result);
+    handleRes(result, res);
   });
 }
 
 function getNews(req, res) {
   const page = req.query.page;
   eduGetNews.getNews(page).then((result) => {
-    if (result.error) {
-      log.error(result.error, 'error get exam');
-      res.status(400).json({
-        error: result.error,
-      });
-      return;
-    }
-    res.json(result);
+    handleRes(result, res);
   });
 }
 
 function getCet(req, res) {
   const num = req.query.username;
   eduGetCet.getCet(num).then((result) => {
-    if (result.error) {
-      log.error(result.error, 'error get cet');
-      res.status(400).json({
-        error: result.error,
-      });
-      return;
-    }
-    res.json(result);
+    handleRes(result, res);
   });
 }
 
 function getJob(req, res) {
   const page = req.query.page;
   eduGetJob.getJob(page).then((result) => {
-    if (result.error) {
-      log.error(result.error, 'error get job');
-      res.status(400).json({
-        error: result.error,
-      });
-      return;
-    }
-    res.json(result);
+    handleRes(result, res);
   });
 }
+
 function home(req, res) {
   res.render('api/education/home');
 }
