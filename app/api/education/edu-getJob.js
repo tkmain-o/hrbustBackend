@@ -25,7 +25,7 @@ function handleUpdateImage(imageObj) {
     const promiseList = [];
     const result = Object.keys(imageObj).reduce((obj, item) => {
       if (!imageObjJson[item]) {
-        const imageName = `articleId_${item}.jpg`;
+        const imageName = `jobId_${item}.jpg`;
         const url = `http://job.hrbust.edu.cn/Companys/Show.aspx?id=${item}`;
         promiseList.push(pushQiniuImage(url, imageName));
         return Object.assign({}, obj, {
@@ -67,7 +67,7 @@ function getJob(page) {
               $('#ordered a').each((index, item) => {
                 const href = $(item).attr('href');
                 const imageId = href.match(/\d+/g)[0];
-                const imageName = `jobUrl_${imageId}.jpg`;
+                const imageName = `jobId_${imageId}.jpg`;
                 result.data.push({
                   title: $(item).text().trim(),
                   imageName,
