@@ -91,14 +91,14 @@ function library(keyValue, page) {
           ]).then((values) => {
             const result = {};
             result.data = data.map((item, index) => {
-              const book = values[1][index].book;
-              const onlyOne = book.loandatanum !== undefined;
+              let book = values[1][index].book;
+              book = Array.isArray(book) ? book : [book];
               return Object.assign({}, item, {
                 image: values[0][index],
-                loandatanum: onlyOne ? book.loandatanum : book[0].loandatanum,
-                loannum: onlyOne ? book.loannum : book[0].loannum,
-                hldcount: onlyOne ? book.hldcount : book[0].hldcount,
-                hldallnum: onlyOne ? book.hldallnum : book[0].hldallnum,
+                loandatanum: book[0].loandatanum,
+                loannum: book[0].loannum,
+                hldcount: book[0].hldcount,
+                hldallnum: book[0].hldallnum,
                 book,
               });
             });
