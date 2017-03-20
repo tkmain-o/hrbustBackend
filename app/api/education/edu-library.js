@@ -50,7 +50,6 @@ function getBookInfo(idList) {
 function library(keyValue, page) {
   const pageNum = page || 1;
   const params = `&strKeyValue=${keyValue}&page=${pageNum}`;
-  log.info(keyValue, pageNum);
   const url = `http://222.27.200.21/NTRdrBookRetr.aspx?strType=text&strpageNum=10&tabletype=*&strSortType=&strSort=desc${params}`;
   const promise = new Promise((resolve) => {
     superagent
