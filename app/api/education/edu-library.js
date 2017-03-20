@@ -52,10 +52,9 @@ function library(keyValue, page) {
   const pageNum = page || 1;
   const params = `&strKeyValue=${keyValue}&page=${pageNum}`;
   const url = `http://222.27.200.21/NTRdrBookRetr.aspx?strType=text&strpageNum=10&tabletype=*&strSortType=&strSort=desc${params}`;
-  log.info(url);
   const promise = new Promise((resolve) => {
     superagent
-      .get(url)
+      .get(encodeURI(url))
       .charset()
       .set(browserMsg)
       .end((err, response) => {
