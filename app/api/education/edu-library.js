@@ -71,7 +71,8 @@ function library(keyValue, page) {
           const idList = [];
           $('.resultlist').each((index, item) => {
             const bookInfo = {};
-            bookInfo.titleList = $(item).find('.into .title').text().replace(/^\s*|\s*$|\r\t\n/g, '');
+            bookInfo.title = $(item).find('.into .title').text().replace(/^\s*|\s*$|\r\t\n/g, '');
+            bookInfo.info = $(item).find('.into .text').text().replace(/^\s*|\s*$|\r\t\n/g, '');
             valueList.push($(item).find('#Cbox').val());
             idList.push($(item).find('#StrTmpRecno').val());
 
