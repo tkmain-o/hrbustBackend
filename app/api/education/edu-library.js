@@ -18,7 +18,6 @@ function getImage(valueList) {
       .set(browserMsg)
       .end((err, response) => {
         if (err) {
-          log.error('library error');
           resolve([]);
         } else {
           const urlList = xml2json.parser(response.text).images.imagsurl;
@@ -73,6 +72,14 @@ function library(keyValue, page) {
             const bookInfo = {};
             bookInfo.title = $(item).find('.into .title').text().replace(/^\s*|\s*$|\r\t\n/g, '');
             bookInfo.info = $(item).find('.into .text').text().replace(/^\s*|\s*$|\r\t\n/g, '');
+            bookInfo.author = $(item).find('.into .author').text().replace(/^\s*|\s*$|\r\t\n/g, '');
+            bookInfo.publisher = $(item).find('.into .publisher').text().replace(/^\s*|\s*$|\r\t\n/g, '');
+            bookInfo.publisherDate = $(item)
+              .find('.into .dates')
+              .eq(0)
+              .text()
+              .replace(/^\s*|\s*$|\r\t\n/g, '');
+
             valueList.push($(item).find('#Cbox').val());
             idList.push($(item).find('#StrTmpRecno').val());
 
@@ -83,8 +90,18 @@ function library(keyValue, page) {
             getBookInfo(idList),
           ]).then((values) => {
             const result = {};
-            result.data = data.map((item, index) =>
-              Object.assign({}, item, { image: values[0][index] }, values[1][index]));
+            result.data = data.map((item, index) => {
+              const book = values[1][index].book;
+              const onlyOne = book.loandatanum !== undefined;
+              return Object.assign({}, item, {
+                image: values[0][index],
+                loandatanum: onlyOne ? book.loandatanum : book[0].loandatanum,
+                loannum: onlyOne ? book.loannum : book[0].loannum,
+                hldcount: onlyOne ? book.hldcount : book[0].hldcount,
+                hldallnum: onlyOne ? book.hldallnum : book[0].hldallnum,
+                book,
+              });
+            });
 
             resolve(result);
           });
