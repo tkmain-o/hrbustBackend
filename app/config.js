@@ -7,6 +7,11 @@ config.express = {
   ip: '0.0.0.0',
 };
 
+config.mongodb = {
+  port: process.env.MONGODB_PORT || 27017,
+  host: process.env.MONGODB_HOST || 'localhost',
+};
+
 if (PRODUCTION) {
   config.express.ip = '0.0.0.0';
 }

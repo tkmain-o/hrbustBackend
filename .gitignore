@@ -2,6 +2,6 @@
 *.log
 node_modules/
 
-app/api/education/cacheImages/*.jpg
-app/api/education/util/newsList.json
-app/api/education/util/jobList.json
+app/api/cacheImages/*.jpg
+app/api/util/newsList.json
+app/api/util/jobList.json
