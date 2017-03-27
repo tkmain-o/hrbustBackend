@@ -7,10 +7,7 @@ config.express = {
   ip: '0.0.0.0',
 };
 
-config.mongodb = {
-  port: process.env.MONGODB_PORT || 27017,
-  host: process.env.MONGODB_HOST || 'localhost',
-};
+config.mongodb = 'mongodb://localhost:27017/test';
 
 if (PRODUCTION) {
   config.express.ip = '0.0.0.0';
