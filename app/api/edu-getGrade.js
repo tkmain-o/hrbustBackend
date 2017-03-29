@@ -2,6 +2,7 @@ const SimulateLogin = require('./util/simulateLogin');
 const cheerio = require('cheerio');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
+const gradeData = require('./util/getTestData').gradeData;
 
 // 浏览器请求报文头部部分信息
 const browserMsg = {
@@ -58,6 +59,12 @@ function handleGrade(cookie, year, term) {
 }
 
 function getGrade(params) {
+  // 测试账号数据
+  if (params.username === '1234' && params.password === '1234') {
+    params.callback(gradeData);
+    return;
+  }
+
   const SimulateLoginParams = {
     username: params.username,
     password: params.password,
