@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./app/server.js | bistre",
+    "dev": "nodemon ./app/server.js | bistre",
+    "dev-spider": "nodemon ./app/spiderServer.js | bistre",
     "pro": "export NODE_ENV=production && pm2 start ./app/server.js --name='xy-hrbust' || pm2 restart ./app/server.js --name='xy-hrbust'",
     "spider": "pm2 start ./app/spiderServer.js || pm2 restart ./app/spiderServer.js",
     "lint": "eslint app/"
