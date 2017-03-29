@@ -4,10 +4,19 @@ const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
 
 // 浏览器请求报文头部部分信息
+const getRandomIp = () => {
+  const arr = [];
+  for (let i = 0; i < 4; i += 1) {
+    arr.push(Math.floor(Math.random() * 255));
+  }
+  return arr.join('.');
+};
+
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
   Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
+  'X-Forwarded-For': `${getRandomIp()}`,
 };
 
 function getStudentId(cookie, callback) {
