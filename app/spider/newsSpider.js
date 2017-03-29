@@ -53,13 +53,13 @@ function handleUpdateImage(dataList) {
     Promise.all(promiseList).then((values) => {
       const insertData = [];
       // 现将所有数据库中已存置顶删除
-      mongoUtils.update('News', { top: true }, { $set: { top: false } }).then(() => {
+      mongoUtils.update('News', { top: true }, { $set: { top: false }, $inc: { sortId: -9999999 } }).then(() => {
         values.forEach((item) => {
           if (item.handle === 'insert') {
             insertData.push(item.data);
-          } else {
+          } else if (item.data.top) {
             // 已存在文章被置顶的情况。
-            mongoUtils.update('News', { id: item.data.id }, { $set: { top: item.data.top } });
+            mongoUtils.update('News', { id: item.data.id }, { $set: { top: item.data.top }, $inc: { sortId: 9999999 } });
           }
         });
         // 如果数据长度大于零，插入数据库。
@@ -105,7 +105,7 @@ function newsSpider(maxId, page, list) {
           $('.articleList li').each((index, item) => {
             const href = $(item).find('a').attr('href');
             const title = $(item).find('a').text().replace(/\s/g, '');
-            const id = href.match(/articleId=(\S*)&/)[1];
+            const id = parseInt(href.match(/articleId=(\S*)&/)[1]);
             const imageName = `articleId_${id}.jpg`;
             const date = $(item).find('span').text();
             // 是否置顶
