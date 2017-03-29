@@ -1,6 +1,6 @@
 const moment = require('moment');
-const newsSpider = require('./newsSpider');
-// const jobSpider = require('./jobSpider');
+// const newsSpider = require('./newsSpider');
+const jobSpider = require('./jobSpider');
 const log = require('bole')('spider-main:');
 
 moment.locale('zh-cn');
@@ -14,29 +14,29 @@ const findMax = require('./mongoUtils').findMax;
 // Months: 0-11
 // Day of Week: 0-6
 
-function news() {
-  findMax('News', 'id').then((maxValue) => {
-    const max = maxValue || 2533;
-    log.info(max);
-    newsSpider(max).then(() => {
-      log.info('News finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
-    });
-  });
-}
-
-// function job() {
-//   findMax('Job', 'id').then((maxValue) => {
-//     const max = maxValue || 21592;
+// function news() {
+//   findMax('News', 'id').then((maxValue) => {
+//     const max = maxValue || 2533;
 //     log.info(max);
-//     jobSpider(max).then(() => {
-//       log.info('Job finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
+//     newsSpider(max).then(() => {
+//       log.info('News finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
 //     });
 //   });
 // }
 
+function job() {
+  findMax('Job', 'id').then((maxValue) => {
+    const max = maxValue || 21592;
+    log.info(max);
+    jobSpider(max).then(() => {
+      log.info('Job finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
+    });
+  });
+}
+
 function spider() {
   log.info('start at', moment().format('MMM Do YYYY, h:mm:ss'));
-  news();
+  job();
   // const newsCron = new CronJob({
   //   cronTime: '00 00 */10 * * *',
   //   onTick() {
