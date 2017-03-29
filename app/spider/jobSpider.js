@@ -105,6 +105,7 @@ function jobSpider(maxId, page, list) {
               id,
               date,
               imageName,
+              sortId: id,
             });
           });
           if (Math.min(...idList) > maxId) {
