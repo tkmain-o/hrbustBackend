@@ -22,7 +22,6 @@ const browserMsg = {
   'Content-Type': 'application/x-www-form-urlencoded',
   'X-Forwarded-For': `${getRandomIp()}`,
 };
-
 function checkMongoAndPushQiniu(item) {
   // 检查数据库中是否已存储文章信息
   // 如果数据库中没有，上传至七牛
