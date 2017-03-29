@@ -2,6 +2,4 @@
 *.log
 node_modules/
 
-app/api/cacheImages/*.jpg
-app/api/util/newsList.json
-app/api/util/jobList.json
+app/cacheImages/*.jpg
