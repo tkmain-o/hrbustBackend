@@ -5,6 +5,7 @@ const Job = new mongoose.Schema({
   title: { type: String, required: true },
   date: { type: String, required: true },
   imageName: { type: String, required: true },
+  sortId: { type: Number, unique: true, required: true, index: true },
 }, {
   timestamps: true,
 });
