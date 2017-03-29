@@ -1,6 +1,6 @@
 const phantom = require('phantom');
 const qiniu = require('node-qiniu');
-// const fs = require('fs');
+const fs = require('fs');
 const Thenjs = require('thenjs');
 const log = require('bole')('pushQiniuImage');
 
@@ -10,7 +10,7 @@ qiniu.config({
   secret_key: 'XzgLuAQHwIlciJMYjLj9bmt3Qdc3Q383S2NDY0ni',
 });
 
-// const imagesBucket = qiniu.bucket('hrbust');
+const imagesBucket = qiniu.bucket('hrbust');
 let phantomCount = 0;
 
 function pushQiniuImage(url, imageName) {
@@ -23,19 +23,16 @@ function pushQiniuImage(url, imageName) {
             page.open(url).then(() => {
               const path = `${__dirname}/../cacheImages/${imageName}`;
               page.render(path).then(() => {
-                phantomCount += 1;
-                log.info(`finised phantom count:${phantomCount}`);
-                resolve();
-                // imagesBucket.putFile(imageName, path, (err) => {
-                //   phantomCount += 1;
-                //   log.info(`finised phantom count:${phantomCount}`);
-                //   resolve(err);
-                //   try {
-                //     fs.unlinkSync(path);
-                //   } catch (error) {
-                //     log.error(error);
-                //   }
-                // });
+                imagesBucket.putFile(imageName, path, (err) => {
+                  phantomCount += 1;
+                  log.info(`finised phantom count:${phantomCount}`);
+                  resolve(err);
+                  try {
+                    fs.unlinkSync(path);
+                  } catch (error) {
+                    log.error(error);
+                  }
+                });
                 page.close();
                 ph.exit();
                 cont();
@@ -49,4 +46,4 @@ function pushQiniuImage(url, imageName) {
   return promise;
 }
 
-exports.pushQiniuImage = pushQiniuImage;
+module.exports = pushQiniuImage;
