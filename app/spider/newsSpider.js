@@ -129,17 +129,20 @@ function newsSpider(maxId, page, list) {
               sortId,
             });
           });
-
           if (idList.length === 0) {
             // 全是置顶文章，需要再加载下一页
-            newsSpider(maxId, pageNum + 1, dataList);
+            newsSpider(maxId, pageNum + 1, dataList).then(() => {
+              resolve();
+            });
           } else if (Math.min(...idList) > maxId) {
             /*
               当前页面的最后一篇文章的 id 比数据库中的小
               才能证明已经将所有文章更新完毕
               否则加载下一页
             */
-            newsSpider(maxId, pageNum + 1, dataList);
+            newsSpider(maxId, pageNum + 1, dataList).then(() => {
+              resolve();
+            });
           } else {
             // 抓取成功 处理数据库、七牛等。
             thenjsList = thenjsList.series([

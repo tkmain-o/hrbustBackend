@@ -69,9 +69,8 @@ function jobSpider(maxId, page, list) {
   let url = 'http://job.hrbust.edu.cn/Companys/List.aspx?zpXingshi=%E6%A0%A1%E5%9B%AD%E6%8B%9B%E8%81%98%E4%BC%9A';
   const dataList = list || [];
   const pageNum = page || 1;
-
   if (page) {
-    url = `${url}&pagingPage=${pageNum}`;
+    url = `${url}&pagenum=${pageNum}`;
   }
 
   const promise = new Promise((resolve) => {
@@ -114,7 +113,9 @@ function jobSpider(maxId, page, list) {
               才能证明已经将所有文章更新完毕
               否则加载下一页
             */
-            jobSpider(maxId, pageNum + 1, dataList);
+            jobSpider(maxId, pageNum + 1, dataList).then(() => {
+              resolve();
+            });
           } else {
             // 抓取成功 处理数据库、七牛等。
             thenjsList = thenjsList.series([
