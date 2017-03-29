@@ -120,7 +120,7 @@ class SimulateLogin {
             that.callback({ error });
           } else {
             const dataBuffer = new Buffer(response.body, 'base64');
-            const captchaPath = path.resolve(__dirname, `../cacheImages/${captchaCount}.jpg`);
+            const captchaPath = path.resolve(__dirname, `../../cacheImages/${captchaCount}.jpg`);
             console.warn(`captchaCount: ${captchaCount}`);
             captchaCount += 1;
             fs.writeFile(captchaPath, dataBuffer, (err) => {
