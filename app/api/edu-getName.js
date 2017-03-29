@@ -12,6 +12,14 @@ const browserMsg = {
 
 
 function getUserName(params) {
+  // 测试账号数据
+  if (params.username === '1234' && params.password === '1234') {
+    params.callback({
+      name: '[测试账号]权志龙(1205050150)',
+    });
+    return;
+  }
+
   const SimulateLoginParams = {
     username: params.username,
     password: params.password,
