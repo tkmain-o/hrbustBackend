@@ -2,23 +2,6 @@ const News = require('../models/news');
 const Job = require('../models/job');
 const log = require('bole')('mongo');
 
-// News.create({
-//   newId: 12123
-// }).then(() => {
-//   console.warn('ok');
-// }).catch((err) => {
-//   if (err.code === 11000) {
-//     console.warn('已经存在');
-//   }
-//   console.error(err);
-// });
-// News.findOne({ newId: 12123 }, (err, person) => {
-//   if (err) {
-//     log.info('err', err);
-//   } else {
-//     log.info('result', person);
-//   }
-// });
 const collectionList = {
   News,
   Job,

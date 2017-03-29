@@ -8,11 +8,21 @@ const pushQiniuImage = require('./pushQiniuImage');
 
 let thenjsList = Thenjs;
 // 浏览器请求报文头部部分信息
+const getRandomIp = () => {
+  const arr = [];
+  for (let i = 0; i < 4; i += 1) {
+    arr.push(Math.floor(Math.random() * 255));
+  }
+  return arr.join('.');
+};
+
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
   Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
+  'X-Forwarded-For': `${getRandomIp()}`,
 };
+
 function checkMongoAndPushQiniu(item) {
   // 检查数据库中是否已存储文章信息
   // 如果数据库中没有，上传至七牛
