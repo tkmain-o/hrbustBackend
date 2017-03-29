@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon ./app/server.js | bistre",
-    "pro": "export NODE_ENV=production && pm2 restart ./app/server.js --name='xy-hrbust'",
+    "pro": "export NODE_ENV=production && pm2 start ./app/server.js --name='xy-hrbust' || pm2 restart ./app/server.js --name='xy-hrbust'",
+    "spider": "pm2 start ./app/spiderServer.js || pm2 restart ./app/spiderServer.js",
     "lint": "eslint app/"
   },
   "pre-commit": [
@@ -18,13 +19,14 @@
     "body-parser": "^1.16.1",
     "bole": "^3.0.2",
     "cheerio": "^0.22.0",
+    "cron": "^1.2.1",
     "ejs": "^2.5.2",
     "express": "^4.14.0",
     "form-data": "^2.1.2",
     "iconv-lite": "^0.4.13",
+    "moment": "^2.18.1",
     "mongoose": "^4.9.2",
     "node-qiniu": "^6.2.0",
-    "node-schedule": "^1.2.1",
     "node-xlsx": "^0.7.4",
     "node-xml2json": "^1.0.0",
     "phantom": "^4.0.0",
