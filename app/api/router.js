@@ -100,7 +100,8 @@ function getWeek(req, res) {
 
 function getNews(req, res) {
   const page = req.query.page;
-  eduGetNews.getNews(page).then((result) => {
+  const num = req.query.num;
+  eduGetNews.getNews(page, num).then((result) => {
     handleRes(result, res);
   });
 }
@@ -114,7 +115,8 @@ function getCet(req, res) {
 
 function getJob(req, res) {
   const page = req.query.page;
-  eduGetJob.getJob(page).then((result) => {
+  const num = req.query.num;
+  eduGetJob.getJob(page, num).then((result) => {
     handleRes(result, res);
   });
 }
