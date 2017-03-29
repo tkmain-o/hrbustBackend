@@ -1,10 +1,10 @@
 const moment = require('moment');
 const newsSpider = require('./newsSpider');
-const jobSpider = require('./jobSpider');
+// const jobSpider = require('./jobSpider');
 const log = require('bole')('spider-main:');
 
 moment.locale('zh-cn');
-const CronJob = require('cron').CronJob;
+// const CronJob = require('cron').CronJob;
 const findMax = require('./mongoUtils').findMax;
 
 // Seconds: 0-59
@@ -24,40 +24,41 @@ function news() {
   });
 }
 
-function job() {
-  findMax('Job', 'id').then((maxValue) => {
-    const max = maxValue || 21592;
-    log.info(max);
-    jobSpider(max).then(() => {
-      log.info('Job finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
-    });
-  });
-}
+// function job() {
+//   findMax('Job', 'id').then((maxValue) => {
+//     const max = maxValue || 21592;
+//     log.info(max);
+//     jobSpider(max).then(() => {
+//       log.info('Job finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
+//     });
+//   });
+// }
 
 function spider() {
   log.info('start at', moment().format('MMM Do YYYY, h:mm:ss'));
-  const newsCron = new CronJob({
-    cronTime: '00 00 */10 * * *',
-    onTick() {
-      log.info('newsSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
-      news();
-    },
-    start: false,
-    timeZone: 'Asia/Shanghai',
-  });
-
-  const jobCron = new CronJob({
-    cronTime: '00 00 */3 * * *',
-    // cronTime: '*/20 * * * * *',
-    onTick() {
-      log.info('jobSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
-      job();
-    },
-    start: false,
-    timeZone: 'Asia/Shanghai',
-  });
-  newsCron.start();
-  jobCron.start();
+  news();
+  // const newsCron = new CronJob({
+  //   cronTime: '00 00 */10 * * *',
+  //   onTick() {
+  //     log.info('newsSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
+  //     news();
+  //   },
+  //   start: false,
+  //   timeZone: 'Asia/Shanghai',
+  // });
+  //
+  // const jobCron = new CronJob({
+  //   cronTime: '00 00 */3 * * *',
+  //   // cronTime: '*/20 * * * * *',
+  //   onTick() {
+  //     log.info('jobSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
+  //     job();
+  //   },
+  //   start: false,
+  //   timeZone: 'Asia/Shanghai',
+  // });
+  // newsCron.start();
+  // jobCron.start();
 }
 
 module.exports = spider;
