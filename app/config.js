@@ -7,7 +7,7 @@ config.express = {
   ip: '0.0.0.0',
 };
 
-config.mongodb = 'mongodb://localhost:27017/test';
+config.mongodb = 'mongodb://localhost:27017/hrbust';
 
 if (PRODUCTION) {
   config.express.ip = '0.0.0.0';
