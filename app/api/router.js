@@ -67,10 +67,13 @@ function getUserName(req, res) {
 }
 
 function getExam(req, res) {
+  const page = req.query.page;
   const getExamParmas = handleParams(req, (result) => {
     handleRes(result, res);
   });
-  eduGetExam.getExam(getExamParmas);
+  eduGetExam.getExam(Object.assign({}, getExamParmas, {
+    page,
+  }));
 }
 
 function getGrade(req, res) {
