@@ -59,4 +59,6 @@ function spider() {
   jobCron.start();
 }
 
-module.exports = spider;
+exports.spider = spider;
+exports.news = news;
+module.job = job;
