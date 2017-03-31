@@ -1,10 +1,10 @@
-const config = require('./config');
+const config = require('../config');
 const mongoose = require('mongoose');
 const bole = require('bole');
-const spider = require('./spider').spider;
+const news = require('./index').news;
 //
 bole.output({ level: 'debug', stream: process.stdout });
-const log = bole('server');
+const log = bole('onlyNews');
 mongoose.Promise = global.Promise;
 mongoose
   .connect(config.mongodb)
@@ -12,5 +12,5 @@ mongoose
   .on('error', log.error)
   .once('open', () => {
     // 启动爬虫
-    spider();
+    news();
   });
