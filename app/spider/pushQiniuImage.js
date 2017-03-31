@@ -22,21 +22,24 @@ function pushQiniuImage(url, imageName) {
             page.setting('userAgent', 'foo app');
             page.open(url).then(() => {
               const path = `${__dirname}/../cacheImages/${imageName}`;
-              page.render(path).then(() => {
-                imagesBucket.putFile(imageName, path, (err) => {
-                  phantomCount += 1;
-                  log.info(`finised phantom count:${phantomCount}`);
-                  resolve(err);
-                  try {
-                    fs.unlinkSync(path);
-                  } catch (error) {
-                    log.error(error);
-                  }
+              // 延迟处理，解决加载中文不全问题。
+              setTimeout(() => {
+                page.render(path).then(() => {
+                  imagesBucket.putFile(imageName, path, (err) => {
+                    phantomCount += 1;
+                    log.info(`finised phantom count:${phantomCount}`);
+                    resolve(err);
+                    try {
+                      fs.unlinkSync(path);
+                    } catch (error) {
+                      log.error(error);
+                    }
+                  });
+                  page.close();
+                  ph.exit();
+                  cont();
                 });
-                page.close();
-                ph.exit();
-                cont();
-              });
+              }, 300);
             });
           });
         });
