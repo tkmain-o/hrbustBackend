@@ -61,4 +61,4 @@ function spider() {
 
 exports.spider = spider;
 exports.news = news;
-module.job = job;
+exports.job = job;
