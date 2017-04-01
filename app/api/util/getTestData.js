@@ -1,3 +1,6 @@
+const moment = require('moment');
+moment.locale('zh-cn');
+
 const courseData = {
   "courseArrange": [
     [
@@ -418,59 +421,71 @@ const gradeData = {
   "cookie": "JSESSIONID=24C7BEC6295AB853F18EAE08D6C99BCB.LB01"
 }
 
-const examData = {
-  "data": [{
-    "examCourse": "计算机控制技术与系统",
-    "time": "2016-05-19 18:00--19:40",
-    "position": "西区 新教学楼 西-新F305",
-    "info": "正常考试"
-  }, {
-    "examCourse": "自动检测技术及仪表",
-    "time": "2016-05-10 15:20--17:00",
-    "position": "西区 新教学楼 西-新F303",
-    "info": "正常考试"
-  }, {
-    "examCourse": "毛、中、特概论-II",
-    "time": "2015-12-20 13:30--15:00",
-    "position": "西区 新教学楼 西-新A514",
-    "info": "正常考试"
-  }, {
-    "examCourse": "误差理论与数据处理",
-    "time": "2015-12-18 13:30--15:10",
-    "position": "西区 新教学楼 西-新B408",
-    "info": "正常考试"
-  }, {
-    "examCourse": "自动控制原理",
-    "time": "2015-12-16 13:30--15:10",
-    "position": "西区 新教学楼 西-新B502",
-    "info": "正常考试"
-  }, {
-    "examCourse": "传感技术",
-    "time": "2015-12-16 10:10--11:50",
-    "position": "西区 新教学楼 西-新B308",
-    "info": "正常考试"
-  }, {
-    "examCourse": "专业外语（测控）",
-    "time": "2015-12-15 10:10--11:50",
-    "position": "西区 新教学楼 西-新B502",
-    "info": "正常考试"
-  }, {
-    "examCourse": "单片机原理",
-    "time": "2015-12-14 10:10--11:50",
-    "position": "西区 新教学楼 西-新B312",
-    "info": "正常考试"
-  }, {
-    "examCourse": "Matlab",
-    "time": "2015-11-17 18:00--19:40",
-    "position": "西区 西区一号楼 计算中心机房西1-0604",
-    "info": "正常考试"
-  }, {
-    "examCourse": "微机原理",
-    "time": "2015-11-10 18:00--19:40",
-    "position": "西区 西区一号楼 计算中心机房西1-0604",
-    "info": "正常考试"
-  }]
-}
+function getExamData() {
+  const today = moment().add(2, 'hours').format('YYYY-MM-DD HH:mm');
+  const tomoorow = moment().add(1, 'days').format('YYYY-MM-DD HH:mm');
+
+  // console.log(moment("2015-12-20 13:30"));
+  // console.log(today);
+  // console.log(moment().add(2, 'hours'));
+  // console.log(time.add(1, 'days'));
+  // console.log(`-----${time < moment('2017-03-20')}----`);
+  const examData = {
+    "data": [{
+      "examCourse": "计算机控制技术与系统",
+      "time": `${tomoorow}--${moment().add(2, 'hours').format('HH:mm')}`,
+      "position": "西区 新教学楼 西-新F305",
+      "info": "正常考试"
+    }, {
+      "examCourse": "自动检测技术及仪表",
+      "time": `${today}--${moment().add(4, 'hours').format('HH:mm')}`,
+      "position": "西区 新教学楼 西-新F303",
+      "info": "重考"
+    }, {
+      "examCourse": "毛、中、特概论-II",
+      "time": "2015-12-20 13:30--15:00",
+      "position": "西区 新教学楼 西-新A514",
+      "info": "正常考试"
+    }, {
+      "examCourse": "误差理论与数据处理",
+      "time": "2015-12-18 13:30--15:10",
+      "position": "西区 新教学楼 西-新B408",
+      "info": "正常考试"
+    }, {
+      "examCourse": "自动控制原理",
+      "time": "2015-12-16 13:30--15:10",
+      "position": "西区 新教学楼 西-新B502",
+      "info": "重考"
+    }, {
+      "examCourse": "传感技术",
+      "time": "2015-12-16 10:10--11:50",
+      "position": "西区 新教学楼 西-新B308",
+      "info": "正常考试"
+    }, {
+      "examCourse": "专业外语（测控）",
+      "time": "2015-12-15 10:10--11:50",
+      "position": "西区 新教学楼 西-新B502",
+      "info": "正常考试"
+    }, {
+      "examCourse": "单片机原理",
+      "time": "2015-12-14 10:10--11:50",
+      "position": "西区 新教学楼 西-新B312",
+      "info": "正常考试"
+    }, {
+      "examCourse": "Matlab",
+      "time": "2015-11-17 18:00--19:40",
+      "position": "西区 西区一号楼 计算中心机房西1-0604",
+      "info": "正常考试"
+    }, {
+      "examCourse": "微机原理",
+      "time": "2015-11-10 18:00--19:40",
+      "position": "西区 西区一号楼 计算中心机房西1-0604",
+      "info": "正常考试"
+    }]
+  }
+  return examData;
+};
 
 exports.courseData = courseData;
 exports.gradeData = gradeData;
+exports.getExamData = getExamData;
