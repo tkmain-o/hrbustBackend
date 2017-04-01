@@ -2,7 +2,7 @@ const SimulateLogin = require('./util/simulateLogin');
 const cheerio = require('cheerio');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
-const examData = require('./util/getTestData').examData;
+const getExamData = require('./util/getTestData').getExamData;
 
 // 浏览器请求报文头部部分信息
 const browserMsg = {
@@ -57,7 +57,7 @@ function handleExam(cookie, page) {
 function getExam(params) {
   // 测试账号数据
   if (params.username === '1234' && params.password === '1234') {
-    params.callback(examData);
+    params.callback(getExamData());
     return;
   }
 
