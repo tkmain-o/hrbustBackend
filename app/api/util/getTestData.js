@@ -424,12 +424,6 @@ function getExamData() {
   moment().utcOffset(8);
   const today = moment().utcOffset(8).add(2, 'hours').format('YYYY-MM-DD HH:mm');
   const tomoorow = moment().utcOffset(8).add(1, 'days').format('YYYY-MM-DD HH:mm');
-
-  // console.log(moment("2015-12-20 13:30"));
-  // console.log(today);
-  // console.log(moment().add(2, 'hours'));
-  // console.log(time.add(1, 'days'));
-  // console.log(`-----${time < moment('2017-03-20')}----`);
   const examData = {
     "data": [{
       "examCourse": "计算机控制技术与系统",
