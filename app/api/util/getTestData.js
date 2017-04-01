@@ -1,6 +1,5 @@
 const moment = require('moment');
 moment.locale('zh-cn');
-
 const courseData = {
   "courseArrange": [
     [
@@ -422,6 +421,7 @@ const gradeData = {
 }
 
 function getExamData() {
+  moment().utcOffset(8);
   const today = moment().add(2, 'hours').format('YYYY-MM-DD HH:mm');
   const tomoorow = moment().add(1, 'days').format('YYYY-MM-DD HH:mm');
 
