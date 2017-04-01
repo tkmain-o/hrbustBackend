@@ -422,8 +422,8 @@ const gradeData = {
 
 function getExamData() {
   moment().utcOffset(8);
-  const today = moment().add(2, 'hours').format('YYYY-MM-DD HH:mm');
-  const tomoorow = moment().add(1, 'days').format('YYYY-MM-DD HH:mm');
+  const today = moment().utcOffset(8).add(2, 'hours').format('YYYY-MM-DD HH:mm');
+  const tomoorow = moment().utcOffset(8).add(1, 'days').format('YYYY-MM-DD HH:mm');
 
   // console.log(moment("2015-12-20 13:30"));
   // console.log(today);
@@ -433,12 +433,12 @@ function getExamData() {
   const examData = {
     "data": [{
       "examCourse": "计算机控制技术与系统",
-      "time": `${tomoorow}--${moment().add(2, 'hours').format('HH:mm')}`,
+      "time": `${tomoorow}--${moment().utcOffset(8).add(2, 'hours').format('HH:mm')}`,
       "position": "西区 新教学楼 西-新F305",
       "info": "正常考试"
     }, {
       "examCourse": "自动检测技术及仪表",
-      "time": `${today}--${moment().add(4, 'hours').format('HH:mm')}`,
+      "time": `${today}--${moment().utcOffset(8).add(4, 'hours').format('HH:mm')}`,
       "position": "西区 新教学楼 西-新F303",
       "info": "重考"
     }, {
