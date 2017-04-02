@@ -18,7 +18,10 @@ function news() {
   findMax('News', 'id').then((maxValue) => {
     const max = maxValue || 2533;
     log.info(max);
-    newsSpider(max).then(() => {
+    newsSpider(max).then((result) => {
+      if (result.error) {
+        news();
+      }
       log.info('News finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
     });
   });
