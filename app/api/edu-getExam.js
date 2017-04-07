@@ -32,7 +32,12 @@ function handleExam(cookie, page) {
           const datalist = $('.datalist').find('tr');
           const result = {};
           result.data = [];
-          // result.gradeTerm = $('option:selected').text().replace(/\s/g, '');
+
+          const allPageCount = $('.classicLookSummary').find('b').eq(2).text();
+          if (parseInt(page) > parseInt(allPageCount)) {
+            resolve(result);
+            return;
+          }
 
           datalist.each((index, item) => {
             if (index === 0) {
