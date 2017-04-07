@@ -62,7 +62,44 @@ function handlerGetCourse(getCourseUrl, cookie, callback) {
               let html = $(ele).html();
               html = html.replace(/(&lt;)|(&gt;)|(;.)/g, '');
               const arr = html.split('<br>');
-              course.push(arr);
+              const courseArrI = [];
+              for (let i1 = 0; i1 < (arr.length / 5); i1++) {
+                const courseItem = {};
+                courseItem.title = arr[0 + (i1 * 5)];
+                courseItem.position = arr[1 + (i1 * 5)];
+                courseItem.teacher = arr[2 + (i1 * 5)];
+                courseItem.messege = arr[4 + (i1 * 5)];
+
+                const week = arr[3 + (i1 * 5)];
+                courseItem.week = week;
+                courseItem.weekObj = {};
+                if (/第/.test(week)) {
+                  // 只有一周
+                  courseItem.weekObj.start = week.match(/第(\w*)周/) && parseInt(week.match(/第(\w*)周/)[1]);
+                  courseItem.weekObj.end = week.match(/第(\w*)周/) && parseInt(week.match(/第(\w*)周/)[1]);
+                } else if (/-/.test(week)) {
+                  // 单周
+                  if (/单周/.test(week)) {
+                    const weekH = week.replace(/单周/, '').split('-');
+                    courseItem.weekObj.start = parseInt(weekH[0]);
+                    courseItem.weekObj.end = parseInt(weekH[1]);
+                    courseItem.weekObj.parity = '单周';
+                  } else if (/双周/.test(week)) {
+                    // 双周
+                    const weekH = week.replace(/双周/, '').split('-');
+                    courseItem.weekObj.start = parseInt(weekH[0]);
+                    courseItem.weekObj.end = parseInt(weekH[1]);
+                    courseItem.weekObj.parity = '双周';
+                  } else {
+                    const weekH = week.replace(/周/, '').split('-');
+                    courseItem.weekObj.start = parseInt(weekH[0]);
+                    courseItem.weekObj.end = parseInt(weekH[1]);
+                  }
+                }
+                courseArrI.push(courseItem);
+              }
+
+              course.push(courseArrI);
             }
           });
           courseArrange.push(course);
