@@ -1,144 +1,212 @@
 const moment = require('moment');
 moment.locale('zh-cn');
+
 const courseData = {
   "courseArrange": [
     [
-      [
-        "创业基础",
-        "西-新B308",
-        "xx老师",
-        "3-13周",
-        "讲课学时"
-      ],
-      [
-        "电子技术-II",
-        "西-新F413",
-        "xx老师",
-        "1-16周",
-        "讲课学时"
-      ],
-      [
-        "英语（四）2",
-        "西-新A304",
-        "xx老师",
-        "1-16周",
-        "讲课学时"
-      ],
-      [
-        "信号与系统",
-        "西-新J405（一体机）",
-        "xx老师",
-        "1-15周",
-        "讲课学时"
-      ],
-      [
-        "多媒体技术及应用（公共）",
-        "西1-0711",
-        "xx老师",
-        "1-11周",
-        "讲课学时",
-        "多媒体技术及应用（公共）",
-        "西1-0801",
-        "xx老师",
-        "第11周",
-        "讲课学时"
-      ],
+      [{
+        "title": "工程流体力学",
+        "position": "西-新J501",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-15周",
+        "weekObj": {
+          "start": 1,
+          "end": 15
+        }
+      }],
+      [{
+        "title": "安全系统工程",
+        "position": "西-新J505（一体机）",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-17周",
+        "weekObj": {
+          "start": 1,
+          "end": 17
+        }
+      }],
+      [{
+        "title": "安全管理与安全监察",
+        "position": "西-新J501",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-17单周",
+        "weekObj": {
+          "start": 1,
+          "end": 17,
+          "parity": "单周"
+        }
+      }],
+      [{
+        "title": "材料力学（一）",
+        "position": "西-新J507",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-17周",
+        "weekObj": {
+          "start": 1,
+          "end": 17
+        }
+      }],
+      [{
+        "title": "汽车驾驶（任选）",
+        "position": "西1-0307",
+        "teacher": "汽车驾驶外聘教师（外聘）",
+        "messege": "讲课学时",
+        "week": "1-16周",
+        "weekObj": {
+          "start": 1,
+          "end": 16
+        }
+      }],
       null,
       null
     ],
     [
-      [
-        "工程光学",
-        "西-新F413",
-        "xx老师",
-        "1-16周",
-        "讲课学时"
-      ],
-      [
-        "计算方法",
-        "西-新J303",
-        "xx老师",
-        "1-16周",
-        "讲课学时"
-      ],
-      [
-        "可靠性工程",
-        "西-新J209",
-        "xx老师",
-        "1-16周",
-        "讲课学时"
-      ],
-      [
-        "创业基础",
-        "西-新B308",
-        "xx老师",
-        "2-13单周",
-        "讲课学时"
-      ],
+      [{
+        "title": "安全管理与安全监察",
+        "position": "西-新J501",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-17周",
+        "weekObj": {
+          "start": 1,
+          "end": 17
+        }
+      }],
+      [{
+        "title": "机械基础",
+        "position": "西-新J511（一体机）",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-17单周",
+        "weekObj": {
+          "start": 1,
+          "end": 17,
+          "parity": "单周"
+        }
+      }],
+      [{
+        "title": "安全工程CAD",
+        "position": "西-新J211",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-16周",
+        "weekObj": {
+          "start": 1,
+          "end": 16
+        }
+      }],
+      [{
+        "title": "机械基础",
+        "position": "西-新J511（一体机）",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-17周",
+        "weekObj": {
+          "start": 1,
+          "end": 17
+        }
+      }],
+      null, [{
+        "title": "材料力学（一）",
+        "position": "西-新J507",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "第3周",
+        "weekObj": {
+          "start": 3,
+          "end": 3
+        }
+      }],
+      null
+    ],
+    [
+      null, [{
+        "title": "材料力学（一）",
+        "position": "西-新J507",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-17周",
+        "weekObj": {
+          "start": 1,
+          "end": 17
+        }
+      }],
+      [{
+        "title": "电工与电子技术-II",
+        "position": "西-新J507",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-16周",
+        "weekObj": {
+          "start": 1,
+          "end": 16
+        }
+      }],
+      [{
+        "title": "工程流体力学",
+        "position": "西-新J501",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-14双周",
+        "weekObj": {
+          "start": 1,
+          "end": 14,
+          "parity": "双周"
+        }
+      }],
       null,
       null,
       null
     ],
     [
-      [
-        "英语（四）2",
-        "西1-1005",
-        "xx老师",
-        "1-16周",
-        "讲课学时"
-      ],
-      [
-        "体育（四）8",
-        "西区操场",
-        "xx老师",
-        "1-17周",
-        "讲课学时"
-      ],
-      [
-        "工程光学",
-        "西-新F411",
-        "xx老师",
-        "1-16周",
-        "讲课学时"
-      ],
-      null, [
-        "计算方法",
-        "西-新J303",
-        "xx老师",
-        "2-16双周",
-        "讲课学时",
-        "毛、中、特概论-I3",
-        "西-新J303",
-        "xx老师",
-        "1-13单周",
-        "讲课学时"
-      ],
-      null,
-      null
-    ],
-    [
-      [
-        "毛、中、特概论-I3",
-        "西-新J303",
-        "xx老师",
-        "1-14周",
-        "讲课学时"
-      ],
-      [
-        "信号与系统",
-        "西-新J405（一体机）",
-        "xx老师",
-        "1-15单周",
-        "讲课学时"
-      ],
-      null, [
-        "电子技术-II",
-        "西-新F413",
-        "xx老师",
-        "1-16周",
-        "讲课学时"
-      ],
-      null,
+      null, [{
+        "title": "毛中特概论",
+        "position": "西-新J409",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-15周",
+        "weekObj": {
+          "start": 1,
+          "end": 15
+        }
+      }],
+      [{
+        "title": "体育-Ⅳ5",
+        "position": "西区操场",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-8周",
+        "weekObj": {
+          "start": 1,
+          "end": 8
+        }
+      }],
+      [{
+        "title": "毛中特概论",
+        "position": "西-新J409",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-15周",
+        "weekObj": {
+          "start": 1,
+          "end": 15
+        }
+      }],
+      [{
+        "title": "电工与电子技术-II",
+        "position": "西-新J507",
+        "teacher": "xx老师",
+        "messege": "讲课学时",
+        "week": "1-15单周",
+        "weekObj": {
+          "start": 1,
+          "end": 15,
+          "parity": "单周"
+        }
+      }],
       null,
       null
     ],
@@ -146,13 +214,8 @@ const courseData = {
       null,
       null,
       null,
-      null, [
-        "毛、中、特概论-I3",
-        "西-新J303",
-        "xx老师",
-        "第12周",
-        "讲课学时"
-      ],
+      null,
+      null,
       null,
       null
     ]
@@ -169,39 +232,17 @@ const courseData = {
       "上课地点"
     ],
     [
-      "0501G02W4",
-      "课程设计（工程光学）",
-      "4",
-      "xx老师",
-      "测控13-4",
-      "第18周",
-      "",
-      ""
-    ],
-    [
-      "1900G02W4",
-      "电工电子实习（1周）",
-      "5",
-      "xx老师",
-      "测控13-4",
-      "第2周",
-      "",
-      ""
-    ],
-    [
-      "1901G42W4",
-      "课程设计（数电）",
-      "7",
-      "xx老师",
-      "测控13-4",
-      "第20周",
+      "050215SI02W4",
+      "课程设计（安全）",
+      "1",
+      "郭抗抗",
+      "安全15-1,安全15-2",
+      "18-19周",
       "",
       ""
     ]
   ],
-  "cookie": "JSESSIONID=24C7BEC6295AB853F18EAE08D6C99BCB.LB01"
-};
-
+}
 
 const gradeData = {
   "data": [
@@ -480,6 +521,20 @@ function getExamData() {
   return examData;
 };
 
+cetData = {
+  "data": [{
+    "name": "李大勇",
+    "school": "哈尔滨理工大学",
+    "type": "英语六级",
+    "id": "1234",
+    "total": "632",
+    "listen": "281",
+    "reading": "221",
+    "writing": "130"
+  }]
+}
+
 exports.courseData = courseData;
 exports.gradeData = gradeData;
 exports.getExamData = getExamData;
+exports.cetData = cetData;
