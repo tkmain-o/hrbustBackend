@@ -2,6 +2,7 @@ const xlsx = require('node-xlsx');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
 const cheerio = require('cheerio');
+const cetData = require('./util/getTestData').cetData;
 
 const excelName = '2016n.xls';
 const list = xlsx.parse(`${__dirname}/util/${excelName}`);
@@ -40,10 +41,15 @@ const options = {
   },
 };
 function getCet(username) {
-  const mes = check(username);
-  const param = `zkzh=${mes.id}&xm=${mes.name}`;
-  const url = `http://www.chsi.com.cn/cet/query?${encodeURI(param)}`;
   const promise = new Promise((resolve) => {
+    // 测试账号数据
+    if (username === '1234') {
+      resolve(cetData);
+      return;
+    }
+    const mes = check(username);
+    const param = `zkzh=${mes.id}&xm=${mes.name}`;
+    const url = `http://www.chsi.com.cn/cet/query?${encodeURI(param)}`;
     superagent
       .get(url)
       .charset()
