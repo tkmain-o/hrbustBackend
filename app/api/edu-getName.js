@@ -15,7 +15,7 @@ function getUserName(params) {
   // 测试账号数据
   if (params.username === '1234' && params.password === '1234') {
     params.callback({
-      name: '大一第一次四级就考了理工最高分————胡雨珊',
+      name: '四级全校第一名胡雨珊(大一第一次参加)',
     });
     return;
   }
