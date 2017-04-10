@@ -521,31 +521,31 @@ function getExamData() {
   return examData;
 };
 
-// cetData = {
-//   "data": [{
-//     "name": "李大勇",
-//     "school": "哈尔滨理工大学",
-//     "type": "英语六级",
-//     "id": "1234",
-//     "total": "632",
-//     "listen": "281",
-//     "reading": "221",
-//     "writing": "130"
-//   }]
-// }
-
 cetData = {
   "data": [{
-    "name": "胡雨珊",
+    "name": "李大勇",
     "school": "哈尔滨理工大学",
-    "type": "英语四级",
+    "type": "英语六级",
     "id": "1234",
-    "total": "634",
-    "listen": "233",
-    "reading": "213",
-    "writing": "188"
+    "total": "632",
+    "listen": "281",
+    "reading": "221",
+    "writing": "130"
   }]
 }
+
+// cetData = {
+//   "data": [{
+//     "name": "胡雨珊",
+//     "school": "哈尔滨理工大学",
+//     "type": "英语四级",
+//     "id": "1234",
+//     "total": "634",
+//     "listen": "233",
+//     "reading": "213",
+//     "writing": "188"
+//   }]
+// }
 
 exports.courseData = courseData;
 exports.gradeData = gradeData;
