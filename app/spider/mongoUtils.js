@@ -1,10 +1,12 @@
 const News = require('../models/news');
 const Job = require('../models/job');
+const StudentInfos = require('../models/studentInfos');
 const log = require('bole')('mongo');
 
 const collectionList = {
   News,
   Job,
+  StudentInfos,
 };
 
 function isExisted(collection, query) {
