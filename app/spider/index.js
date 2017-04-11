@@ -17,10 +17,11 @@ const findMax = require('./mongoUtils').findMax;
 function news() {
   findMax('News', 'id').then((maxValue) => {
     const max = maxValue || 2533;
-    log.info(max);
+    log.info(`max: ${max}`);
     newsSpider(max).then((result) => {
-      if (result.error) {
+      if (result && result.error) {
         news();
+        return;
       }
       log.info('News finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
     });
@@ -30,8 +31,12 @@ function news() {
 function job() {
   findMax('Job', 'id').then((maxValue) => {
     const max = maxValue || 21592;
-    log.info(max);
-    jobSpider(max).then(() => {
+    log.info(`max: ${max}`);
+    jobSpider(max).then((result) => {
+      if (result && result.error) {
+        job();
+        return;
+      }
       log.info('Job finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
     });
   });
@@ -40,7 +45,7 @@ function job() {
 function spider() {
   log.info('start at', moment().format('MMM Do YYYY, h:mm:ss'));
   const newsCron = new CronJob({
-    cronTime: '00 00 */10 * * *',
+    cronTime: '00 30 */4 * * *',
     onTick() {
       log.info('newsSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
       news();
