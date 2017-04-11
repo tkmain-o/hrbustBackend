@@ -15,6 +15,10 @@ const superagent = charset(require('superagent'));
 const getCaptcha = require('./captcha.js');
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment');
+const mongoUtils = require('../../spider/mongoUtils');
+
+moment.locale('zh-cn');
 
 const url = {
   login_url: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp',
@@ -155,11 +159,14 @@ class SimulateLogin {
       .end((err, response) => {
         const location = response.headers.location;
         if (location === url.index || location === url.index_new) {
-          console.warn('all is good');
+          console.warn('all good');
+
           that.callback({
             cookie: that.cookie,
             thisWeek: that.thisWeek,
           });
+          // save student infomation to mongo
+          that.updateMongo();
         } else {
           // handler error
           that.handlerError().then((errorText) => {
@@ -173,6 +180,31 @@ class SimulateLogin {
             }
           });
         }
+      });
+  }
+
+  updateMongo() {
+    const that = this;
+    superagent
+      .get('http://jwzx.hrbust.edu.cn/academic/showHeader.do')
+      .charset()
+      .set(browserMsg)
+      .set('Cookie', that.cookie)
+      .redirects(0)
+      .end((error, response) => {
+        let name = '';
+        if (!error) {
+          const body = response.text;
+          const $ = cheerio.load(body);
+          name = $('#greeting span').text().split('(')[0];
+        }
+        mongoUtils.isExisted('StudentInfos', { id: that.username }).then((isExisted) => {
+          if (isExisted) {
+            mongoUtils.update('StudentInfos', { id: that.username }, { $inc: { count: 1 }, $set: { date: moment().format() } });
+          } else {
+            mongoUtils.insert('StudentInfos', { id: that.username, date: moment().format(), count: 1, name });
+          }
+        });
       });
   }
 
