@@ -93,12 +93,13 @@ function library(keyValue, page) {
             result.data = data.map((item, index) => {
               let book = values[1][index].book;
               book = Array.isArray(book) ? book : [book];
+              const num = book.length - 1;
               return Object.assign({}, item, {
                 image: values[0][index],
-                loandatanum: book[0].loandatanum,
-                loannum: book[0].loannum,
-                hldcount: book[0].hldcount,
-                hldallnum: book[0].hldallnum,
+                loandatanum: book[num].loandatanum,
+                loannum: book[num].loannum,
+                hldcount: book[num].hldcount,
+                hldallnum: book[num].hldallnum,
                 book,
               });
             });
