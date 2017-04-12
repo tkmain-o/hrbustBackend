@@ -15,7 +15,7 @@ function getUserName(params) {
   // 测试账号数据
   if (params.username === '1234' && params.password === '1234') {
     params.callback({
-      name: '[测试账号]李大勇(1234)',
+      name: '理工喵(1234)',
     });
     return;
   }
