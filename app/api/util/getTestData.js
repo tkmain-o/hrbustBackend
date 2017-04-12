@@ -523,7 +523,7 @@ function getExamData() {
 
 cetData = {
   "data": [{
-    "name": "李大勇",
+    "name": "理工喵",
     "school": "哈尔滨理工大学",
     "type": "英语六级",
     "id": "1234",

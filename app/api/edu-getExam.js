@@ -62,7 +62,13 @@ function handleExam(cookie, page) {
 function getExam(params) {
   // 测试账号数据
   if (params.username === '1234' && params.password === '1234') {
-    params.callback(getExamData());
+    if (params.page > 1) {
+      params.callback({
+        data: [],
+      });
+    } else {
+      params.callback(getExamData());
+    }
     return;
   }
 
