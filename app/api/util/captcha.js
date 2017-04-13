@@ -8,6 +8,8 @@ const spiKeys = [
   // '7a035b90a8142c343eq9CThVaZK2nbB9kYb1LrOeCxqtH0wl7upz8Hk8pii90sXv6e1kd6qHQ9',
   // 'd5318ae3ade8ffa46fU4NyBvRaaIset9DRkTtw0N5ABttC0pL2nT53PNjjAkOciTpkgHd2bbEJbA',
   '51ef8dc7b3b0b5be53qUWQPIpynwaRCZb2MxvzUXqlsPQYPtbp0CG0Df55dh9vp5BScpESjJcH',
+  'def1e763f8ebc690cbubfgyKfTjB0MI1egCtrNt4hJNBlxyCRy1bptAc65x1VhI0dCcwTL',
+  '0a09ebda8a9d33849hELjXXWv04pnNXwF3DrxD2UYroeApaOBctTnW',
 ];
 function getCaptcha(filePath) {
   if (count >= spiKeys.length - 1) {
