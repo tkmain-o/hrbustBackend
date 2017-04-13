@@ -19,7 +19,11 @@ function getCaptcha(filePath) {
         });
       }
       let bodyObj = {};
-      bodyObj = xml2json.parser(body).results.resultlist;
+      try {
+        bodyObj = xml2json.parser(body).results.resultlist;
+      } catch (e) {
+        console.error(e);
+      }
       resolve(bodyObj);
     });
   });
