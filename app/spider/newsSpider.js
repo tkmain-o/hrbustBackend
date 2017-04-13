@@ -87,7 +87,7 @@ function handleUpdateImage(dataList) {
 }
 
 function newsSpider(maxId, page, list) {
-  let url = 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354&pagingNumberPer=4';
+  let url = 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354';
 
   const dataList = list || [];
   const pageNum = page || 1;
