@@ -10,6 +10,9 @@ const spiKeys = [
   '51ef8dc7b3b0b5be53qUWQPIpynwaRCZb2MxvzUXqlsPQYPtbp0CG0Df55dh9vp5BScpESjJcH',
   'def1e763f8ebc690cbubfgyKfTjB0MI1egCtrNt4hJNBlxyCRy1bptAc65x1VhI0dCcwTL',
   '0a09ebda8a9d33849hELjXXWv04pnNXwF3DrxD2UYroeApaOBctTnW',
+  '0a0187c0bb9dbf55b5X0tBQ2zwn5ZzjPg90NYY4HHU5dby220pM2DfIlX8ECUr2KX5vjvWmwhE9tE',
+  '51703569bc83ba3a76qKDwSqIlK5zxFHE1ilHfhOPxhM2qpoYGLYWEQYYxBo578t2aylwHc7g',
+  '6f1778d580e8ef5888Tfr6gHNXq4dUK3j8R2o1QvKM81CLso5bSrKriarRJMAnetMxi86h',
 ];
 function getCaptcha(filePath) {
   if (count >= spiKeys.length - 1) {
