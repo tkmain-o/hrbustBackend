@@ -106,6 +106,12 @@ class SimulateLogin {
         that.cookie = response.headers['set-cookie'][0].split(';')[0];
         console.warn(that.cookie);
         that.handlerCaptcha().then((captchaText) => {
+          if (captchaText.error) {
+            that.callback({
+              error: captchaText.error,
+            });
+            return;
+          }
           that.handlerLogin(captchaText);
         });
       });
@@ -130,6 +136,13 @@ class SimulateLogin {
             fs.writeFile(captchaPath, dataBuffer, (err) => {
               if (err) throw err;
               getCaptcha(captchaPath).then((result) => {
+                if (result.error) {
+                  fs.unlinkSync(captchaPath);
+                  resolve({
+                    error: result.error,
+                  });
+                  return;
+                }
                 let text = '';
                 if (!result.error) {
                   text = result && result.item ? result.item.result : '';
@@ -172,7 +185,14 @@ class SimulateLogin {
           that.handlerError().then((errorText) => {
             if (errorText.match(/验证码/)) {
               // handler captcha again, then handler login again
+              console.error(`验证码错误：${errorText}`);
               that.handlerCaptcha().then((captchaText) => {
+                if (captchaText.error) {
+                  that.callback({
+                    error: captchaText.error,
+                  });
+                  return;
+                }
                 that.handlerLogin(captchaText);
               });
             } else {
