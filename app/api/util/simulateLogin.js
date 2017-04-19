@@ -117,7 +117,7 @@ class SimulateLogin {
       });
   }
 
-  handlerCaptcha() {
+  captcha(callback) {
     const that = this;
     const promise = new Promise((resolve) => {
       superagent
@@ -136,8 +136,8 @@ class SimulateLogin {
             fs.writeFile(captchaPath, dataBuffer, (err) => {
               if (err) throw err;
               getCaptcha(captchaPath).then((result) => {
+                fs.unlinkSync(captchaPath);
                 if (result.error) {
-                  fs.unlinkSync(captchaPath);
                   resolve({
                     error: result.error,
                   });
@@ -145,14 +145,29 @@ class SimulateLogin {
                 }
                 let text = '';
                 if (!result.error) {
-                  text = result && result.item ? result.item.result : '';
+                  // text = result && result.item ? result.item.result : '';
+                  text = result && result.text ? result.text : '';
                 }
-                fs.unlinkSync(captchaPath);
-                resolve(text);
+                if (!result.text || result.predictable === 'False') {
+                  // 识别错误重新识别
+                  that.captcha(callback);
+                  return;
+                }
+                callback(text);
               });
             });
           }
         });
+    });
+    return promise;
+  }
+
+  handlerCaptcha() {
+    const that = this;
+    const promise = new Promise((resolve) => {
+      that.captcha((text) => {
+        resolve(text);
+      });
     });
     return promise;
   }
@@ -187,9 +202,9 @@ class SimulateLogin {
               // handler captcha again, then handler login again
               console.error(`验证码错误：${errorText}`);
               that.handlerCaptcha().then((captchaText) => {
-                if (captchaText.error) {
+                if (!captchaText || captchaText.error) {
                   that.callback({
-                    error: captchaText.error,
+                    error: captchaText.error || 'empty',
                   });
                   return;
                 }
