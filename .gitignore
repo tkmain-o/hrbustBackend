@@ -3,3 +3,7 @@
 node_modules/
 
 app/cacheImages/*.jpg
+
+python/image
+python/test_sample
+python/__pycache__/

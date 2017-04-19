@@ -15,15 +15,15 @@ from PIL import Image, ImageOps
 
 # Set CNN layers
 network = input_data([None, 10, 13, 1], name='input')
-network = conv_2d(network, 13, 3, activation='relu', regularizer="L2")
+network = conv_2d(network, 16, 3, activation='relu', regularizer="L2")
 network = max_pool_2d(network, 2)
 network = local_response_normalization(network)
-network = conv_2d(network, 26, 3, activation='relu', regularizer="L2")
+network = conv_2d(network, 32, 3, activation='relu', regularizer="L2")
 network = max_pool_2d(network, 2)
 network = local_response_normalization(network)
-network = fully_connected(network, 52, activation='tanh')
+network = fully_connected(network, 64, activation='tanh')
 network = dropout(network, 0.8)
-network = fully_connected(network, 104, activation='tanh')
+network = fully_connected(network, 128, activation='tanh')
 network = dropout(network, 0.8)
 network = fully_connected(network, 10, activation='softmax')
 network = regression(network, optimizer='adam', learning_rate=0.01, loss='categorical_crossentropy', name='target')
@@ -32,7 +32,7 @@ network = regression(network, optimizer='adam', learning_rate=0.01, loss='catego
 # model = tflearn.DNN(network, tensorboard_verbose=0, checkpoint_path='convnet-mnist.tfl.ckpt')
 # model.load("convnet-mnist.tfl")
 model = tflearn.DNN(network, tensorboard_verbose=0, checkpoint_path='convimg_13.tfl.ckpt')
-model.load("convimg_13_v2.tfl")
+model.load("convimg_13_v5.tfl")
 
 def pre_process(image_path):
     """
@@ -65,18 +65,18 @@ def make_prediction(image_path):
     # Make prediction of the image
     # prediction = model.predict([img])
     prediction = model.predict([img_arr])
-    print(prediction[0])
-    print(np.argmax(prediction[0]))
+    # print(prediction[0])
+    # print(np.argmax(prediction[0]))
     return np.argmax(prediction[0])
 
 def picture_prediction(digits_list):
     prediction = model.predict(digits_list)
     # print(prediction)
-    digits = 0
+    digits = ''
     for digit_prob in prediction:
-        digits *= 10
         curr_digit = np.argmax(digit_prob)
-        digits += curr_digit
+        # print(curr_digit)
+        digits += str(curr_digit)
     return digits
 
 # image = Image.open(args.image).convert('L')
