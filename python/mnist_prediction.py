@@ -14,7 +14,7 @@ from PIL import Image, ImageOps
 # args = parser.parse_args()
 
 # Set CNN layers
-network = input_data([None, 10, 13, 1], name='input')
+network = input_data([None, 13, 10, 1], name='input')
 network = conv_2d(network, 16, 3, activation='relu', regularizer="L2")
 network = max_pool_2d(network, 2)
 network = local_response_normalization(network)
@@ -31,8 +31,8 @@ network = regression(network, optimizer='adam', learning_rate=0.01, loss='catego
 # Load Model
 # model = tflearn.DNN(network, tensorboard_verbose=0, checkpoint_path='convnet-mnist.tfl.ckpt')
 # model.load("convnet-mnist.tfl")
-model = tflearn.DNN(network, tensorboard_verbose=0, checkpoint_path='convimg_13.tfl.ckpt')
-model.load("convimg_13_v5.tfl")
+model = tflearn.DNN(network, tensorboard_verbose=0)
+model.load("convimg_13_v8.tfl")
 
 def pre_process(image_path):
     """
@@ -60,7 +60,7 @@ def make_prediction(image_path):
     image = image.resize((10, 13), Image.ANTIALIAS)
     img_arr = np.array(image).astype(np.float32)
     img_arr = np.multiply(img_arr, 1.0 / 255.0)
-    img_arr = img_arr.reshape(10, 13, 1)
+    img_arr = img_arr.reshape(13, 10, 1)
 
     # Make prediction of the image
     # prediction = model.predict([img])

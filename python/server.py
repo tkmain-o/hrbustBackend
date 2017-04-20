@@ -53,35 +53,37 @@ class S(BaseHTTPRequestHandler):
     def do_GET(self):
         self._set_headers()
         # params = parse_qs(self.path["QUERY_STRING"])
-        print(parse_header(self.path))
+        #print(parse_header(self.path))
         header = parse_header(self.path)[0]
-        print(header)
+        #print(header)
         header = header[2:]
         params = parse_qs(header)
-        print(params)
-        if(len(params) is 0):
-            print("gun")
-        else:
-            file_path = params['name'][0]
-            print("file path: ", file_path)
-            ret = ifi.picture_loader(file_path)
-            digits = ""
-            if (len(ret[0]) is 0):
-                print ("unpredictable")
-            # timeout = int(params['time'][0])
-            # print(name, timeout)
-            # te = test.Test(name, timeout)
-            # te.t()
+        #print(params)
+        # if(len(params) is 0):
+            #print("gun")
+        # else:
+        file_path = params['name'][0]
+        # print("file path: ", file_path)
+        ret = ifi.picture_loader(file_path)
+        digits = ""
+        # if (len(ret[0]) is 0):
+        #     print ("unpredictable")
+        # timeout = int(params['time'][0])
+        # print(name, timeout)
+        # te = test.Test(name, timeout)
+        # te.t()
+        # print(data)
+        # else:
+        # digits = mp.picture_prediction(ret[0])
+        if ret[1]:
+            digits = mp.picture_prediction(ret[0])
+
+        data = {
+                'digits': str.encode(str(digits)),
+                'predictable': ret[1]
+        }
+
             # print(data)
-            else:
-                digits = mp.picture_prediction(ret[0])
-
-            data = {
-                    'digits': str.encode(str(digits)),
-                    'predictable': ret[1]
-            }
-
-            print(data)
         xml = '<?xml version="1.0" encoding="UTF-8"?>' + "<note>" + "<digits>" + str(digits) + "</digits>" + "<predictable>" + str(ret[1]) + "</predictable>" + "</note>"
         # print(header)
         # print(params)

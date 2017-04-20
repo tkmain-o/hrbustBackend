@@ -144,17 +144,17 @@ def corrode(img):
             #print('haha')
     return img_cp
 
-def text_to_strings(str):
-    rep = {
-        'O': '0',
-        'R': '2',
-        'D': '0',
-
-    }
-    str = str.upper()
-    for r in rep:
-        str = str.replace(r, rep[r])
-    return str
+# def text_to_strings(str):
+#     rep = {
+#         'O': '0',
+#         'R': '2',
+#         'D': '0',
+#
+#     }
+#     str = str.upper()
+#     for r in rep:
+#         str = str.replace(r, rep[r])
+#     return str
 
 def training_data_loader(folder_path):
     i = 1
@@ -173,7 +173,7 @@ def training_data_loader(folder_path):
         img_arr = np.array(img)
         img_arr = binarization(img_arr)
         img_arr = np.multiply(img_arr, 1.0 / 255.0)
-        img_arr = img_arr.reshape((10, 13, 1))
+        img_arr = img_arr.reshape((13, 10, 1))
         label = np.zeros(10)
         label[cur_label] = 1
         list_of_samples.append(img_arr)
@@ -226,7 +226,8 @@ def picture_cut_off(img_ori):
 
         if value == 0:
             digit, can_be_split = generalize_digit(img_ori.T, (x,y), x)
-            # img = Image.fromarray(img_ori.T)
+            # print(digit.shape, can_be_split)
+            # img = Image.fromarray(digit)
             # img.show()
             if not can_be_split:
                 return digits, False
@@ -234,12 +235,14 @@ def picture_cut_off(img_ori):
             img_new = Image.fromarray(digit).convert('L')
             img_new = img_new.resize((10, 13), Image.ANTIALIAS)
             img_arr = np.array(img_new).astype(np.float32)
+            img_arr = binarization(img_arr)
             # print(img_arr.shape)
-            img_arr = np.multiply(img_arr, 1.0 / 255.0)
-            img_arr = img_arr.reshape(10, 13, 1)
-            digits.append(img_arr)
-            # img = Image.fromarray(digit)
+            # img = Image.fromarray(img_arr)
             # img.show()
+            img_arr = np.multiply(img_arr, 1.0 / 255.0)
+            img_arr = img_arr.reshape(13, 10, 1)
+            digits.append(img_arr)
+
 
     return digits, True
         # if x != cur_x:
@@ -265,8 +268,9 @@ def generalize_digit(img_ori, position, start_col):
         img_ori[cur_x][cur_y] = 255
         (new_x, new_y) = (cur_x - start_col, cur_y)
         img_cp[new_x][new_y] = 0
-        if width < new_x:
-            width = new_x
+        if width < new_x + 1:
+            width = new_x + 1
+            # print(width)
             if width > 9:
                 return img_cp, False
         for move in moves:
@@ -281,7 +285,7 @@ def out_of_bound(position, bound_x, bound_y):
     return position[0] < 0 or position[0] > bound_x or position[1] < 0 or position[1] > bound_y
 
 
-# picture_loader('images/14.jpg')
+# picture_loader('images/55.jpg')
 
 #picture_loader('images/4.jpg')
 # img = Image.open('images/49.jpg').convert('L')

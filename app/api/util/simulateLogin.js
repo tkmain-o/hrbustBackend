@@ -136,7 +136,7 @@ class SimulateLogin {
             fs.writeFile(captchaPath, dataBuffer, (err) => {
               if (err) throw err;
               getCaptcha(captchaPath).then((result) => {
-                fs.unlinkSync(captchaPath);
+                // fs.unlinkSync(captchaPath);
                 if (result.error) {
                   resolve({
                     error: result.error,
