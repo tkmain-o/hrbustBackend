@@ -23,10 +23,10 @@ function getCaptcha(filePath) {
   // }
   const promise = new Promise((resolve) => {
     request(`http://localhost:8000/?name=${filePath}`, (error, response, body) => {
-      const bodyObj = xml2json.parser(body);
       let text = '';
       let predictable = 'False';
       try {
+        const bodyObj = xml2json.parser(body);
         text = bodyObj.note.digits;
         predictable = bodyObj.note.predictable;
       } catch (e) {
