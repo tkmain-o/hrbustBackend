@@ -11,5 +11,5 @@ config.mongodb = 'mongodb://localhost:27017/hrbust';
 
 if (PRODUCTION) {
   config.express.ip = '0.0.0.0';
-  config.mongodb = 'mongodb://107.170.52.153:27017/hrbust';
+  config.mongodb = 'mongodb://127.0.0.1:27017/hrbust';
 }

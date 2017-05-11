@@ -1,1 +1,4 @@
 app/api/util/getTestData.js
+app/api/util/WXBizDataCrypt.js
+app/spider/
+app/api
