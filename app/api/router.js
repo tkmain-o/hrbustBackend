@@ -8,6 +8,7 @@ const eduGetCourse = require('./edu-getCourse');
 const eduGetName = require('./edu-getName');
 const eduGetExam = require('./edu-getExam');
 const eduGetGrade = require('./edu-getGrade');
+// const eduAutoCheck = require('./edu-autocheck');
 const eduGetWeek = require('./edu-getWeek');
 const eduGetNews = require('./edu-getNews');
 const eduGetCet = require('./edu-getCet');
@@ -91,7 +92,7 @@ function getGrade(req, res) {
       handleRes(result, res);
     },
   };
-
+  // eduAutoCheck.autocheck(getGradeParmas);
   eduGetGrade.getGrade(getGradeParmas);
 }
 

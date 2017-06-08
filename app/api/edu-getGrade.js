@@ -32,12 +32,12 @@ function handleGrade(cookie, year, term) {
           });
         } else {
           const body = response.text;
+          console.warn(body);
           const $ = cheerio.load(body);
           const datalist = $('.datalist').find('tr');
           const result = {};
           result.data = [];
           result.gradeTerm = $('option:selected').text().replace(/\s/g, '');
-
           datalist.each((index, item) => {
             if (index === 0) {
               return;
