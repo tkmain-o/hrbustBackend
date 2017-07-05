@@ -3,6 +3,7 @@ const express = require('express');
 // const router = express.Router();
 const app = express();
 const bodyParser = require('body-parser');
+const path = require('path');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -21,6 +22,10 @@ app.all('*', (req, res, next) => {
 
 // page
 app.use(require('./site/router'));
+
+app.use('/.well-know*', (req, res) => {
+  res.sendFile(path.resolve(`.${req.originalUrl}`));
+});
 // education information api
 app.use('/api', require('./api/router'));
 
