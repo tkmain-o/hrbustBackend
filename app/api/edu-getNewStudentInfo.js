@@ -12,6 +12,9 @@ const infos = list[0].data.reduce((obj, info) => {
   return obj;
 }, {});
 function getNewStudentInfo(req, res) {
+  console.warn('查询新生信息-------');
+  console.warn(req.query.name);
+  console.warn('查询新生信息-------end');
   res.send({
     status: 200,
     data: infos[req.query.name] || {},
