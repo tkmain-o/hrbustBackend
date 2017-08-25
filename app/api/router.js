@@ -13,7 +13,7 @@ const eduGetNews = require('./edu-getNews');
 const eduGetCet = require('./edu-getCet');
 const eduGetJob = require('./edu-getJob');
 const library = require('./edu-library');
-
+const getNewStudentInfo = require('./edu-getNewStudentInfo');
 
 function handleParams(req, callback) {
   const username = req.query.username;
@@ -147,5 +147,7 @@ router.get('/getNews', getNews);
 router.get('/getCet', getCet);
 router.get('/getJob', getJob);
 router.get('/library', libraryRouter);
+
+router.get('/new_student_info', getNewStudentInfo);
 
 module.exports = router;
