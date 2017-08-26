@@ -25,10 +25,12 @@
     "cron": "^1.2.1",
     "ejs": "^2.5.2",
     "express": "^4.14.0",
+    "express-fileupload": "^0.1.4",
     "form-data": "^2.1.2",
     "iconv-lite": "^0.4.13",
     "moment": "^2.18.1",
     "mongoose": "^4.9.2",
+    "mongoose-q": "^0.1.0",
     "node-qiniu": "^6.2.0",
     "node-xlsx": "^0.7.4",
     "node-xml2json": "^1.0.0",
@@ -37,7 +39,8 @@
     "superagent": "^2.3.0",
     "superagent-charset": "^1.1.1",
     "tape": "^4.6.3",
-    "thenjs": "^2.0.5"
+    "thenjs": "^2.0.5",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "bistre": "^1.0.1",
