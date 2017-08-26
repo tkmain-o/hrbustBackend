@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     const result = await Message.find({}).sort({ _id: -1 });
     let messages = result || [];
     messages = messages.map(message => (Object.assign({}, JSON.parse(JSON.stringify(message)), {
-      date: moment(message.date).calendar(),
+      date: moment(message.date).format('YYYY-MM-DD hh:mm'),
     })));
     res.send({
       status: 200,
