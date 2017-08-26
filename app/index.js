@@ -7,6 +7,9 @@ const path = require('path');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const fileUpload = require('express-fileupload');
+
+app.use(fileUpload());
 // templat
 app.set('views', __dirname);
 app.set('view engine', 'ejs');
