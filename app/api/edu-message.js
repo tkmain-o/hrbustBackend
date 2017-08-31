@@ -30,13 +30,18 @@ router.post('/', async (req, res) => {
     date,
     image,
     content,
+    contentImage,
   } = req.body;
-  const message = new Message({
+  const data = {
     title,
     date,
     image,
     content,
-  });
+  };
+  if (contentImage) {
+    data.contentImage = contentImage;
+  }
+  const message = new Message(data);
   try {
     await message.save();
     res.send({
