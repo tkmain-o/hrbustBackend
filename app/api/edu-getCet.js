@@ -4,16 +4,17 @@ const superagent = charset(require('superagent'));
 const cheerio = require('cheerio');
 const cetData = require('./util/getTestData').cetData;
 
-const excelName = '2016n.xls';
+const excelName = '2017n.xls';
 const list = xlsx.parse(`${__dirname}/util/${excelName}`);
 const data = list[0].data;
+
 const len = data.length - 1;
 function check(user) {
   let id = '';
   let name = '';
   for (let i = 1; i < len; i += 1) {
-    if (data[i][2] === user) {
-      id = data[i][4];
+    if (data[i][6] === user) {
+      id = data[i][2];
       name = data[i][3];
       break;
     }
