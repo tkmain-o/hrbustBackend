@@ -22,7 +22,7 @@ function getCaptcha(filePath) {
   //   count += 1;
   // }
   const promise = new Promise((resolve) => {
-    request(`http://localhost:8000/?name=${filePath}`, (error, response, body) => {
+    request(`http://localhost:8007/?name=${filePath}`, (error, response, body) => {
       let text = '';
       let predictable = 'False';
       try {
