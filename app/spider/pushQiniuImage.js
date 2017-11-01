@@ -39,7 +39,7 @@ function pushQiniuImage(url, imageName) {
                   ph.exit();
                   cont();
                 });
-              }, 300);
+              }, 1000);
             });
           });
         });
