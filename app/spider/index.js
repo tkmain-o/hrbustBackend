@@ -16,7 +16,7 @@ const findMax = require('./mongoUtils').findMax;
 
 function news() {
   findMax('News', 'id').then((maxValue) => {
-    const max = maxValue || 2533;
+    const max = maxValue || 2692;
     log.info(`max: ${max}`);
     newsSpider(max).then((result) => {
       if (result && result.error) {
