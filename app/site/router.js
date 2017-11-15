@@ -15,4 +15,9 @@ router.use(express.static(join(__dirname, '../../wwwroot')));
 router.get('/', home);
 router.get('/test', test);
 
+router.get('/test/test-page', (req, res) => {
+  res.header('Content-Type', 'text/html;charset=utf-8');
+  res.sendfile(join(__dirname, './index.html'));
+});
+
 module.exports = router;
