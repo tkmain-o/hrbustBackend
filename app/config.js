@@ -9,8 +9,9 @@ config.express = {
   ip: '127.0.0.1',
 };
 
-config.mongodb = `mongodb://${superConfig.user}:${superConfig.password}@${superConfig.host}:${superConfig.port}/${superConfig.database}?authSource=${superConfig.authSource}`;
+config.mongodb = 'mongodb://localhost:27017/hrbust';
 
 if (PRODUCTION) {
   config.express.ip = '0.0.0.0';
+  config.mongodb = `mongodb://${superConfig.user}:${superConfig.password}@${superConfig.host}:${superConfig.port}/${superConfig.database}?authSource=${superConfig.authSource}`;
 }
