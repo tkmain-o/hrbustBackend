@@ -29,9 +29,17 @@ app.use(require('./site/router'));
 app.use('/.well-know*', (req, res) => {
   res.sendFile(path.resolve(`.${req.originalUrl}`));
 });
+
+app.use('/F4TUtDXkB6*', (req, res) => {
+  res.sendfile('app/site/F4TUtDXkB6.txt');
+});
 // education information api
 app.use('/api', require('./api/router'));
 
 // app.use(require('errors/not-found'));
+
+app.use('/homepage', (req, res) => {
+  req.pipe(request(`http://jwzx.hrbust.edu.cn/homepage/${req.url}`)).pipe(res);
+});
 
 module.exports = app;
