@@ -8,8 +8,18 @@ const browserMsg = {
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
+const getRandomIp = () => {
+  const arr = [];
+  for (let i = 0; i < 4; i += 1) {
+    arr.push(Math.floor(Math.random() * 255));
+  }
+  return arr.join('.');
+};
+
 function getList(page) {
   let url = 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354';
+
+  browserMsg['X-Forwarded-For'] = getRandomIp();
 
   const pageNum = page || 1;
 
