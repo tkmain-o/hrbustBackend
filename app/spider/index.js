@@ -1,7 +1,8 @@
 const moment = require('moment');
 const newsSpider = require('./newsSpider');
 const jobSpider = require('./jobSpider');
-const log = require('bole')('spider-main:');
+// const log = require('bole')('spider-main:');
+const debug = require('debug')('server:spider');
 
 moment.locale('zh-cn');
 const CronJob = require('cron').CronJob;
@@ -17,13 +18,13 @@ const findMax = require('./mongoUtils').findMax;
 function news() {
   findMax('News', 'id').then((maxValue) => {
     const max = maxValue || 2692;
-    log.info(`max: ${max}`);
+    debug(`max: ${max}`);
     newsSpider(max).then((result) => {
       if (result && result.error) {
         news();
         return;
       }
-      log.info('News finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
+      debug('News finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
     });
   });
 }
@@ -31,23 +32,23 @@ function news() {
 function job() {
   findMax('Job', 'id').then((maxValue) => {
     const max = maxValue || 21592;
-    log.info(`max: ${max}`);
+    debug(`max: ${max}`);
     jobSpider(max).then((result) => {
       if (result && result.error) {
         job();
         return;
       }
-      log.info('Job finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
+      debug('Job finised this update', moment().format('MMM Do YYYY, h:mm:ss'));
     });
   });
 }
 
 function spider() {
-  log.info('start at', moment().format('MMM Do YYYY, h:mm:ss'));
+  debug('start at', moment().format('MMM Do YYYY, h:mm:ss'));
   const newsCron = new CronJob({
     cronTime: '00 30 */4 * * *',
     onTick() {
-      log.info('newsSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
+      debug('newsSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
       news();
     },
     start: false,
@@ -57,7 +58,7 @@ function spider() {
   const jobCron = new CronJob({
     cronTime: '00 00 */3 * * *',
     onTick() {
-      log.info('jobSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
+      debug('jobSpider: update at', moment().format('MMM Do YYYY, h:mm:ss'));
       job();
     },
     start: false,

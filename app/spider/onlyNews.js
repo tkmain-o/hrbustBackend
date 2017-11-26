@@ -1,15 +1,14 @@
 const config = require('../config');
 const mongoose = require('mongoose');
-const bole = require('bole');
+const debug = require('debug')('server');
+
 const news = require('./index').news;
 //
-bole.output({ level: 'debug', stream: process.stdout });
-const log = bole('onlyNews');
 mongoose.Promise = global.Promise;
 mongoose
   .connect(config.mongodb)
   .connection
-  .on('error', log.error)
+  .on('error', debug)
   .once('open', () => {
     // 启动爬虫
     news();

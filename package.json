@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "DEBUG=server, nodemon ./app/server.js",
+    "dev": "DEBUG=server*, nodemon ./app/server.js",
     "dev-spider": "nodemon ./app/spiderServer.js | bistre",
     "pro": "export NODE_ENV=production && pm2 start ./app/server.js --name='xy-hrbust' || pm2 restart ./app/server.js --name='xy-hrbust'",
     "spider": "pm2 start ./app/spiderServer.js --name='xy-hrbust-spider'|| pm2 restart ./app/spiderServer.js --name='xy-hrbust-spider'",
-    "onlyJob": "node ./app/spider/onlyJob | bistre",
-    "onlyNews": "node ./app/spider/onlyNews | bistre",
+    "onlyJob": "DEBUG=server*, node ./app/spider/onlyJob",
+    "onlyNews": "DEBUG=server*, node ./app/spider/onlyNews",
     "lint": "eslint app/ --fix"
   },
   "pre-commit": [
@@ -36,6 +36,7 @@
     "node-xlsx": "^0.7.4",
     "node-xml2json": "^1.0.0",
     "phantom": "^4.0.0",
+    "puppeteer": "^0.12.0",
     "request": "^2.81.0",
     "superagent": "^2.3.0",
     "superagent-charset": "^1.1.1",
