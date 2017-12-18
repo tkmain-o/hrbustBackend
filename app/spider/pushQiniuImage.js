@@ -3,12 +3,10 @@ const qiniu = require('node-qiniu');
 const fs = require('fs');
 const Thenjs = require('thenjs');
 const log = require('bole')('pushQiniuImage');
+const config = require('../config');
 
 let thenjsList = Thenjs;
-qiniu.config({
-  access_key: '6n1HQs5Yk2UGP7EJ1K3CsXXLbphiUTVvsYIZmncL',
-  secret_key: 'XzgLuAQHwIlciJMYjLj9bmt3Qdc3Q383S2NDY0ni',
-});
+qiniu.config(config.qiniu);
 
 const imagesBucket = qiniu.bucket('hrbust');
 let phantomCount = 0;
