@@ -1,11 +1,8 @@
 const qiniu = require('node-qiniu');
 const stream = require('stream');
+const qiniuConfig = require('../../config').qiniu;
 
-qiniu.config({
-  access_key: '6n1HQs5Yk2UGP7EJ1K3CsXXLbphiUTVvsYIZmncL',
-  secret_key: 'XzgLuAQHwIlciJMYjLj9bmt3Qdc3Q383S2NDY0ni',
-});
-
+qiniu.config(qiniuConfig);
 
 function upLoadFile(bucket, imageName, buffer) {
   const imagesBucket = qiniu.bucket(bucket);
