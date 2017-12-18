@@ -21,7 +21,7 @@ function getCaptcha(filePath) {
   // } else {
   //   count += 1;
   // }
-  const promise = new Promise((resolve) => {
+  const promise = new Promise((resolve, reject) => {
     request(`http://localhost:8007/?name=${filePath}`, (error, response, body) => {
       let text = '';
       let predictable = 'False';
@@ -31,6 +31,8 @@ function getCaptcha(filePath) {
         predictable = bodyObj.note.predictable;
       } catch (e) {
         console.error(e);
+        reject(e);
+        return;
       }
       resolve({
         text,
