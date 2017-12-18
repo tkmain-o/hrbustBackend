@@ -33,6 +33,17 @@ function handleGrade(cookie, year, term) {
         } else {
           const body = response.text;
           const $ = cheerio.load(body);
+
+          // 需要教学评估
+          const pingGuText = $('#content_margin').text().replace(/\s/g, '');
+          if (pingGuText.indexOf('参加评教')) {
+            resolve({
+              data: pingGuText,
+              status: -1,
+              cookie,
+            });
+            return;
+          }
           const datalist = $('.datalist').find('tr');
           const result = {};
           result.data = [];
