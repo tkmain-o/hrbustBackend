@@ -154,6 +154,10 @@ class SimulateLogin {
                   return;
                 }
                 callback(text);
+              }).catch((e) => {
+                resolve({
+                  error: e,
+                });
               });
             });
           }
