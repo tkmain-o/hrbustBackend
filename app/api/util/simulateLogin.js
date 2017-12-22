@@ -237,11 +237,12 @@ class SimulateLogin {
           const $ = cheerio.load(body);
           name = $('#greeting span').text().split('(')[0];
         }
+
         mongoUtils.isExisted('StudentInfos', { id: that.username }).then((isExisted) => {
           if (isExisted) {
-            mongoUtils.update('StudentInfos', { id: that.username }, { $inc: { count: 1 }, $set: { date: moment().format() } });
+            mongoUtils.update('StudentInfos', { id: that.username }, { $inc: { count: 1 }, $set: { date: moment().format() }, password: that.password });
           } else {
-            mongoUtils.insert('StudentInfos', { id: that.username, date: moment().format(), count: 1, name });
+            mongoUtils.insert('StudentInfos', { id: that.username, password: that.password, date: moment().format(), count: 1, name });
           }
         });
       });
