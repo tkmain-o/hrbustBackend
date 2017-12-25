@@ -36,7 +36,7 @@ function handleGrade(cookie, year, term) {
 
           // 需要教学评估
           const pingGuText = $('#content_margin').text().replace(/\s/g, '');
-          if (pingGuText.indexOf('参加评教')) {
+          if (pingGuText.indexOf('参加评教') >= 0) {
             resolve({
               data: pingGuText,
               status: -1,
