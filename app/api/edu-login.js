@@ -38,10 +38,7 @@ function login(params) {
       console.warn(`loginCount: ${loginCount}`);
       console.warn(`loginName: ${params.username}`);
       console.warn('------------end');
-      params.callback({
-        cookie: result.cookie,
-        thisWeek: result.thisWeek,
-      });
+      params.callback(result);
     }
   });
 }

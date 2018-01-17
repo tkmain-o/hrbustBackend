@@ -87,11 +87,11 @@ class SimulateLogin {
     const promise = new Promise((resolve) => {
       this.callback = resolve;
       checkCookie(this.cookie).then((data) => {
+        this.term = data.term;
+        this.year = data.year;
         if (data.isValidCookie) {
           this.callback({
             cookie: this.cookie,
-            term: data.term,
-            year: data.year,
           });
         } else {
           this.cookie = '';
@@ -203,7 +203,8 @@ class SimulateLogin {
 
           this.callback({
             cookie: this.cookie,
-            thisWeek: this.thisWeek,
+            term: this.term,
+            year: this.year,
           });
           // save student infomation to mongo
           this.updateMongo();
