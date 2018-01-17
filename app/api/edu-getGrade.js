@@ -49,6 +49,16 @@ function handleGrade(cookie, year, term) {
           result.data = [];
           result.gradeTerm = $('option:selected').text().replace(/\s/g, '');
 
+          const JI_DIAN = {
+            优: '4.5',
+            良: '3.5',
+            中: '2.5',
+            差: '1.5',
+          };
+
+          let gradeLength = 0;
+          let gradeSum = 0;
+
           datalist.each((index, item) => {
             if (index === 0) {
               return;
@@ -59,9 +69,44 @@ function handleGrade(cookie, year, term) {
               const str = $(itemI).text().replace(/\s/g, '');
               innerTexts.push(str);
             });
+
+            const grade = Number(innerTexts[6]);
+            const xuefen = Number(innerTexts[7]);
+            if (!Number.isNaN(grade)) {
+              gradeLength += 1;
+              gradeSum += grade;
+            }
+
+            let GPA = '';
+            if (xuefen > 0) {
+              if (innerTexts[12] === '不及格') {
+                GPA = '0.0';
+              } else if (!Number.isNaN(grade)) {
+                GPA = grade < 60 ? 0 : ((grade - 60) / 10) + 1;
+                GPA = GPA.toFixed(1);
+              } else {
+                GPA = JI_DIAN[innerTexts[6]];
+              }
+            }
+            innerTexts.push(GPA);
             result.data.push(innerTexts);
           });
+          let GPA_SUM = 0;
+          let XUE_FEN_SUM = 0;
+          result.data.forEach((item) => {
+            const xuefen = Number(item[7]);
+            const GPA = item[13] ? Number(item[13]) : null;
+            if (GPA === '' || Number.isNaN(xuefen) || xuefen <= 0) {
+              return;
+            }
+            GPA_SUM += xuefen * GPA;
+            XUE_FEN_SUM += xuefen;
+          });
           result.cookie = cookie;
+          const AVERAGE_GPA = GPA_SUM / XUE_FEN_SUM;
+          const AVERAGE_GRADE = gradeSum / gradeLength;
+          result.AVERAGE_GPA = AVERAGE_GPA.toFixed(2);
+          result.AVERAGE_GRADE = AVERAGE_GRADE.toFixed(2);
           resolve(result);
         }
       });
