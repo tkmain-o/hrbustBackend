@@ -92,10 +92,9 @@ class SimulateLogin {
         this.year = data.year;
         this.week = data.week;
         if (data.isValidCookie) {
-          this.callback({
+          this.callback(Object.assign({
             cookie: this.cookie,
-            ...data,
-          });
+          }, data));
         } else {
           this.cookie = '';
           this.getCookie();
