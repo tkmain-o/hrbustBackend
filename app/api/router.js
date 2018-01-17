@@ -35,6 +35,7 @@ function handleParams(req, callback) {
     yourCookie,
     simulateIp,
     callback,
+    ...req.query,
   };
 }
 

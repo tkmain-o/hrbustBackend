@@ -12,26 +12,28 @@ const browserMsg = {
 };
 
 
-function getStudentId(cookie, callback) {
-  superagent
-    .get('http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000')
-    .charset()
-    .set(browserMsg)
-    .set('Cookie', cookie)
-    .end((err, response) => {
-      if (err) {
-        // callback(err);
-      } else {
-        const body = response.text;
-        const $ = cheerio.load(body);
-        const str = $('.button')[0].attribs.onclick;
-        const query = str.match(/do\?(\S*)sectionType=/)[1];
-        // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=COMBINE"
-        // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=BASE"
-        const getCourseUrl = `http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?${query}sectionType=COMBINE`;
-        callback(getCourseUrl);
-      }
-    });
+function getStudentId(cookie) {
+  return new Promise((resolve) => {
+    superagent
+      .get('http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000')
+      .charset()
+      .set(browserMsg)
+      .set('Cookie', cookie)
+      .end((err, response) => {
+        if (err) {
+          // callback(err);
+        } else {
+          const body = response.text;
+          const $ = cheerio.load(body);
+          const str = $('.button')[0].attribs.onclick;
+          const id = str.match(/id=(\S*)&yearid/)[1];
+          // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=COMBINE"
+          // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=BASE"
+          const getCourseUrl = `http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=${id}&timetableType=STUDENT&sectionType=COMBINE`;
+          resolve(getCourseUrl);
+        }
+      });
+  });
 }
 
 function handlerGetCourse(getCourseUrl, cookie, callback) {
@@ -135,19 +137,6 @@ function getCourse(params) {
   const SimulateLoginParams = {
     username: params.username,
     password: params.password,
-    callback(result) {
-      if (result.error) {
-        params.callback({
-          error: result.error,
-        });
-      } else {
-        getStudentId(result.cookie, (getCourseUrl) => {
-          handlerGetCourse(getCourseUrl, result.cookie, (res) => {
-            params.callback(Object.assign(res, { thisWeek: result.thisWeek }));
-          });
-        });
-      }
-    },
     simulateIp: params.simulateIp,
     yourCookie: params.yourCookie,
   };
@@ -158,8 +147,8 @@ function getCourse(params) {
         error: result.error,
       });
     } else {
-      getStudentId(result.cookie, (getCourseUrl) => {
-        handlerGetCourse(getCourseUrl, result.cookie, (res) => {
+      getStudentId(result.cookie).then((getCourseUrl) => {
+        handlerGetCourse(`${getCourseUrl}&termid=${params.term}&yearid=${params.year}`, result.cookie, (res) => {
           params.callback(Object.assign(res, { thisWeek: result.thisWeek }));
         });
       });

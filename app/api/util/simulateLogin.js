@@ -57,7 +57,7 @@ function checkCookie(cookie) {
           const $ = cheerio.load(body);
           const result = $('#date span').text();
           that.thisWeek = result.replace(/\s/g, '');
-          that.week = that.thisWeek.match(/第(\w*)周/)[1];
+          const week = parseInt(that.thisWeek.match(/第(\w*)周/)[1]);
           const terms = that.thisWeek.match(/(\w*)(秋|春)/);
           const year = parseInt(terms[1]) - 1980;
           const termsObj = {
@@ -71,6 +71,7 @@ function checkCookie(cookie) {
             isValidCookie: !flag,
             term,
             year,
+            week,
           });
         }
       });
@@ -89,9 +90,11 @@ class SimulateLogin {
       checkCookie(this.cookie).then((data) => {
         this.term = data.term;
         this.year = data.year;
+        this.week = data.week;
         if (data.isValidCookie) {
           this.callback({
             cookie: this.cookie,
+            ...data,
           });
         } else {
           this.cookie = '';
@@ -205,6 +208,7 @@ class SimulateLogin {
             cookie: this.cookie,
             term: this.term,
             year: this.year,
+            week: this.week,
           });
           // save student infomation to mongo
           this.updateMongo();
