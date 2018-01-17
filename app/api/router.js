@@ -29,14 +29,13 @@ function handleParams(req, callback) {
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
-  return {
+  return Object.assign({
     username,
     password,
     yourCookie,
     simulateIp,
     callback,
-    ...req.query,
-  };
+  }, req.query);
 }
 
 function handleRes(result, res) {
