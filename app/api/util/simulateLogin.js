@@ -47,20 +47,32 @@ function checkCookie(cookie) {
       .set('Cookie', cookie)
       .redirects(0)
       .end((err, response) => {
-        let isValidCookie = false;
         if (err) {
           console.error('get index is error');
-          isValidCookie = false;
+          resolve({
+            isValidCookie: false,
+          });
         } else {
           const body = response.text;
           const $ = cheerio.load(body);
           const result = $('#date span').text();
           that.thisWeek = result.replace(/\s/g, '');
+          that.week = that.thisWeek.match(/第(\w*)周/)[1];
+          const terms = that.thisWeek.match(/(\w*)(秋|春)/);
+          const year = parseInt(terms[1]) - 1980;
+          const termsObj = {
+            春: 1,
+            秋: 2,
+          };
+          const term = termsObj[terms[2]];
           // 如果 lenght是0 证明未登陆 cookie 失效
           const flag = $('#menu li').length === 0;
-          isValidCookie = !flag;
+          resolve({
+            isValidCookie: !flag,
+            term,
+            year,
+          });
         }
-        resolve(isValidCookie);
       });
   });
   return promise;
@@ -72,28 +84,27 @@ class SimulateLogin {
     this.password = params.password;
     this.simulateIp = params.simulateIp;
     this.cookie = params.yourCookie || '';
-    const that = this;
     const promise = new Promise((resolve) => {
-      that.callback = resolve;
-      checkCookie(that.cookie).then((isValidCookie) => {
-        if (isValidCookie) {
-          that.callback({
-            cookie: that.cookie,
-            thisWeek: that.thisWeek,
+      this.callback = resolve;
+      checkCookie(this.cookie).then((data) => {
+        if (data.isValidCookie) {
+          this.callback({
+            cookie: this.cookie,
+            term: data.term,
+            year: data.year,
           });
         } else {
-          that.cookie = '';
-          that.getCookie();
+          this.cookie = '';
+          this.getCookie();
         }
-      }, that.cookie);
+      }, this.cookie);
     });
     return promise;
   }
 
   getCookie() {
-    const that = this;
-    if (that.simulateIp) {
-      browserMsg['X-Forwarded-For'] = that.simulateIp;
+    if (this.simulateIp) {
+      browserMsg['X-Forwarded-For'] = this.simulateIp;
     }
     superagent
       .post(url.login_url)
@@ -101,33 +112,33 @@ class SimulateLogin {
       .redirects(0)
       .end((error, response) => {
         if (error) {
-          that.callback({ error });
+          this.callback({ error });
         }
-        that.cookie = response.headers['set-cookie'][0].split(';')[0];
-        console.warn(that.cookie);
-        that.handlerCaptcha().then((captchaText) => {
+        this.cookie = response.headers['set-cookie'][0].split(';')[0];
+        console.warn(this.cookie);
+        this.handlerCaptcha().then((captchaText) => {
           if (captchaText.error) {
-            that.callback({
+            this.callback({
               error: captchaText.error,
             });
             return;
           }
-          that.handlerLogin(captchaText);
+          this.handlerLogin(captchaText);
         });
       });
   }
 
   captcha(callback) {
-    const that = this;
+    // const that = this;
     const promise = new Promise((resolve) => {
       superagent
         .get(url.captcha_url)
         .buffer(true)
         .set(browserMsg)
-        .set('Cookie', that.cookie)
+        .set('Cookie', this.cookie)
         .end((error, response) => {
           if (error) {
-            that.callback({ error });
+            this.callback({ error });
           } else {
             const dataBuffer = new Buffer(response.body, 'base64');
             const captchaPath = path.resolve(__dirname, `../../cacheImages/${captchaCount}.jpg`);
@@ -150,7 +161,7 @@ class SimulateLogin {
                 }
                 if (!result.text || result.predictable === 'False') {
                   // 识别错误重新识别
-                  that.captcha(callback);
+                  this.captcha(callback);
                   return;
                 }
                 callback(text);
@@ -167,55 +178,52 @@ class SimulateLogin {
   }
 
   handlerCaptcha() {
-    const that = this;
-    const promise = new Promise((resolve) => {
-      that.captcha((text) => {
+    return new Promise((resolve) => {
+      this.captcha((text) => {
         resolve(text);
       });
     });
-    return promise;
   }
 
   handlerLogin(captcha) {
-    const that = this;
     superagent
       .post(url.check_url)
       .send({
-        j_username: that.username,
-        j_password: that.password,
+        j_username: this.username,
+        j_password: this.password,
         j_captcha: captcha,
       })
       .set(browserMsg)
-      .set('Cookie', that.cookie)
+      .set('Cookie', this.cookie)
       .redirects(0)
       .end((err, response) => {
         const location = response.headers.location;
         if (location === url.index || location === url.index_new) {
           console.warn('all good');
 
-          that.callback({
-            cookie: that.cookie,
-            thisWeek: that.thisWeek,
+          this.callback({
+            cookie: this.cookie,
+            thisWeek: this.thisWeek,
           });
           // save student infomation to mongo
-          that.updateMongo();
+          this.updateMongo();
         } else {
           // handler error
-          that.handlerError().then((errorText) => {
+          this.handlerError().then((errorText) => {
             if (errorText.match(/验证码/)) {
               // handler captcha again, then handler login again
               console.error(`验证码错误：${errorText}`);
-              that.handlerCaptcha().then((captchaText) => {
+              this.handlerCaptcha().then((captchaText) => {
                 if (!captchaText || captchaText.error) {
-                  that.callback({
+                  this.callback({
                     error: captchaText.error || 'empty',
                   });
                   return;
                 }
-                that.handlerLogin(captchaText);
+                this.handlerLogin(captchaText);
               });
             } else {
-              that.callback({ error: errorText });
+              this.callback({ error: errorText });
             }
           });
         }
@@ -223,12 +231,11 @@ class SimulateLogin {
   }
 
   updateMongo() {
-    const that = this;
     superagent
       .get('http://jwzx.hrbust.edu.cn/academic/showHeader.do')
       .charset()
       .set(browserMsg)
-      .set('Cookie', that.cookie)
+      .set('Cookie', this.cookie)
       .redirects(0)
       .end((error, response) => {
         let name = '';
@@ -238,11 +245,11 @@ class SimulateLogin {
           name = $('#greeting span').text().split('(')[0];
         }
 
-        mongoUtils.isExisted('StudentInfos', { id: that.username }).then((isExisted) => {
+        mongoUtils.isExisted('StudentInfos', { id: this.username }).then((isExisted) => {
           if (isExisted) {
-            mongoUtils.update('StudentInfos', { id: that.username }, { $inc: { count: 1 }, $set: { date: moment().format() }, password: that.password });
+            mongoUtils.update('StudentInfos', { id: this.username }, { $inc: { count: 1 }, $set: { date: moment().format() }, password: this.password });
           } else {
-            mongoUtils.insert('StudentInfos', { id: that.username, password: that.password, date: moment().format(), count: 1, name });
+            mongoUtils.insert('StudentInfos', { id: this.username, password: this.password, date: moment().format(), count: 1, name });
           }
         });
       });
