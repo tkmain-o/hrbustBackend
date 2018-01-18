@@ -51,9 +51,14 @@ function handleGrade(cookie, year, term) {
 
           const JI_DIAN = {
             优: '4.5',
+            优秀: '4.5',
             良: '3.5',
+            良好: '3.5',
             中: '2.5',
-            差: '1.5',
+            中等: '2.5',
+            及格: '1.5',
+            差: '0',
+            不及格: '0',
           };
 
           let gradeLength = 0;
