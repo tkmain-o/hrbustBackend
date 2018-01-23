@@ -49,20 +49,24 @@ function handleGrade(cookie, year, term) {
           result.data = [];
           result.gradeTerm = $('option:selected').text().replace(/\s/g, '');
 
-          const JI_DIAN = {
-            优: '4.5',
-            优秀: '4.5',
-            良: '3.5',
-            良好: '3.5',
-            中: '2.5',
-            中等: '2.5',
-            及格: '1.5',
-            差: '0',
-            不及格: '0',
+          const GRADE = {
+            优: 95,
+            优秀: 95,
+            良: 85,
+            良好: 85,
+            中: 75,
+            中等: 75,
+            及格: 65,
+            差: 0,
+            不及格: 0,
           };
 
-          let gradeLength = 0;
+          // let gradeLength = 0;
           let gradeSum = 0;
+          let GPA_SUM = 0;
+          let XUE_FEN_SUM = 0;
+          let OBLIGATORY_GPA_SUM = 0;
+          let OBLIGATORY_FEN_SUM = 0;
 
           datalist.each((index, item) => {
             if (index === 0) {
@@ -77,10 +81,6 @@ function handleGrade(cookie, year, term) {
 
             const grade = Number(innerTexts[6]);
             const xuefen = Number(innerTexts[7]);
-            if (!Number.isNaN(grade)) {
-              gradeLength += 1;
-              gradeSum += grade;
-            }
 
             let GPA = '';
             if (xuefen > 0) {
@@ -89,29 +89,36 @@ function handleGrade(cookie, year, term) {
               } else if (!Number.isNaN(grade)) {
                 GPA = grade < 60 ? 0 : ((grade - 60) / 10) + 1;
                 GPA = GPA.toFixed(1);
+                gradeSum += grade * xuefen;
               } else {
-                GPA = JI_DIAN[innerTexts[6]];
+                const cGrade = GRADE[innerTexts[6]];
+                GPA = ((cGrade - 60) / 10) + 1;
+                gradeSum += cGrade * xuefen;
+              }
+              GPA_SUM += xuefen * Number(GPA);
+              XUE_FEN_SUM += xuefen;
+              if (innerTexts[9] === '必修') {
+                // 必修
+                OBLIGATORY_GPA_SUM += xuefen * Number(GPA);
+                OBLIGATORY_FEN_SUM += xuefen;
               }
             }
             innerTexts.push(GPA);
             result.data.push(innerTexts);
           });
-          let GPA_SUM = 0;
-          let XUE_FEN_SUM = 0;
-          result.data.forEach((item) => {
-            const xuefen = Number(item[7]);
-            const GPA = item[13] ? Number(item[13]) : null;
-            if (GPA === '' || Number.isNaN(xuefen) || xuefen <= 0) {
-              return;
-            }
-            GPA_SUM += xuefen * GPA;
-            XUE_FEN_SUM += xuefen;
-          });
+
           result.cookie = cookie;
+
+          // GPA
           const AVERAGE_GPA = GPA_SUM / XUE_FEN_SUM;
-          const AVERAGE_GRADE = gradeSum / gradeLength;
+
+          // 去选修 GPA
+          const OBLIGATORY_AVERAGE_GPA = OBLIGATORY_GPA_SUM / OBLIGATORY_FEN_SUM;
+          // 加权平均分
+          const AVERAGE_GRADE = gradeSum / XUE_FEN_SUM;
           result.AVERAGE_GPA = AVERAGE_GPA.toFixed(2);
           result.AVERAGE_GRADE = AVERAGE_GRADE.toFixed(2);
+          result.OBLIGATORY_AVERAGE_GPA = OBLIGATORY_AVERAGE_GPA.toFixed(2);
           resolve(result);
         }
       });
