@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>饿了么红包助手</title>
+    <style>
+        body {
+            font: small arial, sans-serif;
+            margin: 0;
+            height: 100%;
+            min-height: 438px;
+            background-color: #F4F6F9;
+        }
+
+        #wrapper {
+            padding: 120px 0px 0px 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 580px;
+            -moz-transition: all 0.25s;
+            -webkit-transition: all 0.25s;
+            -o-transition: all 0.25s;
+            transition: all 0.25s;
+        }
+
+        #content {
+            margin: 0px auto;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #D8DDE6;
+            color: #16325c;
+            background-color: #ffffff;
+        }
+
+        .title {
+            margin: 15px auto 30px;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        .input,
+        .button {
+            -webkit-appearance: none;
+        }
+
+        .input {
+            border: 1px solid #D8DDE6;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: all 0.1s;
+            padding: 12px;
+            margin: 10px auto;
+            width: 100%;
+            -webkit-appearance: none;
+        }
+
+        .input:focus {
+            border: 1px solid #1589ee;
+            outline: 0;
+            box-shadow: 0 0 3px #0070D2;
+        }
+
+        .button {
+            margin-top: 10px;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            background-color: #0070d2;
+            transition: all 0.1s;
+            border: 1px solid transparent;
+            width: 100%;
+        }
+
+        .button:hover,
+        .button:focus {
+            background-color: #005fb2;
+        }
+
+        .button.disabled {
+            color: #fff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            opacity: .65;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <div id="content">
+            <div class="title">饿了么红包助手</div>
+            <input class="input" id="url" placeholder="请输入饿了么红包网页链接地址">
+            <input class="input" id="mobile" placeholder="请输入您的手机号">
+            <input id="submit" class="button" type="submit" value="领取">
+        </div>
+    </div>
+
+    <script>
+        var mobile = localStorage.getItem('mobile');
+        var search = window.location.search;
+        if (/url=/.test(search)) {
+          var url = search.split('url=')[1];
+          document.querySelector('#url').value = url;
+        }
+
+        if (/^1[34578]\d{9}$/.test(mobile)) {
+            document.querySelector('#mobile').value = localStorage.getItem('mobile') || '';
+        } else {
+            localStorage.removeItem('mobile');
+        }
+
+        document.querySelector('#mobile').addEventListener('change', function (e) {
+            localStorage.setItem('mobile', this.value);
+        }, false);
+
+        document.querySelector('#submit').addEventListener('click', function (e) {
+            if (this.classList.contains('disabled')) {
+                return;
+            }
+
+            var url = document.querySelector('#url').value.trim();
+            var mobile = document.querySelector('#mobile').value.trim();
+
+            if (!url || !mobile) {
+                return;
+            }
+
+            if (url.substr(0, 25) !== 'https://h5.ele.me/hongbao') {
+                alert('请输入正确的红包链接！');
+                return;
+            }
+
+            if (!/^1[34578]\d{9}$/.test(mobile)) {
+                alert('请输入正确的手机号码！');
+                return;
+            }
+
+            this.setAttribute("disabled", "disabled");
+            this.classList.add('disabled');
+
+            var data = {
+                url: url,
+                mobile: mobile
+            }
+
+            fetch(`/api/test-ele/?url=${encodeURIComponent(url)}&mobile=${mobile}`, {
+                method: 'get',
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                alert(data.msg);
+            }).catch(function (error) {
+                alert('网络异常，请稍后重试！');
+                console.error(error);
+            }).then(function () {
+                this.removeAttribute("disabled");
+                this.classList.remove('disabled');
+            }.bind(this));
+        }, false);
+    </script>
+
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?2ac04905cdb0df7f731f5a2484f33ace";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+</body>
+
+</html>

@@ -20,4 +20,9 @@ router.get('/test/test-page', (req, res) => {
   res.sendfile(join(__dirname, './index.html'));
 });
 
+router.get('/test-ele', (req, res) => {
+  res.header('Content-Type', 'text/html;charset=utf-8');
+  res.sendfile(join(__dirname, './test-ele.html'));
+});
+
 module.exports = router;
