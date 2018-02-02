@@ -20,6 +20,7 @@ const library = require('./edu-library');
 const getNewStudentInfo = require('./edu-getNewStudentInfo');
 const message = require('./edu-message');
 const media = require('./media');
+const testEle = require('./test-ele');
 
 function handleParams(req, callback) {
   const username = req.query.username;
@@ -163,5 +164,7 @@ router.get('/new_student_info', getNewStudentInfo);
 // message
 router.use('/message', message);
 router.use('/media', media);
+
+router.get('/test-ele', testEle);
 
 module.exports = router;
