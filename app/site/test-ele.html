@@ -110,7 +110,7 @@
         var search = window.location.search;
         if (/url=/.test(search)) {
           var url = search.split('url=')[1];
-          document.querySelector('#url').value = url;
+          document.querySelector('#url').value = decodeURIComponent(url);
         }
 
         if (/^1[34578]\d{9}$/.test(mobile)) {
