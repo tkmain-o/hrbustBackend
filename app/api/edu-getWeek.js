@@ -27,7 +27,7 @@ function getWeek() {
           const result = $('#date span').text();
           const thisWeek = result.replace(/\s/g, '');
 
-          const week = parseInt(thisWeek.match(/第(\w*)周/)[1]);
+          const week = (this.thisWeek && this.thisWeek.match(/第(\w*)周/)) ? parseInt(this.thisWeek.match(/第(\w*)周/)) : 1;
           const terms = thisWeek.match(/(\w*)(秋|春)/);
           const year = parseInt(terms[1]) - 1980;
           const termsObj = {
