@@ -1,29 +1,30 @@
-// const xlsx = require('node-xlsx');
+const xlsx = require('node-xlsx');
 const charset = require('superagent-charset');
 const superagent = charset(require('superagent'));
 const cheerio = require('cheerio');
-// const cetData = require('./util/getTestData').cetData;
+const cetData = require('./util/getTestData').cetData;
 
-// const excelName = '2017n.xls';
-// const list = xlsx.parse(`${__dirname}/util/${excelName}`);
-// const data = list[0].data;
+const excelName = '2017y.xls';
+const list = xlsx.parse(`${__dirname}/util/${excelName}`);
+const data = list[0].data;
+// console.log(data);
+const len = data.length - 1;
+function check(user) {
+  let id = '';
+  let name = '';
+  for (let i = 1; i < len; i += 1) {
+    if (data[i][5] === user) {
+      id = data[i][2];
+      name = data[i][3];
+      break;
+    }
+  }
+  return {
+    id,
+    name,
+  };
+}
 
-// const len = data.length - 1;
-// function check(user) {
-//   let id = '';
-//   let name = '';
-//   for (let i = 1; i < len; i += 1) {
-//     if (data[i][6] === user) {
-//       id = data[i][2];
-//       name = data[i][3];
-//       break;
-//     }
-//   }
-//   return {
-//     id,
-//     name,
-//   };
-// }
 const getRandomIp = () => {
   const arr = [];
   for (let i = 0; i < 4; i += 1) {
@@ -41,15 +42,21 @@ const options = {
     'X-Forwarded-For': `${getRandomIp()}`,
   },
 };
-function getCet(name, id) {
+function getCet(name, id, username) {
   const promise = new Promise((resolve) => {
-    // // 测试账号数据
-    // if (username === '1234') {
-    //   resolve(cetData);
-    //   return;
-    // }
-    // const mes = check(username);
-    const param = `zkzh=${id}&xm=${name}`;
+    // 测试账号数据
+    if (username === '1234') {
+      resolve(cetData);
+      return;
+    }
+    let idt = id;
+    let namet = name;
+    if (username) {
+      const mes = check(username);
+      idt = mes.id;
+      namet = mes.name;
+    }
+    const param = `zkzh=${idt}&xm=${namet}`;
     const url = `http://www.chsi.com.cn/cet/query?${encodeURI(param)}`;
     superagent
       .get(url)
@@ -68,10 +75,10 @@ function getCet(name, id) {
           const result = {};
           result.data = [];
           result.data.push({
-            name,
+            name: namet,
             school: $result.eq(1).text().trim(),
             type: $result.eq(2).text().trim(),
-            id,
+            id: idt,
             total: $result.eq(4).text().trim(),
             listen: $result.eq(6).text().trim(),
             reading: $result.eq(8).text().trim(),

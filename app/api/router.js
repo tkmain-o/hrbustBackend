@@ -119,7 +119,8 @@ function getNews(req, res) {
 function getCet(req, res) {
   const name = req.query.name;
   const id = req.query.id;
-  eduGetCet.getCet(name, id).then((result) => {
+  const username = req.query.username;
+  eduGetCet.getCet(name, id, username).then((result) => {
     handleRes(result, res);
   });
 }
