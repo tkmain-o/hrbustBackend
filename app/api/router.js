@@ -116,11 +116,19 @@ function getNews(req, res) {
   });
 }
 
+function getCetCaptcha(req, res) {
+  eduGetCet.getCetCaptcha().then((result) => {
+    handleRes(result, res);
+  });
+}
+
 function getCet(req, res) {
-  const name = req.query.name;
-  const id = req.query.id;
-  const username = req.query.username;
-  eduGetCet.getCet(name, id, username).then((result) => {
+  const name = req.body.name;
+  const id = req.body.id;
+  const username = req.body.username;
+  const cookie = req.body.cookie;
+  const yzm = req.body.yzm;
+  eduGetCet.getCet(name, id, username, yzm, cookie.split(',')).then((result) => {
     handleRes(result, res);
   });
 }
@@ -157,7 +165,8 @@ router.get('/getJobList', getJobList);
 router.get('/getJobDetail', getJobDetail);
 router.get('/getNewsList', getNewsList);
 router.get('/getNewsDetail', getNewsDetail);
-router.get('/getCet', getCet);
+router.post('/getCet', getCet);
+router.get('/getCetCaptcha', getCetCaptcha);
 router.get('/getJob', getJob);
 router.get('/library', libraryRouter);
 

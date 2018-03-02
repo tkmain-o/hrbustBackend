@@ -36,13 +36,29 @@ const options = {
   encoding: 'utf8',
   headers: {
     Referer: 'http://www.chsi.com.cn/cet/',
-    'Content-Type': 'application/x-www-form-urlencoded',
+    // 'Content-Type': 'application/x-www-form-urlencoded',
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36',
     // 客户端的 IP 地址
     'X-Forwarded-For': `${getRandomIp()}`,
   },
 };
-function getCet(name, id, username) {
+
+function getCetCaptcha() {
+  return new Promise((resolve) => {
+    superagent
+      .get('http://www.chsi.com.cn/cet/ValidatorIMG.JPG')
+      .end((err, response) => {
+        const cookie = response.headers['set-cookie'];
+        // console.log(response.body);
+        const buffer = new Buffer(response.body, 'base64');
+        resolve({
+          base64: buffer.toString('base64'),
+          cookie,
+        });
+      });
+  });
+}
+function getCet(name, id, username, yzm, cookie) {
   const promise = new Promise((resolve) => {
     // 测试账号数据
     if (username === '1234') {
@@ -56,8 +72,10 @@ function getCet(name, id, username) {
       idt = mes.id;
       namet = mes.name;
     }
-    const param = `zkzh=${idt}&xm=${namet}`;
+    const param = `zkzh=${idt}&xm=${namet}&yzm=${yzm}`;
     const url = `http://www.chsi.com.cn/cet/query?${encodeURI(param)}`;
+
+    options.headers.cookie = cookie;
     superagent
       .get(url)
       .charset()
@@ -71,8 +89,15 @@ function getCet(name, id, username) {
         } else {
           const bod = response.text;
           const $ = cheerio.load(bod);
+          // console.log(bod);
           const $result = $('table.cetTable td');
+          const $error = $('.error');
           const result = {};
+          if ($error && $error.text().indexOf('验证码不正确') > -1) {
+            result.error = '验证码不正确';
+            resolve(result);
+            return;
+          }
           result.data = [];
           result.data.push({
             name: namet,
@@ -92,3 +117,4 @@ function getCet(name, id, username) {
 }
 
 exports.getCet = getCet;
+exports.getCetCaptcha = getCetCaptcha;
