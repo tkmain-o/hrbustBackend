@@ -57,7 +57,7 @@ function checkCookie(cookie) {
           const $ = cheerio.load(body);
           const result = $('#date span').text();
           that.thisWeek = result.replace(/\s/g, '');
-          const week = that.thisWeek.match(/第(\w*)周/) ? parseInt(that.thisWeek.match(/第(\w*)周/)) : 1;
+          const week = that.thisWeek.match(/第(\w*)周/)[1] ? parseInt(that.thisWeek.match(/第(\w*)周/)[1]) : 1;
           const terms = that.thisWeek.match(/(\w*)(秋|春)/);
           const year = parseInt(terms[1]) - 1980;
           const termsObj = {

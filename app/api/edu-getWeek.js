@@ -26,8 +26,7 @@ function getWeek() {
           const $ = cheerio.load(body);
           const result = $('#date span').text();
           const thisWeek = result.replace(/\s/g, '');
-
-          const week = (this.thisWeek && this.thisWeek.match(/第(\w*)周/)) ? parseInt(this.thisWeek.match(/第(\w*)周/)) : 1;
+          const week = (thisWeek && thisWeek.match(/第(\w*)周/)[1]) ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1;
           const terms = thisWeek.match(/(\w*)(秋|春)/);
           const year = parseInt(terms[1]) - 1980;
           const termsObj = {
