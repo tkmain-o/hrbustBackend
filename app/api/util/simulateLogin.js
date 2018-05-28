@@ -200,6 +200,7 @@ class SimulateLogin {
       .redirects(0)
       .end((err, response) => {
         const location = response.headers.location;
+        // console.log(location);
         if (location === url.index || location === url.index_new) {
           console.warn('all good');
 
@@ -272,8 +273,7 @@ class SimulateLogin {
           } else {
             const body = response.text;
             const $ = cheerio.load(body);
-            const errorText = $('#error').text();
-            // console.warn(errorText);
+            const errorText = $('#message').text();
             resolve(errorText);
           }
         });

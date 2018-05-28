@@ -13,6 +13,7 @@ const browserMsg = {
 
 
 function getStudentId(cookie) {
+  // console.log(cookie);
   return new Promise((resolve) => {
     superagent
       .get('http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000')
@@ -24,11 +25,10 @@ function getStudentId(cookie) {
           // callback(err);
         } else {
           const body = response.text;
+          // console.log(body);
           const $ = cheerio.load(body);
           const str = $('.button')[0].attribs.onclick;
-          const id = str.match(/id=(\S*)&yearid/)[1];
-          // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=COMBINE"
-          // "http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=294152&yearid=36&termid=2&timetableType=STUDENT&sectionType=BASE"
+          const id = str.match(/id=(\S*)&yearid/) ? str.match(/id=(\S*)&yearid/)[1] : 0;
           const getCourseUrl = `http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=${id}&timetableType=STUDENT&sectionType=COMBINE`;
           resolve(getCourseUrl);
         }
@@ -47,6 +47,7 @@ function handlerGetCourse(getCourseUrl, cookie, callback) {
         callback(err);
       } else {
         const body = response.text;
+        // console.log(body);
         const $ = cheerio.load(body, { decodeEntities: false });
         let result = {};
         const courseArrange = [];
