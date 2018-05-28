@@ -200,12 +200,11 @@ class SimulateLogin {
       .redirects(0)
       .end((err, response) => {
         const location = response.headers.location;
-        // console.log(location);
         if (location === url.index || location === url.index_new) {
           console.warn('all good');
 
           this.callback({
-            cookie: this.cookie,
+            cookie: response.headers['set-cookie'][0].split(';')[0],
             term: this.term,
             year: this.year,
             week: this.week,

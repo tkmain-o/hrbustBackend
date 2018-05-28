@@ -38,7 +38,7 @@ function getUserName(params) {
         .charset()
         .set(browserMsg)
         .set('Cookie', result.cookie)
-        .redirects(0)
+        .redirects(1)
         .end((error, response) => {
           if (error) {
             params.callback({
