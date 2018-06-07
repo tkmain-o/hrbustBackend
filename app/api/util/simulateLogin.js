@@ -21,18 +21,18 @@ const mongoUtils = require('../../spider/mongoUtils');
 moment.locale('zh-cn');
 
 const url = {
-  login_url: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp',
-  captcha_url: 'http://jwzx.hrbust.edu.cn/academic/getCaptcha.do',
-  check_url: 'http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?',
-  index: 'http://jwzx.hrbust.edu.cn/academic/index.jsp',
-  indexHeader: 'http://jwzx.hrbust.edu.cn/academic/showHeader.do',
-  indexListLeft: 'http://jwzx.hrbust.edu.cn/academic/listLeft.do',
-  index_new: 'http://jwzx.hrbust.edu.cn/academic/index_new.jsp',
+  login_url: 'http://202.118.201.228/academic/common/security/login.jsp',
+  captcha_url: 'http://202.118.201.228/academic/getCaptcha.do',
+  check_url: 'http://202.118.201.228/academic/j_acegi_security_check?',
+  index: 'http://202.118.201.228/academic/index.jsp',
+  indexHeader: 'http://202.118.201.228/academic/showHeader.do',
+  indexListLeft: 'http://202.118.201.228/academic/listLeft.do',
+  index_new: 'http://202.118.201.228/academic/index_new.jsp',
 };
 // 浏览器请求报文头部部分信息
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://jwzx.hrbust.edu.cn',
+  Origin: 'http://202.118.201.228',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 let captchaCount = 0;
@@ -236,7 +236,7 @@ class SimulateLogin {
 
   updateMongo() {
     superagent
-      .get('http://jwzx.hrbust.edu.cn/academic/showHeader.do')
+      .get('http://202.118.201.228/academic/showHeader.do')
       .charset()
       .set(browserMsg)
       .set('Cookie', this.cookie)
@@ -262,7 +262,7 @@ class SimulateLogin {
   handlerError() {
     const promise = new Promise((resolve) => {
       superagent
-        .get('http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1')
+        .get('http://202.118.201.228/academic/common/security/login.jsp?login_error=1')
         .charset()
         .set(browserMsg)
         .set('Cookie', this.cookie)

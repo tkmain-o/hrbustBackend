@@ -18,7 +18,7 @@ const getRandomIp = () => {
 
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://jwzx.hrbust.edu.cn',
+  Origin: 'http://202.118.201.228',
   'Content-Type': 'application/x-www-form-urlencoded',
   'X-Forwarded-For': `${getRandomIp()}`,
 };

@@ -4,7 +4,7 @@ const superagent = charset(require('superagent'));
 
 const browserMsg = {
   // 'Accept-Encoding': 'gzip, deflate',
-  // Origin: 'http://jwzx.hrbust.edu.cn',
+  // Origin: 'http://202.118.201.228',
   // 'Content-Type': 'text/html',
   Referer: 'http://www.yingjiesheng.com/',
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
