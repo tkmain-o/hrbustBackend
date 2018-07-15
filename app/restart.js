@@ -3,6 +3,7 @@ const moment = require('moment');
 
 function restartHandler() {
   spawn('pm2', ['restart', '0']);
+  spawn('pm2', ['restart', 'xy-hrbust']);
 }
 
 function restart() {
@@ -11,7 +12,7 @@ function restart() {
   setInterval(() => {
     console.warn(`重新启动验证码 + ${moment().format()}`);
     restartHandler();
-  }, 30 * 60 * 1000);
+  }, 40 * 60 * 1000);
 }
 
 exports.restart = restart;
