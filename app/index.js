@@ -4,9 +4,10 @@ const request = require('request');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
+const restart = require('./restart').restart;
 
+restart();
 app.use(bodyParser.urlencoded({ extended: false }));
-
 const fileUpload = require('express-fileupload');
 
 app.use(fileUpload());
