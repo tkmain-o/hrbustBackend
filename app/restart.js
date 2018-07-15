@@ -12,7 +12,7 @@ function restart() {
   setInterval(() => {
     console.warn(`重新启动验证码 + ${moment().format()}`);
     restartHandler();
-  }, 40 * 60 * 1000);
+  }, 10 * 60 * 1000);
 }
 
 exports.restart = restart;

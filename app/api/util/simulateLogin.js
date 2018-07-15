@@ -132,7 +132,7 @@ class SimulateLogin {
 
   captcha(callback) {
     // const that = this;
-    const promise = new Promise((resolve) => {
+    const promise = new Promise(() => {
       superagent
         .get(url.captcha_url)
         .buffer(true)
@@ -151,9 +151,10 @@ class SimulateLogin {
               getCaptcha(captchaPath).then((result) => {
                 fs.unlinkSync(captchaPath);
                 if (result.error) {
-                  resolve({
-                    error: result.error,
-                  });
+                  // resolve({
+                  //   error: result.error,
+                  // });
+                  this.captcha(callback);
                   return;
                 }
                 let text = '';
@@ -167,10 +168,11 @@ class SimulateLogin {
                   return;
                 }
                 callback(text);
-              }).catch((e) => {
-                resolve({
-                  error: e,
-                });
+              }).catch(() => {
+                // resolve({
+                //   error: e,
+                // });
+                this.captcha(callback);
               });
             });
           }
