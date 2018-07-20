@@ -17,7 +17,7 @@ const getJobDetail = require('./edu-getJobHtml').getJobDetail;
 const getNewsList = require('./edu-getNewsHtml').getNewsList;
 const getNewsDetail = require('./edu-getNewsHtml').getNewsDetail;
 const library = require('./edu-library');
-const getNewStudentInfo = require('./edu-getNewStudentInfo');
+// const getNewStudentInfo = require('./edu-getNewStudentInfo');
 const message = require('./edu-message');
 const media = require('./media');
 const testEle = require('./test-ele');
@@ -170,7 +170,7 @@ router.get('/getCetCaptcha', getCetCaptcha);
 router.get('/getJob', getJob);
 router.get('/library', libraryRouter);
 
-router.get('/new_student_info', getNewStudentInfo);
+// router.get('/new_student_info', getNewStudentInfo);
 
 // message
 router.use('/message', message);
