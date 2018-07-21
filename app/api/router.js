@@ -17,6 +17,7 @@ const getJobDetail = require('./edu-getJobHtml').getJobDetail;
 const getNewsList = require('./edu-getNewsHtml').getNewsList;
 const getNewsDetail = require('./edu-getNewsHtml').getNewsDetail;
 const library = require('./edu-library');
+const { gaokaoluqu, luqukuaidi } = require('./edu-gaokaoluqu');
 // const getNewStudentInfo = require('./edu-getNewStudentInfo');
 const message = require('./edu-message');
 const media = require('./media');
@@ -149,6 +150,24 @@ function libraryRouter(req, res) {
   });
 }
 
+function gaokaoluquRouter(req, res) {
+  const name = req.query.name;
+  const id = req.query.id;
+  gaokaoluqu(name, id).then((result) => {
+    handleRes(result, res);
+  });
+}
+
+// function luqukuaidiRouter(req, res) {
+//   const checkCode = req.query.checkCode;
+//   const id = req.query.id;
+//   const cookie = req.query.cookie;
+//   luqukuaidi(id, checkCode, cookie).then((result) => {
+//     handleRes(result, res);
+//   });
+// }
+
+
 function home(req, res) {
   res.render('api/education/home');
 }
@@ -169,6 +188,8 @@ router.post('/getCet', getCet);
 router.get('/getCetCaptcha', getCetCaptcha);
 router.get('/getJob', getJob);
 router.get('/library', libraryRouter);
+router.get('/gaokaoluqu', gaokaoluquRouter);
+router.get('/luqukuaidi', luqukuaidi);
 
 // router.get('/new_student_info', getNewStudentInfo);
 
