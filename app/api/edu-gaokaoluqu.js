@@ -121,6 +121,9 @@ function luqukuaidi(req, res) {
         } else {
           const body = response.text;
           const $ = cheerio.load(body);
+          $('.ms').removeAttr('style');
+          $('style').remove();
+          $('.show_a').remove();
           // const list = [];
           // console.log(body);
           // getDetail(id).then((result) => {
@@ -132,13 +135,13 @@ function luqukuaidi(req, res) {
           let data = '';
           const errors = $('.errors');
           if (errors.text()) {
-            data = `<div>输入信息错误，请后退本页面，重新输入。</div><div>错误信息：${errors.text()}</div>`;
+            data = `<div class="info-wrapper"><div>输入信息错误，请后退本页面，重新输入。</div><div class="error">错误信息：${errors.text()}</div></div>`;
           } else {
-            data = $('table').html();
+            data = $('.body_content_container').html();
           }
-          res.render('site/news', {
+          res.render('site/luqukuaidi', {
             data,
-            title: '哈理工教务公告',
+            title: '哈理工录取信息查询',
           });
           // let data = null;
           // try {
