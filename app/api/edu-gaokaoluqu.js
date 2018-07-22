@@ -101,67 +101,69 @@ function luqukuaidi(req, res) {
   // console.log(id, checkCode, cookie);
   browserMsg['X-Forwarded-For'] = getRandomIp();
   const promise = new Promise((resolve) => {
-    superagent
-      .post(url)
-      .charset()
-      .send({
-        mailNum: id,
-        checkCode,
-      })
-      .set({
-        Cookie: cookie,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      })
-      .end((err, response) => {
-        if (err) {
-          console.error('get kuadi error');
-          resolve({
-            error: err,
-          });
-        } else {
-          const body = response.text;
-          const $ = cheerio.load(body);
-          $('.ms').removeAttr('style');
-          $('style').remove();
-          $('.show_a').remove();
-          // const list = [];
-          // console.log(body);
-          // getDetail(id).then((result) => {
-          //   res.render('site/news', {
-          //     data: result,
-          //     title: '哈理工教务公告',
-          //   });
-          // });
-          let data = '';
-          const errors = $('.errors');
-          if (errors.text()) {
-            data = `<div class="info-wrapper"><div>输入信息错误，请后退本页面，重新输入。</div><div class="error">错误信息：${errors.text()}</div></div>`;
+    setTimeout(() => {
+      superagent
+        .post(url)
+        .charset()
+        .send({
+          mailNum: id,
+          checkCode,
+        })
+        .set({
+          Cookie: cookie,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        })
+        .end((err, response) => {
+          if (err) {
+            console.error('get kuadi error');
+            resolve({
+              error: err,
+            });
           } else {
-            data = $('.body_content_container').html();
+            const body = response.text;
+            const $ = cheerio.load(body);
+            $('.ms').removeAttr('style');
+            $('style').remove();
+            $('.show_a').remove();
+            // const list = [];
+            // console.log(body);
+            // getDetail(id).then((result) => {
+            //   res.render('site/news', {
+            //     data: result,
+            //     title: '哈理工教务公告',
+            //   });
+            // });
+            let data = '';
+            const errors = $('.errors');
+            if (errors.text()) {
+              data = `<div class="info-wrapper"><div>输入信息错误，请后退本页面，重新输入。</div><div class="error">错误信息：${errors.text()}</div></div>`;
+            } else {
+              data = $('.body_content_container').html();
+            }
+            res.render('site/luqukuaidi', {
+              data,
+              title: '哈理工录取信息查询',
+            });
+            // let data = null;
+            // try {
+            //   data = JSON.parse(body);
+            // } catch (e) {
+            //   data = null;
+            // }
+            // if (!data || !data.list || data.list.length === 0) {
+            //   // 没有录取信息
+            //   resolve({
+            //     status: 0
+            //   });
+            // } else {
+            //   resolve({
+            //     status: 1,
+            //     data: data.list
+            //   });
+            // }
           }
-          res.render('site/luqukuaidi', {
-            data,
-            title: '哈理工录取信息查询',
-          });
-          // let data = null;
-          // try {
-          //   data = JSON.parse(body);
-          // } catch (e) {
-          //   data = null;
-          // }
-          // if (!data || !data.list || data.list.length === 0) {
-          //   // 没有录取信息
-          //   resolve({
-          //     status: 0
-          //   });
-          // } else {
-          //   resolve({
-          //     status: 1,
-          //     data: data.list
-          //   });
-          // }
-        }
-      });
+        });
+    }, 1000);
   });
   return promise;
 }
