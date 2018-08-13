@@ -204,9 +204,9 @@ class SimulateLogin {
         const location = response.headers.location;
         if (location === url.index || location === url.index_new) {
           console.warn('all good');
-
+          this.cookie = response.headers['set-cookie'][0].split(';')[0];
           this.callback({
-            cookie: response.headers['set-cookie'][0].split(';')[0],
+            cookie: this.cookie,
             term: this.term,
             year: this.year,
             week: this.week,
@@ -238,11 +238,11 @@ class SimulateLogin {
 
   updateMongo() {
     superagent
-      .get('http://202.118.201.228/academic/showHeader.do')
+      .get(url.indexHeader)
       .charset()
       .set(browserMsg)
       .set('Cookie', this.cookie)
-      .redirects(0)
+      // .redirects(2)
       .end((error, response) => {
         let name = '';
         if (!error) {
