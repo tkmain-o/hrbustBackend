@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node bin/www",
-    "dev": "./node_modules/.bin/nodemon bin/www",
+    "dev": "DEBUG=hrbust*, ./node_modules/.bin/nodemon --delay 1 bin/www",
     "prd": "pm2 start bin/www",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --fix ./"
@@ -23,6 +23,7 @@
     "koa-router": "^7.1.1",
     "koa-static": "^3.0.0",
     "koa-views": "^5.2.1",
+    "mongoose": "^5.2.8",
     "pug": "^2.0.0-rc.1"
   },
   "devDependencies": {

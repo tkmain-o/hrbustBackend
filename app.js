@@ -34,9 +34,19 @@ app.use(views(`${__dirname}/views`, {
 //   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 // });
 
+const routes = {
+  index: require('./routes/index'),
+  users: require('./routes/users'),
+};
+
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
+
+Object.keys(routes).forEach(key => {
+  const route = routes[key];
+  app.use(route.routes(), route.allowedMethods());
+});
 
 // error-handling
 app.on('error', (err, ctx) => {

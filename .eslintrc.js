@@ -7,6 +7,8 @@ module.exports = {
     "radix": ["error", "as-needed"],
     "linebreak-style": 0,
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": false}]
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": false}],
+    "global-require": 0,
+    "arrow-parens": 0,
   },
 };

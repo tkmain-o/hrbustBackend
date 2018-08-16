@@ -7,3 +7,5 @@ app/cacheImages/*.jpg
 python/image
 python/test_sample
 python/__pycache__/
+
+config/config.js
