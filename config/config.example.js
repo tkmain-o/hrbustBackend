@@ -13,4 +13,4 @@ module.exports = {
   },
   sessionSecret: '***',
   port: 8793,
-};
+}

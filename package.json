@@ -13,6 +13,7 @@
     "lint"
   ],
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "debug": "^2.6.3",
     "koa": "^2.2.0",
     "koa-bodyparser": "^3.2.0",
@@ -26,7 +27,9 @@
     "moment": "^2.22.2",
     "mongoose": "^5.2.8",
     "node-qiniu": "^6.2.0",
+    "node-xml2json": "^1.0.0",
     "pug": "^2.0.0-rc.1",
+    "request": "^2.88.0",
     "superagent": "^3.8.3",
     "superagent-charset": "^1.2.0",
     "uuid": "^3.3.2"
