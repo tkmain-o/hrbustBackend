@@ -8,8 +8,9 @@ const studentInfos = new mongoose.Schema({
   count: { type: Number, required: true },
   date: { type: String, required: true },
   name: { type: String, required: true },
+  cookie: { type: String },
 }, {
   timestamps: true,
 })
 
-module.exports = mongoose.model('studentInfos', studentInfos)
+module.exports = mongoose.model('StudentInfos', studentInfos)
