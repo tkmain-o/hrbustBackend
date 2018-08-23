@@ -128,7 +128,7 @@ function getCet(req, res) {
   const name = req.body.name;
   const id = req.body.id;
   const username = req.body.username;
-  const cookie = req.body.cookie;
+  const cookie = req.body.cookie || '';
   const yzm = req.body.yzm;
   eduGetCet.getCet(name, id, username, yzm, cookie.split(',')).then((result) => {
     handleRes(result, res);
