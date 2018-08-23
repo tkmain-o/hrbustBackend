@@ -13,7 +13,6 @@ const browserMsg = {
 
 
 function getStudentId(cookie) {
-  // console.log(cookie);
   return new Promise((resolve) => {
     superagent
       .get('http://202.118.201.228/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000')
@@ -149,7 +148,7 @@ function getCourse(params) {
       });
     } else {
       getStudentId(result.cookie).then((getCourseUrl) => {
-        handlerGetCourse(`${getCourseUrl}&termid=${params.term}&yearid=${params.year}`, result.cookie, (res) => {
+        handlerGetCourse(`${getCourseUrl}&termid=${params.term || 2}&yearid=${params.year || 38}`, result.cookie, (res) => {
           params.callback(Object.assign(res, { thisWeek: result.thisWeek }));
         });
       });
