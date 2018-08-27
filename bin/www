@@ -4,44 +4,44 @@
  * Module dependencies.
  */
 
-const http = require('http');
-const mongoose = require('mongoose');
-const debug = require('debug')('hrbust-backend:server');
-const { mongodb } = require('../utils');
-const { port } = require('../config/config');
-const app = require('../app');
+const http = require('http')
+const mongoose = require('mongoose')
+const debug = require('debug')('hrbust-backend:server')
+const { mongodb } = require('../utils')
+const { port } = require('../config/config')
+const app = require('../app')
 
 /**
  * Create HTTP server.
  */
 
-const server = http.createServer(app.callback());
+const server = http.createServer(app.callback())
 
 /**
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError (error) {
   if (error.syscall !== 'listen') {
-    throw error;
+    throw error
   }
 
   const bind = typeof port === 'string'
     ? `Pipe ${port}`
-    : `Port ${port}`;
+    : `Port ${port}`
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      debug(`${bind} requires elevated privileges`);
-      process.exit(1);
-      break;
+      debug(`${bind} requires elevated privileges`)
+      process.exit(1)
+      break
     case 'EADDRINUSE':
-      debug(`${bind} is already in use`);
-      process.exit(1);
-      break;
+      debug(`${bind} is already in use`)
+      process.exit(1)
+      break
     default:
-      throw error;
+      throw error
   }
 }
 
@@ -49,30 +49,30 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
-  const addr = server.address();
+function onListening () {
+  const addr = server.address()
   const bind = typeof addr === 'string'
     ? addr
-    : addr.port;
-  debug(`Listening on http://localhost:${bind}`);
+    : addr.port
+  debug(`Listening on http://localhost:${bind}`)
 }
 /**
  * 处理错误
  */
-function debugEr(er) {
-  debug(`find an error : ${er}`);
+function debugEr (er) {
+  debug(`find an error : ${er}`)
 }
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise
 mongoose
   .connect(mongodb, { useNewUrlParser: true })
   .then(() => {
-    server.listen(port);
-    server.on('error', onError);
-    server.on('listening', onListening);
-    debug('server process starting');
+    server.listen(port)
+    server.on('error', onError)
+    server.on('listening', onListening)
+    debug('server process starting')
   })
-  .catch(debugEr);
+  .catch(debugEr)
