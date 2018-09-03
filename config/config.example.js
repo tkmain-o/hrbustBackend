@@ -13,4 +13,6 @@ module.exports = {
   },
   sessionSecret: '***',
   port: 8793,
+  AppID: '*****',
+  AppSecret: '******',
 }
