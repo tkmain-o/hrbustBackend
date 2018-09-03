@@ -5,19 +5,17 @@ const app = new Koa()
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
+// const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-
-const index = require('./routes/index')
-const users = require('./routes/users')
-
+const body = require('koa-better-body')
 // error handler
 onerror(app)
 
 // middlewares
-app.use(bodyparser({
-  enableTypes: ['json', 'form', 'text'],
-}))
+// app.use(bodyparser({
+//   enableTypes: ['json', 'form', 'text'],
+// }))
+app.use(body())
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(`${__dirname}/public`))
@@ -25,6 +23,34 @@ app.use(require('koa-static')(`${__dirname}/public`))
 app.use(views(`${__dirname}/views`, {
   extension: 'pug',
 }))
+
+// error wrapper
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (e) {
+    switch (e.status) {
+      case 204: // No Content
+      case 400: // Bad Request
+      case 401: // Unauthorized
+        ctx.status = e.status
+        break
+      case 403: // Forbidden
+      case 404: // Not Found
+      case 406: // Not Acceptable
+      case 409: // Conflict
+        ctx.status = e.status
+        ctx.body = e.message
+        break
+      default:
+      case 500: // Internal Server Error
+        console.error(e.stack)
+        ctx.status = e.status || 500
+        ctx.body = app.env === 'development' ? e.stack : e.message
+        break
+    }
+  }
+})
 
 // logger
 // app.use(async (ctx, next) => {
@@ -37,11 +63,15 @@ app.use(views(`${__dirname}/views`, {
 const routes = {
   index: require('./routes/index'),
   users: require('./routes/users'),
+  // 公共 api
+  api: require('./routes/api'),
+  // 哈理工 api
+  hrbust: require('./routes/hrbust'),
 }
 
 // routes
-app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
+// app.use(index.routes(), index.allowedMethods())
+// app.use(users.routes(), users.allowedMethods())
 
 Object.keys(routes).forEach(key => {
   const route = routes[key]
