@@ -1,0 +1,20 @@
+{
+  "apps": [{
+    "name": "hrbust-server",
+    "script": "./bin/www",
+    "env": {
+      "GLOBAL_ENV": "dev"
+    },
+    "env_production": {
+      "GLOBAL_ENV": "pro"
+    },
+    "env_test": {
+      "GLOBAL_ENV": "test"
+    }
+  }, {
+    "name": "python-server",
+    "interpreter": "python3",
+    "cwd": "./python",
+    "script": "server.py",
+  }]
+}
