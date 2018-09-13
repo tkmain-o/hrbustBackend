@@ -5,17 +5,30 @@ const app = new Koa()
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
-// const bodyparser = require('koa-bodyparser')
+const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-const body = require('koa-better-body')
+const session = require('koa-session-minimal')
+const MongoStore = require('koa-generic-session-mongo')
+const { keys } = require('./config/config')
+const { mongodb } = require('./utils')
+// const WXBizDataCrypt = require('../../utils/WXBizDataCrypt')
+
 // error handler
 onerror(app)
 
+app.keys = keys
+
+app.use(session({
+  store: new MongoStore({
+    url: mongodb,
+  }),
+}))
+
 // middlewares
-// app.use(bodyparser({
-//   enableTypes: ['json', 'form', 'text'],
-// }))
-app.use(body())
+app.use(bodyparser({
+  enableTypes: ['json', 'form', 'text'],
+}))
+
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(`${__dirname}/public`))
@@ -23,6 +36,12 @@ app.use(require('koa-static')(`${__dirname}/public`))
 app.use(views(`${__dirname}/views`, {
   extension: 'pug',
 }))
+
+// session
+//
+// app.use(async (ctx, next) => {
+//   console.log(ctx.session)
+// })
 
 // error wrapper
 app.use(async (ctx, next) => {
@@ -34,6 +53,7 @@ app.use(async (ctx, next) => {
       case 400: // Bad Request
       case 401: // Unauthorized
         ctx.status = e.status
+        ctx.body = e.message
         break
       case 403: // Forbidden
       case 404: // Not Found
