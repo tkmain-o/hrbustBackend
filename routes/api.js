@@ -1,19 +1,17 @@
 const router = require('koa-router')()
-const wxLogin = require('./api/wx-login')
+const { wxLogin, updateUserInfo } = require('../controller/wechat/wx-login')
 
 router.prefix('/api')
 
-router.get('/wx-login', async (ctx) => {
-  const { code } = ctx.request.query
-  if (!code) ctx.throw(500)
-  await wxLogin(ctx)
-})
+router.get('/wx-login', async (ctx) => wxLogin(ctx))
 
-router.get('/login', async (ctx) => {
-  const { code } = ctx.request.query
-  if (!code) ctx.throw(500)
-  await wxLogin(ctx)
-})
+router.put('/userinfo', async (ctx) => updateUserInfo(ctx))
+
+// router.get('/login', async (ctx) => {
+//   const { code } = ctx.request.query
+//   if (!code) ctx.throw(500)
+//   await wxLogin(ctx)
+// })
 
 
 // router.get('/login', async (ctx) => {
