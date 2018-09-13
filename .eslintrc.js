@@ -1,6 +1,7 @@
 module.exports = {
   "extends": "airbnb-base",
   "rules": {
+    "camelcase": 0,
     "new-cap": ["error", { "capIsNew": false }],
     "no-console": [2, { "allow": ["warn", "error"] }],
     "radix": ["error", "as-needed"],
