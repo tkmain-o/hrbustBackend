@@ -7,10 +7,13 @@ router.get('/', async (ctx) => {
 })
 
 router.get('/string', async (ctx) => {
-  ctx.body = 'koa2 string'
+  ctx.body = ctx.session.id || 'fsdjfkhds'
 })
-
+let count = 0
 router.get('/json', async (ctx) => {
+  ctx.session.id = count
+  count += 1
+  // ctx.cookie = ctx.session.cookie
   ctx.body = {
     title: 'koa2 json',
   }
