@@ -15,4 +15,5 @@ module.exports = {
   port: 8793,
   AppID: '*****',
   AppSecret: '******',
+  keys: ['***', '***'],
 }
