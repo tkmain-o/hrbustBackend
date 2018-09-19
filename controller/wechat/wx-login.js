@@ -28,10 +28,12 @@ const wxLogin = async (ctx) => {
     // 微信鉴权
     const data = await getWxAuthorization(code)
     // 更新数据库用户信息
-    const user = await User.findByOpenIdAndUpdateUserInfo(data)
+    await User.findOneAndUpdate({ openid: data.openid }, data, {
+      upsert: true,
+    })
     // 更新 session
-    ctx.session.session_key = user.session_key
-    ctx.session.openid = user.openid
+    ctx.session.session_key = data.session_key
+    ctx.session.openid = data.openid
     ctx.body = {
       status: 200,
       message: 'ok',
@@ -61,6 +63,15 @@ const updateUserInfo = async (ctx) => {
       openid,
       session_key,
       userInfo: wxData,
+    })
+    await User.findOneAndUpdate({
+      openid,
+    }, {
+      openid,
+      session_key,
+      userInfo: wxData,
+    }, {
+      upsert: true,
     })
     ctx.body = {
       status: 200,
