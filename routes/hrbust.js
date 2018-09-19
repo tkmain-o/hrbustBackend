@@ -1,14 +1,21 @@
 const router = require('koa-router')()
-const login = require('../controller/hrbust/login')
+const {
+  login,
+  getCaptcha,
+  getWeek,
+} = require('../controller/hrbust/login')
+
+const getCourse = require('../controller/hrbust/course')
 
 router.prefix('/api/hrbust')
 
-router.get('/login', async (ctx) => {
-  const { username, password } = ctx.request.query
-  if (!username || !password) ctx.throw(400, '请求参数错误，登录需要用户名和密码')
-  await login(ctx)
-})
+router.get('/login', ctx => login(ctx))
 
+router.get('/captcha', ctx => getCaptcha(ctx))
+
+router.get('/week', ctx => getWeek(ctx))
+
+router.get('/course', ctx => getCourse(ctx))
 
 // router.get('/login', async (ctx) => {
 //   const { code } = ctx.request.query
