@@ -1,3 +1,7 @@
+/*
+  用户信息
+*/
+
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
@@ -8,10 +12,10 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  students: [{
+  student: {
     type: Schema.Types.ObjectId,
-    ref: 'StudentInfos',
-  }],
+    ref: 'Students',
+  },
   userInfo: {
     nickName: String,
     gender: String,
@@ -53,6 +57,6 @@ class UserClass {
 }
 UserSchema.loadClass(UserClass)
 
-const User = mongoose.model('User', UserSchema)
+const User = mongoose.model('Users', UserSchema)
 
 module.exports = User

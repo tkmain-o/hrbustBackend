@@ -1,5 +1,5 @@
 const request = require('request')
-const User = require('../../models/user')
+const User = require('../../models/Users')
 const { AppID, AppSecret } = require('../../config/config')
 const WXBizDataCrypt = require('../../utils/WXBizDataCrypt')
 
