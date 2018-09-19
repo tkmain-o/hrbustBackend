@@ -21,7 +21,7 @@ const getWxAuthorization = (code) => {
   })
 }
 
-async function wxLogin (ctx) {
+const wxLogin = async (ctx) => {
   const { code } = ctx.request.query
   if (!code) ctx.throw(401, 'no jscode')
   try {
@@ -42,7 +42,7 @@ async function wxLogin (ctx) {
 }
 
 // 更新用户信息：头像、名字等
-async function updateUserInfo (ctx) {
+const updateUserInfo = async (ctx) => {
   const { userInfo } = ctx.request.body
   const data = JSON.parse(userInfo)
   const { openid, session_key } = ctx.session
@@ -71,7 +71,17 @@ async function updateUserInfo (ctx) {
   }
 }
 
+const checkLogin = (ctx) => {
+  ctx.body = {
+    data: {
+      isLogin: !!(ctx.session.openid && ctx.session.session_key),
+    },
+    status: 200,
+  }
+}
+
 module.exports = {
   wxLogin,
   updateUserInfo,
+  checkLogin,
 }
