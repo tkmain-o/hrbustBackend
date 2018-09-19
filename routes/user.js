@@ -1,12 +1,12 @@
 const router = require('koa-router')()
-const { wxLogin, updateUserInfo, checkLogin } = require('../controller/wechat/wx-login')
+const { wxLogin, updateUserInfo, getUserInfo } = require('../controller/user/wx-login')
 
-router.prefix('/api/wechat')
+router.prefix('/api/user')
 
 router.get('/wx-login', async (ctx) => wxLogin(ctx))
 
 router.put('/userinfo', async (ctx) => updateUserInfo(ctx))
 
-router.get('/login/check', async (ctx) => checkLogin(ctx))
+router.get('/userinfo', async (ctx) => getUserInfo(ctx))
 
 module.exports = router

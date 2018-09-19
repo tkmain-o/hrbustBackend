@@ -1,5 +1,6 @@
 const request = require('request')
-const User = require('../../models/Users')
+const Users = require('../../models/Users')
+const Students = require('../../models/Students')
 const { AppID, AppSecret } = require('../../config/config')
 const WXBizDataCrypt = require('../../utils/WXBizDataCrypt')
 
@@ -28,7 +29,7 @@ const wxLogin = async (ctx) => {
     // 微信鉴权
     const data = await getWxAuthorization(code)
     // 更新数据库用户信息
-    await User.findOneAndUpdate({ openid: data.openid }, data, {
+    await Users.findOneAndUpdate({ openid: data.openid }, data, {
       upsert: true,
     })
     // 更新 session
@@ -59,12 +60,12 @@ const updateUserInfo = async (ctx) => {
 
   try {
     // 更新用户信息
-    await User.findByOpenIdAndUpdateUserInfo({
-      openid,
-      session_key,
-      userInfo: wxData,
-    })
-    await User.findOneAndUpdate({
+    // await Users.findByOpenIdAndUpdateUserInfo({
+    //   openid,
+    //   session_key,
+    //   userInfo: wxData,
+    // })
+    await Users.findOneAndUpdate({
       openid,
     }, {
       openid,
@@ -82,10 +83,42 @@ const updateUserInfo = async (ctx) => {
   }
 }
 
-const checkLogin = (ctx) => {
+// 获取用户信息
+const getUserInfo = async (ctx) => {
+  const { openid, session_key, username } = ctx.session
+  if (!(openid && session_key)) {
+    ctx.body = {
+      data: {
+        isLogin: false,
+      },
+      status: 200,
+    }
+    return
+  }
+  let studentInfo = {
+    username,
+  }
+  if (!username) {
+    const user = await Users.findOne({
+      openid,
+    }).populate({ path: 'student' })
+    const student = user.student
+    ctx.session.username = student.username
+    studentInfo = {
+      username,
+      name: student.name,
+    }
+  } else {
+    const student = await Students.findOne({
+      username,
+    })
+    studentInfo.name = student.name
+  }
+
   ctx.body = {
     data: {
       isLogin: !!(ctx.session.openid && ctx.session.session_key),
+      studentInfo,
     },
     status: 200,
   }
@@ -94,5 +127,5 @@ const checkLogin = (ctx) => {
 module.exports = {
   wxLogin,
   updateUserInfo,
-  checkLogin,
+  getUserInfo,
 }

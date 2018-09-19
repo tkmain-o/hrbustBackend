@@ -50,7 +50,7 @@ app.use(views(`${__dirname}/views`, {
 app.use(async (ctx, next) => {
   ctx.session.count = ctx.session.count ? ctx.session.count + 1 : 1
   try {
-    if (ctx.request.path.indexOf('/api/wechat') < 0 && !ctx.session.openid) {
+    if (ctx.request.path.indexOf('/api/user') < 0 && !ctx.session.openid) {
       // 未登录
       ctx.throw(401, '微信登录失效')
       return
@@ -91,9 +91,9 @@ app.use(async (ctx, next) => {
 
 const routes = {
   index: require('./routes/index'),
-  users: require('./routes/users'),
+  // users: require('./routes/users'),
   // 公共 api
-  api: require('./routes/api'),
+  user: require('./routes/user'),
   // 哈理工 api
   hrbust: require('./routes/hrbust'),
 }
