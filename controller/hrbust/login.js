@@ -1,8 +1,6 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
-const { requestHeader, url } = require('../../utils/hrbust')
-
-const SimulateLogin = require('../../utils/SimulateLogin')
+const { requestHeader, url, SimulateLogin } = require('../../utils/hrbust')
 
 // 登录处理函数
 async function login (ctx) {

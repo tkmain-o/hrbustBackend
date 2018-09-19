@@ -1,8 +1,10 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
-const { requestHeader, url } = require('../../utils/hrbust')
-const SimulateLogin = require('../../utils/SimulateLogin')
-
+const {
+  requestHeader,
+  url,
+  checkLoginStatus,
+} = require('../../utils/hrbust')
 
 // 获取学生id，获取课程表的时候需要用到
 const getStudentId = cookie => superagent
@@ -54,7 +56,7 @@ const getCourse = async (ctx) => {
   const cookie = ctx.session.hrbustCookie
   const { term, year } = ctx.query
 
-  const isLogin = await SimulateLogin.checkLoginStatus(ctx)
+  const isLogin = await checkLoginStatus(ctx)
 
   if (!isLogin) {
     return false
