@@ -18,7 +18,7 @@ const getRandomIp = () => {
 
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://202.118.201.228',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
   'X-Forwarded-For': `${getRandomIp()}`,
 };
@@ -30,7 +30,7 @@ function checkMongoAndPushQiniu(item) {
       id: item.id,
     }).then((result) => {
       if (!result) {
-        const url = `http://202.118.201.228/homepage/infoSingleArticle.do?articleId=${item.id}&columnId=354`;
+        const url = `http://jwzx.hrbust.edu.cn/homepage/infoSingleArticle.do?articleId=${item.id}&columnId=354`;
         log.info(url);
         pushQiniuImage(url, item.imageName).then(() => {
           resolve({
@@ -87,7 +87,7 @@ function handleUpdateImage(dataList) {
 }
 
 function newsSpider(maxId, page, list) {
-  let url = 'http://202.118.201.228/homepage/infoArticleList.do?columnId=354';
+  let url = 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354';
 
   const dataList = list || [];
   const pageNum = page || 1;

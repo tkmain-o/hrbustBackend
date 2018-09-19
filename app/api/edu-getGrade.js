@@ -7,7 +7,7 @@ const gradeData = require('./util/getTestData').gradeData;
 // 浏览器请求报文头部部分信息
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://202.118.201.228',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
@@ -20,7 +20,7 @@ function handleGrade(cookie, year, term) {
       data.para = 0;
     }
     superagent
-      .post('http://202.118.201.228/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020')
+      .post('http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020')
       .charset()
       .send(data)
       .set(browserMsg)

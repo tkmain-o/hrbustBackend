@@ -46,7 +46,7 @@ app.use('/api', require('./api/router'));
 // app.use(require('errors/not-found'));
 
 app.use('/homepage', (req, res) => {
-  req.pipe(request(`http://202.118.201.228/homepage/${req.url}`)).pipe(res);
+  req.pipe(request(`http://jwzx.hrbust.edu.cn/homepage/${req.url}`)).pipe(res);
 });
 
 module.exports = app;

@@ -7,7 +7,7 @@ const courseData = require('./util/getTestData').courseData;
 // 浏览器请求报文头部部分信息
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://202.118.201.228',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
@@ -16,7 +16,7 @@ function getStudentId(cookie) {
   // console.log(cookie);
   return new Promise((resolve) => {
     superagent
-      .get('http://202.118.201.228/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000')
+      .get('http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000')
       .charset()
       .set(browserMsg)
       .set('Cookie', cookie)
@@ -29,7 +29,7 @@ function getStudentId(cookie) {
           const $ = cheerio.load(body);
           const str = $('.button')[0].attribs.onclick;
           const id = str.match(/id=(\S*)&yearid/) ? str.match(/id=(\S*)&yearid/)[1] : 0;
-          const getCourseUrl = `http://202.118.201.228/academic/manager/coursearrange/showTimetable.do?id=${id}&timetableType=STUDENT&sectionType=COMBINE`;
+          const getCourseUrl = `http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=${id}&timetableType=STUDENT&sectionType=COMBINE`;
           resolve(getCourseUrl);
         }
       });

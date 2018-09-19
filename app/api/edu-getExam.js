@@ -7,12 +7,12 @@ const getExamData = require('./util/getTestData').getExamData;
 // 浏览器请求报文头部部分信息
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://202.118.201.228',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
 function handleExam(cookie, page) {
-  const url = `http://202.118.201.228/academic/manager/examstu/studentQueryAllExam.do?pagingPageVLID=${page || 1}&pagingNumberPerVLID=10&sortDirectionVLID=-1&sortColumnVLID=s.examRoom.exam.endTime&`;
+  const url = `http://jwzx.hrbust.edu.cn/academic/manager/examstu/studentQueryAllExam.do?pagingPageVLID=${page || 1}&pagingNumberPerVLID=10&sortDirectionVLID=-1&sortColumnVLID=s.examRoom.exam.endTime&`;
   const promise = new Promise((resolve) => {
     const data = {};
     superagent

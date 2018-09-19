@@ -6,7 +6,7 @@ const superagent = charset(require('superagent'));
 // 浏览器请求报文头部部分信息
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://202.118.201.228',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
@@ -34,7 +34,7 @@ function getUserName(params) {
       });
     } else {
       superagent
-        .get('http://202.118.201.228/academic/showHeader.do')
+        .get('http://jwzx.hrbust.edu.cn/academic/showHeader.do')
         .charset()
         .set(browserMsg)
         .set('Cookie', result.cookie)

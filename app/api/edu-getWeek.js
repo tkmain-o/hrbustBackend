@@ -4,7 +4,7 @@ const superagent = charset(require('superagent'));
 
 const browserMsg = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://202.118.201.228',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 };
 
@@ -12,7 +12,7 @@ const browserMsg = {
 function getWeek() {
   const promise = new Promise((resolve) => {
     superagent
-      .get('http://202.118.201.228/academic/listLeft.do')
+      .get('http://jwzx.hrbust.edu.cn/academic/listLeft.do')
       .charset()
       .set(browserMsg)
       .end((err, response) => {
