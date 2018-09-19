@@ -9,9 +9,12 @@ const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const session = require('koa-session-minimal')
 const MongoStore = require('koa-generic-session-mongo')
+const moment = require('moment')
 const { keys } = require('./config/config')
 const { mongodb } = require('./utils')
 // const WXBizDataCrypt = require('../../utils/WXBizDataCrypt')
+app.proxy = true
+moment.locale('zh-cn')
 
 // error handler
 onerror(app)
@@ -45,22 +48,28 @@ app.use(views(`${__dirname}/views`, {
 
 // error wrapper
 app.use(async (ctx, next) => {
+  ctx.session.count = ctx.session.count ? ctx.session.count + 1 : 1
   try {
+    if (ctx.request.path.indexOf('/api/wechat') < 0 && !ctx.session.openid) {
+      // 未登录
+      ctx.throw(401, '微信登录失效')
+      return
+    }
     await next()
   } catch (e) {
     switch (e.status) {
       case 204: // No Content
       case 400: // Bad Request
       case 401: // Unauthorized
-        ctx.status = e.status
-        ctx.body = e.message
-        break
       case 403: // Forbidden
       case 404: // Not Found
       case 406: // Not Acceptable
       case 409: // Conflict
         ctx.status = e.status
-        ctx.body = e.message
+        ctx.body = {
+          message: e.message,
+          status: e.status,
+        }
         break
       default:
       case 500: // Internal Server Error
