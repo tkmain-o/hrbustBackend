@@ -3,6 +3,7 @@ const charset = require('superagent-charset')
 const superagent = charset(require('superagent'))
 const moment = require('moment')
 const Students = require('../models/Students')
+const Users = require('../models/Users')
 // const fs = require('fs')
 // const path = require('path')
 
@@ -50,12 +51,14 @@ class SimulateLogin {
       simulateIp,
       cookie = '',
       captcha = '',
+      openid = '',
     } = option
     this.autoCaptcha = autoCaptcha
     this.username = username
     this.password = password
     this.captcha = captcha
     this.cookie = cookie
+    this.openid = openid
     if (simulateIp) {
       requestHeader['X-Forwarded-For'] = simulateIp
     }
@@ -266,34 +269,35 @@ class SimulateLogin {
       })
   }
 
+  // 登录成功更新数据库信息
   updateDB () {
-    superagent
+    return superagent
       .get(url.indexHeader)
       .charset()
       .set(requestHeader)
       .set('Cookie', this.cookie)
-      // .redirects(2)
-      .end((error, response) => {
-        let name = ''
-        if (!error) {
-          const body = response.text
-          const $ = cheerio.load(body)
-          name = $('#greeting span').text().split('(')[0]
-        }
-        Students.findAndUpdate({
+      .then(async (response) => {
+        const body = response.text
+        const $ = cheerio.load(body)
+        const name = $('#greeting span').text().split('(')[0]
+
+        const student = await Students.findOneAndUpdate({
+          username: this.username,
+        }, {
           username: this.username,
           password: this.password,
           name,
+        }, {
+          upsert: true,
+          returnNewDocument: true,
         })
-        // mongoUtils.isExisted('StudentInfos', { id: this.username }).then((isExisted) => {
-        //   if (isExisted) {
-        //     mongoUtils.update('StudentInfos', { id: this.username }, { $inc: { count: 1 }, $set: { date: moment().format() }, password: this.password })
-        //   } else {
-        //     mongoUtils.insert('StudentInfos', {
-        //       id: this.username, password: this.password, date: moment().format(), count: 1, name,
-        //     })
-        //   }
-        // })
+        if (this.openid) {
+          await Users.findOneAndUpdate({
+            openid: this.openid,
+          }, {
+            student,
+          })
+        }
       })
   }
 
