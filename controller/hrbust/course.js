@@ -1,5 +1,7 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
+// const Students = require('../../models/Students')
+
 const {
   requestHeader,
   url,
@@ -165,6 +167,10 @@ const getCourse = async (ctx) => {
       })
       result = Object.assign(result, { noArrangement, lessonList })
       // callback(result);
+      // Students.findOneAndUpdate({
+      //   username:
+      // })
+
       ctx.body = {
         data: result,
         status: 200,

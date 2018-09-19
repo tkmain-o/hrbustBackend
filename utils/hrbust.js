@@ -255,6 +255,8 @@ class SimulateLogin {
         if (location === url.index || location === url.index_new) {
           console.warn('login good')
           this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
+
+          // 更新数据库
           this.updateDB()
           return Promise.resolve({
             cookie: this.cookie,
@@ -265,7 +267,7 @@ class SimulateLogin {
           // save student infomation to mongo
           // this.updateMongo()
         }
-        return this.handlerError()
+        return this.errorHandler()
       })
   }
 
@@ -281,6 +283,7 @@ class SimulateLogin {
         const $ = cheerio.load(body)
         const name = $('#greeting span').text().split('(')[0]
 
+        // 更新Student数据库
         const student = await Students.findOneAndUpdate({
           username: this.username,
         }, {
@@ -291,6 +294,8 @@ class SimulateLogin {
           upsert: true,
           returnNewDocument: true,
         })
+
+        // 同步更新User数据库，关联student
         if (this.openid) {
           await Users.findOneAndUpdate({
             openid: this.openid,
@@ -301,7 +306,8 @@ class SimulateLogin {
       })
   }
 
-  handlerError () {
+  // 登录错误处理
+  errorHandler () {
     const promise = new Promise((resove, reject) => {
       superagent
         .get(url.loginError)
