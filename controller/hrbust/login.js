@@ -19,6 +19,7 @@ async function login (ctx) {
       cookie,
       captcha,
       autoCaptcha: false,
+      openid: ctx.session.openid,
     })
     const result = await Login.login()
     // console.log(result)
