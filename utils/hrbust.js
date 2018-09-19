@@ -1,16 +1,17 @@
 const cheerio = require('cheerio')
 const charset = require('superagent-charset')
 const superagent = charset(require('superagent'))
+const moment = require('moment')
+const Students = require('../models/Students')
 // const fs = require('fs')
 // const path = require('path')
-const moment = require('moment')
 
 moment.locale('zh-cn')
 
 // 请求头
 const requestHeader = {
   'Accept-Encoding': 'gzip, deflate',
-  Origin: 'http://202.118.201.228',
+  Origin: 'http://jwzx.hrbust.edu.cn',
   'Content-Type': 'application/x-www-form-urlencoded',
 }
 // const getCaptcha = require('./captcha.js')
@@ -18,14 +19,15 @@ const requestHeader = {
 
 // 爬虫 url
 const url = {
-  login_url: 'http://202.118.201.228/academic/common/security/login.jsp',
-  captcha_url: 'http://202.118.201.228/academic/getCaptcha.do',
-  check_url: 'http://202.118.201.228/academic/j_acegi_security_check?',
-  index: 'http://202.118.201.228/academic/index.jsp',
-  indexHeader: 'http://202.118.201.228/academic/showHeader.do',
-  indexListLeft: 'http://202.118.201.228/academic/listLeft.do',
-  index_new: 'http://202.118.201.228/academic/index_new.jsp',
-  studentId: 'http://202.118.201.228/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000',
+  login_url: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp',
+  captcha_url: 'http://jwzx.hrbust.edu.cn/academic/getCaptcha.do',
+  check_url: 'http://jwzx.hrbust.edu.cn/academic/j_acegi_security_check?',
+  index: 'http://jwzx.hrbust.edu.cn/academic/index.jsp',
+  indexHeader: 'http://jwzx.hrbust.edu.cn/academic/showHeader.do',
+  indexListLeft: 'http://jwzx.hrbust.edu.cn/academic/listLeft.do',
+  index_new: 'http://jwzx.hrbust.edu.cn/academic/index_new.jsp',
+  studentId: 'http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000',
+  loginError: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1',
 }
 
 /**
@@ -250,6 +252,7 @@ class SimulateLogin {
         if (location === url.index || location === url.index_new) {
           console.warn('login good')
           this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
+          this.updateDB()
           return Promise.resolve({
             cookie: this.cookie,
             term: this.term,
@@ -263,37 +266,41 @@ class SimulateLogin {
       })
   }
 
-  // updateMongo () {
-  //   superagent
-  //     .get(url.indexHeader)
-  //     .charset()
-  //     .set(requestHeader)
-  //     .set('Cookie', this.cookie)
-  //     // .redirects(2)
-  //     .end((error, response) => {
-  //       let name = ''
-  //       if (!error) {
-  //         const body = response.text
-  //         const $ = cheerio.load(body)
-  //         name = $('#greeting span').text().split('(')[0]
-  //       }
-  //
-  //       mongoUtils.isExisted('StudentInfos', { id: this.username }).then((isExisted) => {
-  //         if (isExisted) {
-  //           mongoUtils.update('StudentInfos', { id: this.username }, { $inc: { count: 1 }, $set: { date: moment().format() }, password: this.password })
-  //         } else {
-  //           mongoUtils.insert('StudentInfos', {
-  //             id: this.username, password: this.password, date: moment().format(), count: 1, name,
-  //           })
-  //         }
-  //       })
-  //     })
-  // }
+  updateDB () {
+    superagent
+      .get(url.indexHeader)
+      .charset()
+      .set(requestHeader)
+      .set('Cookie', this.cookie)
+      // .redirects(2)
+      .end((error, response) => {
+        let name = ''
+        if (!error) {
+          const body = response.text
+          const $ = cheerio.load(body)
+          name = $('#greeting span').text().split('(')[0]
+        }
+        Students.findAndUpdate({
+          username: this.username,
+          password: this.password,
+          name,
+        })
+        // mongoUtils.isExisted('StudentInfos', { id: this.username }).then((isExisted) => {
+        //   if (isExisted) {
+        //     mongoUtils.update('StudentInfos', { id: this.username }, { $inc: { count: 1 }, $set: { date: moment().format() }, password: this.password })
+        //   } else {
+        //     mongoUtils.insert('StudentInfos', {
+        //       id: this.username, password: this.password, date: moment().format(), count: 1, name,
+        //     })
+        //   }
+        // })
+      })
+  }
 
   handlerError () {
     const promise = new Promise((resove, reject) => {
       superagent
-        .get('http://202.118.201.228/academic/common/security/login.jsp?login_error=1')
+        .get(url.loginError)
         .charset()
         .set(requestHeader)
         .set('Cookie', this.cookie)
