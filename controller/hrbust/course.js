@@ -19,7 +19,7 @@ const getStudentId = cookie => superagent
     const $ = cheerio.load(body)
     const str = $('.button')[0].attribs.onclick
     const id = str.match(/id=(\S*)&yearid/) ? str.match(/id=(\S*)&yearid/)[1] : 0
-    const getCourseUrl = `http://202.118.201.228/academic/manager/coursearrange/showTimetable.do?id=${id}&timetableType=STUDENT&sectionType=COMBINE`
+    const getCourseUrl = `http://jwzx.hrbust.edu.cn/academic/manager/coursearrange/showTimetable.do?id=${id}&timetableType=STUDENT&sectionType=COMBINE`
     return getCourseUrl
   })
 
@@ -65,7 +65,6 @@ const getCourse = async (ctx) => {
   }
 
   const getCourseUrl = await getStudentId(cookie)
-
   return superagent
     .get(`${getCourseUrl}&termid=${term}&yearid=${year}`)
     .charset()
