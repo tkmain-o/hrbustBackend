@@ -17,36 +17,12 @@ const StudentSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Schools',
   },
+  course: {
+    type: Object,
+  },
   // cookie: { type: String },
 }, {
   timestamps: true,
 })
-
-class StudentClass {
-  static async findAndUpdate (data) {
-    // 查找是否有该用户，如果有更新用户信息，如果没有新建
-    const { username } = data
-    let user = await this.findOne({
-      username,
-    })
-    let result
-    if (user) {
-      user.set({
-        ...data,
-      })
-      user.update({
-        $inc: { count: 1 },
-      })
-      result = await user.save()
-    } else {
-      const u = new this({
-        ...data,
-      })
-      result = await u.save()
-    }
-    return result
-  }
-}
-StudentSchema.loadClass(StudentClass)
 
 module.exports = mongoose.model('Students', StudentSchema)
