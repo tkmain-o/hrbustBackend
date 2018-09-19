@@ -2,8 +2,6 @@ const cheerio = require('cheerio')
 const charset = require('superagent-charset')
 const superagent = charset(require('superagent'))
 const moment = require('moment')
-const Students = require('../models/Students')
-const Users = require('../models/Users')
 // const fs = require('fs')
 // const path = require('path')
 
@@ -250,14 +248,14 @@ class SimulateLogin {
       .set(requestHeader)
       .set('Cookie', this.cookie)
       .redirects(0)
-      .catch((e) => {
+      .catch(async (e) => {
         const location = e.response.headers.location
         if (location === url.index || location === url.index_new) {
           console.warn('login good')
           this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
 
-          // 更新数据库
-          this.updateDB()
+          // 获取用户名
+          await this.getName()
           return Promise.resolve({
             cookie: this.cookie,
             term: this.term,
@@ -272,7 +270,7 @@ class SimulateLogin {
   }
 
   // 登录成功更新数据库信息
-  updateDB () {
+  getName () {
     return superagent
       .get(url.indexHeader)
       .charset()
@@ -282,27 +280,7 @@ class SimulateLogin {
         const body = response.text
         const $ = cheerio.load(body)
         const name = $('#greeting span').text().split('(')[0]
-
-        // 更新Student数据库
-        const student = await Students.findOneAndUpdate({
-          username: this.username,
-        }, {
-          username: this.username,
-          password: this.password,
-          name,
-        }, {
-          upsert: true,
-          returnNewDocument: true,
-        })
-
-        // 同步更新User数据库，关联student
-        if (this.openid) {
-          await Users.findOneAndUpdate({
-            openid: this.openid,
-          }, {
-            student,
-          })
-        }
+        this.name = name
       })
   }
 

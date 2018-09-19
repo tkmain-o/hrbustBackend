@@ -103,10 +103,12 @@ const getUserInfo = async (ctx) => {
       openid,
     }).populate({ path: 'student' })
     const student = user.student
-    ctx.session.username = student.username
-    studentInfo = {
-      username,
-      name: student.name,
+    if (student) {
+      ctx.session.username = student.username
+      studentInfo = {
+        username,
+        name: student.name,
+      }
     }
   } else {
     const student = await Students.findOne({

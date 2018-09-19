@@ -1,5 +1,7 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
+const Students = require('../../models/Students')
+const Users = require('../../models/Users')
 const { requestHeader, url, SimulateLogin } = require('../../utils/hrbust')
 
 // 登录处理函数
@@ -9,7 +11,7 @@ async function login (ctx) {
     ctx.throw(400, '请输入验证码')
   }
   if (!username || !password) ctx.throw(400, '请求参数错误，登录需要用户名和密码')
-  const cookie = ctx.session.hrbustCookie
+  const { cookie, openid } = ctx.session
 
   try {
     const Login = new SimulateLogin({
@@ -19,10 +21,31 @@ async function login (ctx) {
       cookie,
       captcha,
       autoCaptcha: false,
-      openid: ctx.session.openid,
     })
     const result = await Login.login()
+    const { name } = Login
+
+    // 更新Student数据库
+    const student = await Students.findOneAndUpdate({
+      username,
+    }, {
+      username,
+      password,
+      name,
+    }, {
+      upsert: true,
+      returnNewDocument: true,
+    })
+
+    // 同步更新User数据库，关联student
+    await Users.findOneAndUpdate({
+      openid,
+    }, {
+      student,
+    })
+
     // console.log(result)
+    ctx.session.username = Login.username
     ctx.session.hrbustCookie = result.cookie
     ctx.body = {
       data: result,
@@ -30,6 +53,7 @@ async function login (ctx) {
       message: '登录成功',
     }
   } catch (e) {
+    console.log(e)
     ctx.throw(400, e)
   }
 }
