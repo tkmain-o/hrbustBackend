@@ -11,14 +11,14 @@ async function login (ctx) {
     ctx.throw(400, '请输入验证码')
   }
   if (!username || !password) ctx.throw(400, '请求参数错误，登录需要用户名和密码')
-  const { cookie, openid } = ctx.session
+  const { hrbustCookie, openid } = ctx.session
 
   try {
     const Login = new SimulateLogin({
       username,
       password,
       simulateIp: ctx.ip,
-      cookie,
+      cookie: hrbustCookie,
       captcha,
       autoCaptcha: false,
     })
@@ -53,7 +53,7 @@ async function login (ctx) {
       message: '登录成功',
     }
   } catch (e) {
-    console.log(e)
+    // console.log(e)
     ctx.throw(400, e)
   }
 }

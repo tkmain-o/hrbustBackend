@@ -250,9 +250,9 @@ class SimulateLogin {
       .redirects(0)
       .catch(async (e) => {
         const location = e.response.headers.location
+        this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
         if (location === url.index || location === url.index_new) {
           console.warn('login good')
-          this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
 
           // 获取用户名
           await this.getName()
