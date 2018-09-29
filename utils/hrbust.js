@@ -2,8 +2,9 @@ const cheerio = require('cheerio')
 const charset = require('superagent-charset')
 const superagent = charset(require('superagent'))
 const moment = require('moment')
-// const fs = require('fs')
-// const path = require('path')
+const fs = require('fs')
+const path = require('path')
+const discernCaptcha = require('./discernCaptcha')
 
 moment.locale('zh-cn')
 
@@ -15,6 +16,8 @@ const requestHeader = {
 }
 // const getCaptcha = require('./captcha.js')
 // const mongoUtils = require('../../spider/mongoUtils')
+
+let captchaCount = 0
 
 // 爬虫 url
 const url = {
@@ -57,6 +60,7 @@ class SimulateLogin {
     this.captcha = captcha
     this.cookie = cookie
     this.openid = openid
+    this.discernCount = 0
     if (simulateIp) {
       requestHeader['X-Forwarded-For'] = simulateIp
     }
@@ -77,30 +81,36 @@ class SimulateLogin {
     if (!this.autoCaptcha) {
       return this.loginHandler()
     }
-    // 自动校验验证码逻辑
-    return {}
-    // 返回异步回调
-    // return new Promise(resolve => {
-    //   this.callback = resolve
-    //   // 检查cookie有效性
-    //   checkCookie(this.cookie).then(data => {
-    //     this.term = data.term
-    //     this.year = data.year
-    //     this.week = data.week
-    //
-    //     if (data.isValidCookie) {
-    //       // 如果 cookie 合法，直接返回cookie以及学期等信息
-    //       this.callback({
-    //         cookie: this.cookie,
-    //         ...data,
-    //       })
-    //     } else {
-    //       // 不合法获取验证码
-    //       this.cookie = ''
-    //       this.getCookie()
-    //     }
-    //   })
-    // })
+    return this.autoDiscernCaptcha()
+  }
+
+  async autoDiscernCaptcha () {
+    this.discernCount += 1
+    if (this.discernCount > 40) {
+      // 自动识别超过30次，就不再自动识别了
+      return Promise.reject(new Error('自动识别验证码次数过多'))
+    }
+    const captchaData = await this.discernCaptchaHandler()
+
+    // 验证码识别错误
+    if (captchaData.error) {
+      return this.autoDiscernCaptcha()
+    }
+
+    this.captcha = captchaData.text
+    let result
+    try {
+      result = await this.loginHandler()
+    } catch (e) {
+      // 教务在线验证码校验错误，需要再次尝试
+      if (e.message.match(/验证码/)) {
+        // handler captcha again, then handler login again
+        return this.autoDiscernCaptcha()
+      }
+
+      return Promise.reject(e)
+    }
+    return result
   }
 
   // 异步获取验证码
@@ -162,28 +172,6 @@ class SimulateLogin {
       .catch(error => {
         return Promise.reject(new Error(error))
       })
-      // .end((error, response) => {
-      //   if (error) {
-      //     this.callback({ error })
-      //   }
-      //   this.cookie = response.headers['set-cookie'][0].split(';')[0]
-      //   // console.warn(this.cookie)
-      //   // if (!this.autoCaptcha) {
-      //   //   // this.getCaptchaBuffer().then((buffer) => {
-      //   //   //   this.callback = resolve
-      //   //   // })
-      //   //   return
-      //   // }
-      //   // this.handlerCaptcha().then((captchaText) => {
-      //   //   if (captchaText.error) {
-      //   //     this.callback({
-      //   //       error: captchaText.error,
-      //   //     })
-      //   //     return
-      //   //   }
-      //   //   this.loginHandler(captchaText)
-      //   // })
-      // })
   }
 
   // 获取验证码
@@ -202,42 +190,42 @@ class SimulateLogin {
       })
   }
 
-  // captcha (callback) {
-  //   return this.getCaptchaBuffer().then((dataBuffer) => {
-  //     const captchaPath = path.resolve(__dirname, `../../cacheImages/${captchaCount}.jpg`)
-  //     console.warn(`captchaCount: ${captchaCount}`)
-  //     captchaCount += 1
-  //     fs.writeFile(captchaPath, dataBuffer, (err) => {
-  //       if (err) throw err
-  //       getCaptcha(captchaPath).then((result) => {
-  //         fs.unlinkSync(captchaPath)
-  //
-  //         // 解析验证码出错，重新验证
-  //         if (result.error || !result.text || result.predictable === 'False') {
-  //           this.captcha(callback)
-  //           return
-  //         }
-  //         let text = ''
-  //         text = result && result.text ? result.text : ''
-  //         callback(text)
-  //       }).catch(() => {
-  //         // 解析验证码出错，重新验证
-  //         this.captcha(callback)
-  //       })
-  //     })
-  //   })
-  // }
-
-  handlerCaptcha () {
+  // 验证码识别
+  async discernCaptchaHandler () {
+    const buffer = await this.getCaptchaBuffer()
+    const captchaPath = path.resolve(__dirname, `../captchaCache/${captchaCount}.jpg`)
+    console.warn(`captchaCount: ${captchaCount}`, buffer)
+    captchaCount += 1
     return new Promise((resolve) => {
-      this.captcha((text) => {
-        resolve(text)
+      fs.writeFile(captchaPath, buffer, (err) => {
+        if (err) throw err
+        discernCaptcha(captchaPath).then((result) => {
+          fs.unlinkSync(captchaPath)
+          // 解析验证码出错
+          if (result.error || !result.text || result.predictable === 'False') {
+            // this.captcha(callback)
+            // return
+            resolve({
+              error: '识别错误',
+            })
+          }
+          let text = ''
+          text = result && result.text ? result.text : ''
+          resolve({
+            text,
+          })
+        }).catch(() => {
+          // 解析验证码出错
+          resolve({
+            error: '识别错误',
+          })
+        })
       })
     })
   }
 
+  // 登录处理
   loginHandler () {
-    // 登录处理
     return superagent
       .post(url.check_url)
       .send({
@@ -309,7 +297,7 @@ class SimulateLogin {
 
 // 所有哈理工教务处需要登录的接口，都需要此函数校验是否登录，
 // 若未登录返回验证码，并设置新cookie到session种
-const checkLoginStatus = async (ctx) => {
+const checkLogin = async (ctx) => {
   const cookie = ctx.session.hrbustCookie
   const Login = new SimulateLogin({
     cookie,
@@ -336,5 +324,5 @@ module.exports = {
   url,
   requestHeader,
   SimulateLogin,
-  checkLoginStatus,
+  checkLogin,
 }

@@ -5,7 +5,7 @@ const cheerio = require('cheerio')
 const {
   requestHeader,
   url,
-  checkLoginStatus,
+  checkLogin,
 } = require('../../utils/hrbust')
 
 // 获取学生id，获取课程表的时候需要用到
@@ -58,7 +58,7 @@ const getCourse = async (ctx) => {
   const cookie = ctx.session.hrbustCookie
   const { term, year } = ctx.query
 
-  const isLogin = await checkLoginStatus(ctx)
+  const isLogin = await checkLogin(ctx)
 
   if (!isLogin) {
     return false
