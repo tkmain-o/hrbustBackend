@@ -77,6 +77,12 @@ async function getCaptcha (ctx) {
 
 // 获取当前周数，（应该存在redis中缓存，本期不做）
 function getWeek (ctx) {
+  let username = ctx.session.username
+  if (!username) {
+    ctx.throw(400, '未登陆')
+  }
+  const grade = parseInt(username.substr(0, 2))
+
   return superagent
     .get(url.indexListLeft)
     .charset()
@@ -91,15 +97,12 @@ function getWeek (ctx) {
       const year = parseInt(terms[1]) - 1980
       const termsObj = {
         春: 1,
-        秋: 2,
+        秋: 0,
       }
-      const term = termsObj[terms[2]]
-      // console.log(thisWeek, term, year, week)
+      const term = (year - 20 - grade) * 2 + termsObj[terms[2]]
       ctx.body = {
         data: {
-          thisWeek,
           term,
-          year,
           week,
         },
         status: 200,

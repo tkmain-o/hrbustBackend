@@ -22,6 +22,8 @@ module.exports = {
     "no-extend-native": 0,
     "no-param-reassign": 0,
     "no-restricted-syntax": 0,
+    "no-await-in-loop": 0,
+    "no-useless-escape": 0,
     "no-eval": 0,
     "no-continue": 0,
     "no-unused-vars": [2, { "ignoreRestSiblings": true }],

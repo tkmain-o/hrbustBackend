@@ -17,8 +17,35 @@ const StudentSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'Schools',
   },
-  course: {
-    type: Object,
+  currentTerm: {
+    type: Number,
+    default: 0,
+  },
+  courseMap: {
+    0: {
+      type: Number,
+    },
+    1: {
+      type: Number,
+    },
+    2: {
+      type: Number,
+    },
+    3: {
+      type: Number,
+    },
+    4: {
+      type: Number,
+    },
+    5: {
+      type: Number,
+    },
+    6: {
+      type: Number,
+    },
+    7: {
+      type: Number,
+    },
   },
   // cookie: { type: String },
 }, {

@@ -5,7 +5,11 @@ const {
   getWeek,
 } = require('../controller/hrbust/login')
 
-const getCourse = require('../controller/hrbust/course')
+const {
+  getCourse,
+  getHasCourseTerms,
+  updateCourse,
+} = require('../controller/hrbust/course')
 
 router.prefix('/api/hrbust')
 
@@ -16,6 +20,10 @@ router.get('/captcha', ctx => getCaptcha(ctx))
 router.get('/week', ctx => getWeek(ctx))
 
 router.get('/course', ctx => getCourse(ctx))
+
+router.get('/updateCourse', ctx => updateCourse(ctx))
+
+router.get('/getHasCourseTerms', ctx => getHasCourseTerms(ctx))
 
 // router.get('/login', async (ctx) => {
 //   const { code } = ctx.request.query
