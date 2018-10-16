@@ -30,6 +30,7 @@ const url = {
   index_new: 'http://jwzx.hrbust.edu.cn/academic/index_new.jsp',
   studentId: 'http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000',
   loginError: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1',
+  grade_url: 'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
 }
 
 /**
