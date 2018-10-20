@@ -6,7 +6,7 @@ const {
   url,
 } = require('../../utils/hrbust')
 
-// 爬教务在线，更新课表、创建新课表
+// 获取成绩
 const getGrade = async (ctx) => {
   const isLogin = await checkLogin(ctx)
   if (!isLogin) return
