@@ -5,6 +5,9 @@ const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 const discernCaptcha = require('./discernCaptcha')
+const { getErrorData } = require('../constants/errorCode')
+const Students = require('../models/Students')
+const to = require('./awaitErrorCatch')
 
 moment.locale('zh-cn')
 
@@ -31,6 +34,7 @@ const url = {
   studentId: 'http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000',
   loginError: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1',
   grade_url: 'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
+  exam_url: 'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
 }
 
 /**
@@ -89,10 +93,13 @@ class SimulateLogin {
     this.discernCount += 1
     if (this.discernCount > 40) {
       // 自动识别超过30次，就不再自动识别了
-      return Promise.reject(new Error('自动识别验证码次数过多'))
+      return Promise.reject((getErrorData({
+        message: '自动识别验证码次数过多',
+        code: 400002,
+      })))
     }
     const captchaData = await this.discernCaptchaHandler()
-
+    // console.log(captchaData)
     // 验证码识别错误
     if (captchaData.error) {
       return this.autoDiscernCaptcha()
@@ -109,7 +116,10 @@ class SimulateLogin {
         return this.autoDiscernCaptcha()
       }
 
-      return Promise.reject(e)
+      return Promise.reject((getErrorData({
+        error: e,
+        code: 400002,
+      })))
     }
     return result
   }
@@ -171,7 +181,10 @@ class SimulateLogin {
         return Promise.resolve(this.cookie)
       })
       .catch(error => {
-        return Promise.reject(new Error(error))
+        return Promise.reject((getErrorData({
+          error,
+          code: 400004,
+        })))
       })
   }
 
@@ -187,7 +200,10 @@ class SimulateLogin {
         return Promise.resolve(dataBuffer)
       })
       .catch(error => {
-        Promise.reject(new Error(error))
+        Promise.reject(getErrorData({
+          error,
+          code: 400003,
+        }))
       })
   }
 
@@ -239,7 +255,7 @@ class SimulateLogin {
       .redirects(0)
       .catch(async (e) => {
         const location = e.response.headers.location
-        this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
+        // this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
         if (location === url.index || location === url.index_new) {
           console.warn('login good')
 
@@ -283,13 +299,20 @@ class SimulateLogin {
         .set('Cookie', this.cookie)
         .end((error, response) => {
           if (error) {
-            return reject(new Error(error))
+            return reject((getErrorData({
+              error,
+              code: 400001,
+            })))
           }
           const body = response.text
           const $ = cheerio.load(body)
           const errorText = $('#message').text().replace(/\s/g, '')
           // resolve(errorText)
-          return reject(new Error(errorText))
+          // console.log(errorText, 'errorText')
+          return reject(getErrorData({
+            message: errorText,
+            code: 400001,
+          }))
         })
     })
     return promise
@@ -298,23 +321,64 @@ class SimulateLogin {
 
 // 所有哈理工教务处需要登录的接口，都需要此函数校验是否登录，
 // 若未登录返回验证码，并设置新cookie到session种
-const checkLogin = async (ctx) => {
-  const cookie = ctx.session.hrbustCookie
+const checkLogin = async (ctx, option = { autoCaptcha: false, captcha: '' }) => {
+  const { autoCaptcha, captcha } = option
+  const { hrbustCookie, username } = ctx.session.hrbustCookie
+  if (!username) {
+    return ctx.throw(401, '未登录')
+  }
+
+  const { password } = await Students.findOne({ username })
   const Login = new SimulateLogin({
-    cookie,
+    cookie: hrbustCookie,
+    username,
+    password,
+    autoCaptcha,
+    captcha,
   })
+
+  // 验证码登录
+  if (captcha) {
+    // 自动登录
+    const [error] = await to(Login.login())
+    if (error) {
+      if (error.code) {
+        ctx.throw(400, error.message)
+      } else {
+        ctx.throw(error)
+      }
+      return false
+    }
+    return true
+  }
+
   const { isValidCookie } = await Login.checkCookie()
 
-  if (!isValidCookie) {
-    // 如果cookie失效，返回验证码s
-    const captcha = await Login.getCaptcha()
+  if (isValidCookie) {
+    return true
+  }
+
+  if (!autoCaptcha) {
+    // 如果cookie失效，返回验证码
+    const captchaBuffer = await Login.getCaptcha()
     ctx.session.hrbustCookie = Login.cookie
     ctx.body = {
       status: 401,
       message: '登录已失效',
       data: {
-        captcha,
+        captcha: captchaBuffer,
       },
+    }
+    return false
+  }
+
+  // 自动登录
+  const [error] = await to(Login.login())
+  if (error) {
+    if (error.code) {
+      ctx.throw(400, error.message)
+    } else {
+      ctx.throw(error)
     }
     return false
   }
