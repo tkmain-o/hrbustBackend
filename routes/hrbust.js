@@ -15,6 +15,10 @@ const {
   getGrade,
 } = require('../controller/hrbust/grade')
 
+const {
+  getExam,
+} = require('../controller/hrbust/grade')
+
 router.prefix('/api/hrbust')
 
 router.get('/login', ctx => login(ctx))
@@ -31,5 +35,8 @@ router.get('/getHasCourseTerms', ctx => getHasCourseTerms(ctx))
 
 // 成绩
 router.get('/grade', ctx => getGrade(ctx))
+
+// 考试信息
+router.get('/exam', ctx => getExam(ctx))
 
 module.exports = router
