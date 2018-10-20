@@ -53,8 +53,11 @@ async function login (ctx) {
       message: '登录成功',
     }
   } catch (e) {
-    // console.log(e)
-    ctx.throw(400, e)
+    if (e.code) {
+      ctx.throw(400, e.message)
+    } else {
+      ctx.throw(e)
+    }
   }
 }
 
@@ -71,7 +74,11 @@ async function getCaptcha (ctx) {
       },
     }
   } catch (e) {
-    ctx.throw(400, `获取验证码错误: ${e}`)
+    if (e.code) {
+      ctx.throw(400, e.message)
+    } else {
+      ctx.throw(e)
+    }
   }
 }
 
