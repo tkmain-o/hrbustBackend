@@ -255,7 +255,9 @@ class SimulateLogin {
       .redirects(0)
       .catch(async (e) => {
         const location = e.response.headers.location
-        // this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
+        if (e.response.headers['set-cookie'] && e.response.headers['set-cookie'] && e.response.headers['set-cookie'][0]) {
+          this.cookie = e.response.headers['set-cookie'][0].split(';')[0]
+        }
         if (location === url.index || location === url.index_new) {
           console.warn('login good')
 
@@ -308,7 +310,6 @@ class SimulateLogin {
           const $ = cheerio.load(body)
           const errorText = $('#message').text().replace(/\s/g, '')
           // resolve(errorText)
-          // console.log(errorText, 'errorText')
           return reject(getErrorData({
             message: errorText,
             code: 400001,
@@ -323,9 +324,9 @@ class SimulateLogin {
 // 若未登录返回验证码，并设置新cookie到session种
 const checkLogin = async (ctx, option = { autoCaptcha: false, captcha: '' }) => {
   const { autoCaptcha, captcha } = option
-  const { hrbustCookie, username } = ctx.session.hrbustCookie
+  const { hrbustCookie, username } = ctx.session
   if (!username) {
-    return ctx.throw(401, '未登录')
+    return ctx.throw(401)
   }
 
   const { password } = await Students.findOne({ username })
