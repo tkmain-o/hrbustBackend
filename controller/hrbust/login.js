@@ -83,10 +83,11 @@ async function getCaptcha (ctx) {
 }
 
 // 获取当前周数，（应该存在redis中缓存，本期不做）
-function getWeek (ctx) {
+const getWeek = (ctx) => {
   let username = ctx.session.username
+
   if (!username) {
-    ctx.throw(400, '未登陆')
+    ctx.throw(401, '未登陆')
   }
   const grade = parseInt(username.toString().substr(0, 2))
 
