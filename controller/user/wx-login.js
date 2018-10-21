@@ -124,8 +124,10 @@ const getUserInfo = async (ctx) => {
     const student = await Students.findOne({
       username,
     })
+    if (student) {
+      studentInfo.name = student.name
+    }
     // console.log(student, student.name)
-    studentInfo.name = student.name
   }
   ctx.body = {
     data: {
