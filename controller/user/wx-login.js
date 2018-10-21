@@ -32,6 +32,15 @@ const wxLogin = async (ctx) => {
     await Users.findOneAndUpdate({ openid: data.openid }, data, {
       upsert: true,
     })
+
+    const user = await Users.findOne({
+      openid: data.openid,
+    }).populate({ path: 'student' })
+    const student = user.student
+    if (student) {
+      ctx.session.username = student.username
+    }
+
     // 更新 session
     ctx.session.session_key = data.session_key
     ctx.session.openid = data.openid
@@ -103,10 +112,11 @@ const getUserInfo = async (ctx) => {
       openid,
     }).populate({ path: 'student' })
     const student = user.student
+    // console.log(student.name, 1)
     if (student) {
       ctx.session.username = student.username
       studentInfo = {
-        username,
+        username: student.username,
         name: student.name,
       }
     }
@@ -114,9 +124,9 @@ const getUserInfo = async (ctx) => {
     const student = await Students.findOne({
       username,
     })
+    // console.log(student, student.name)
     studentInfo.name = student.name
   }
-
   ctx.body = {
     data: {
       isLogin: !!(ctx.session.openid && ctx.session.session_key),
