@@ -88,7 +88,7 @@ function getWeek (ctx) {
   if (!username) {
     ctx.throw(400, '未登陆')
   }
-  const grade = parseInt(username.substr(0, 2))
+  const grade = parseInt(username.toString().substr(0, 2))
 
   return superagent
     .get(url.indexListLeft)
