@@ -1,14 +1,32 @@
 const superagent = require('superagent')
 const cheerio = require('cheerio')
+const moment = require('moment')
 const {
   requestHeader,
   checkLogin,
   url,
 } = require('../../utils/hrbust')
 
+moment.locale('zh-cn', {
+  meridiem: (hour, minute) => {
+    if (hour < 9) {
+      return '早上'
+    } if (hour < 11 && minute < 30) {
+      return '上午'
+    } if (hour < 13 && minute < 30) {
+      return '中午'
+    } if (hour < 18) {
+      return '下午'
+    }
+    return '晚上'
+  },
+})
+
 // 爬教务在线，更新课表、创建新课表
 const getExam = async (ctx) => {
-  const isLogin = await checkLogin(ctx)
+  const isLogin = await checkLogin(ctx, {
+    autoCaptcha: true,
+  })
   if (!isLogin) return
 
   // let username = ctx.session.username
@@ -17,110 +35,49 @@ const getExam = async (ctx) => {
   // }
 
   let cookie = ctx.session.hrbustCookie
-  const { year, term } = ctx.query
-
+  const { page = 1 } = ctx.query
+  const curl = `${url.exam_url}?pagingPageVLID=${page || 1}&pagingNumberPerVLID=10&sortDirectionVLID=-1&sortColumnVLID=s.examRoom.exam.endTime&`
   const response = await superagent
-    .post(url.exam_url)
+    .post(curl)
     .charset()
-    .send({
-      year,
-      term,
-      para: 0,
-    })
     .set(requestHeader)
     .set('Cookie', cookie)
-  // console.log(response)
+
   const body = response.text
   const $ = cheerio.load(body)
-
-  // 需要教学评估
-  const pingGuText = $('#content_margin').text().replace(/\s/g, '')
-  if (pingGuText.indexOf('参加评教') >= 0) {
-    ctx.throw(400, pingGuText)
-    return
-  }
-
   const datalist = $('.datalist').find('tr')
-  const result = {}
-  result.grades = []
-  result.gradeTerm = $('option:selected').text().replace(/\s/g, '')
+  const list = []
 
-  const GRADE = {
-    优: 95,
-    优秀: 95,
-    良: 85,
-    良好: 85,
-    中: 75,
-    中等: 75,
-    及格: 65,
-    差: 0,
-    不及格: 0,
-  }
-
-  // let gradeLength = 0;
-  let gradeSum = 0
-  let GPA_SUM = 0
-  let XUE_FEN_SUM = 0
-  let OBLIGATORY_GPA_SUM = 0
-  let OBLIGATORY_FEN_SUM = 0
-
-  datalist.each((index, item) => {
-    if (index === 0) {
-      return
-    }
-    const innerItems = $(item).find('td')
-    const innerTexts = []
-    innerItems.each((indexI, itemI) => {
-      const str = $(itemI).text().replace(/\s/g, '')
-      innerTexts.push(str)
+  const allPageCount = $('.classicLookSummary').find('b').eq(2).text()
+  // console.log(body)
+  if (parseInt(page) <= parseInt(allPageCount)) {
+    datalist.each((index, item) => {
+      if (index === 0) {
+        return
+      }
+      const innerItems = $(item).find('td')
+      const time = innerItems.eq(2).text()
+      // console.log(time)
+      const startTime = moment(time.split('--')[0])
+      const nowTime = moment()
+      // const calendar = startTime.week() === nowTime.week()
+      //   ? startTime.subtract().calendar().replace('下', '本')
+      //   : startTime.subtract().calendar()
+      const endOf = startTime.endOf('minute').fromNow().replace('内', '后')
+      list.push({
+        course: innerItems.eq(1).text(),
+        time: `${startTime.format('A')} ${time.split(' ')[1].split('--').join('~')}`,
+        date: startTime.format('YYYY年MM月DD日'),
+        dateExtend: nowTime > startTime ? '已结束' : endOf,
+        position: innerItems.eq(3).text(),
+        info: innerItems.eq(4).text(),
+        ending: nowTime > startTime ? 1 : 0,
+      })
     })
-
-    const grade = Number(innerTexts[6])
-    const xuefen = Number(innerTexts[7])
-
-    let GPA = ''
-    if (xuefen > 0) {
-      if (innerTexts[12] === '不及格') {
-        GPA = '0.0'
-      } else if (!Number.isNaN(grade)) {
-        GPA = grade < 60 ? 0 : ((grade - 60) / 10) + 1
-        GPA = GPA.toFixed(1)
-        gradeSum += grade * xuefen
-      } else {
-        const cGrade = GRADE[innerTexts[6]]
-        GPA = ((cGrade - 60) / 10) + 1
-        gradeSum += cGrade * xuefen
-      }
-      GPA_SUM += xuefen * Number(GPA)
-      XUE_FEN_SUM += xuefen
-      if (innerTexts[9] === '必修') {
-        // 必修
-        OBLIGATORY_GPA_SUM += xuefen * Number(GPA)
-        OBLIGATORY_FEN_SUM += xuefen
-      }
-    }
-    innerTexts.push(GPA)
-    // 学年学期 课程号  课程名  课序号  课组  总评  学分  学时  选课属性  备注  考试性质  及格标志 gpa
-    const gradeNames = ['year', 'term', 'courseId', 'courseName', 'courseIndex', 'courseGroup', 'grade', 'credit', 'courseMount', 'courseAttribute', 'courseRemark', 'courseCharacter', 'passFlag', 'gpa']
-    result.grades.push(innerTexts.reduce((pre, innerText, i) => {
-      pre[gradeNames[i]] = innerText
-      return pre
-    }, {}))
-  })
-
-  // GPA
-  const AVERAGE_GPA = GPA_SUM / XUE_FEN_SUM
-
-  // 去选修 GPA
-  const OBLIGATORY_AVERAGE_GPA = OBLIGATORY_GPA_SUM / OBLIGATORY_FEN_SUM
-  // 加权平均分
-  const AVERAGE_GRADE = gradeSum / XUE_FEN_SUM
-  result.AVERAGE_GPA = AVERAGE_GPA.toFixed(2)
-  result.AVERAGE_GRADE = AVERAGE_GRADE.toFixed(2)
-  result.OBLIGATORY_AVERAGE_GPA = OBLIGATORY_AVERAGE_GPA.toFixed(2)
+  }
 
   ctx.body = {
-    data: result,
+    data: list,
   }
 }
 
