@@ -34,7 +34,7 @@ const url = {
   studentId: 'http://jwzx.hrbust.edu.cn/academic/student/currcourse/currcourse.jsdo?groupId=&moduleId=2000',
   loginError: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1',
   grade_url: 'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
-  exam_url: 'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
+  exam_url: 'http://jwzx.hrbust.edu.cn/academic/manager/examstu/studentQueryAllExam.do',
   news_url: 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354',
   news_detail_url: 'http://jwzx.hrbust.edu.cn/homepage/infoSingleArticle.do?',
 }
@@ -385,6 +385,7 @@ const checkLogin = async (ctx, option = { autoCaptcha: false, captcha: '' }) => 
     }
     return false
   }
+  ctx.session.hrbustCookie = Login.cookie
   return true
 }
 
