@@ -35,6 +35,8 @@ const url = {
   loginError: 'http://jwzx.hrbust.edu.cn/academic/common/security/login.jsp?login_error=1',
   grade_url: 'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
   exam_url: 'http://jwzx.hrbust.edu.cn/academic/manager/score/studentOwnScore.do?groupId=&moduleId=2020',
+  news_url: 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354',
+  news_detail_url: 'http://jwzx.hrbust.edu.cn/homepage/infoSingleArticle.do?',
 }
 
 /**
