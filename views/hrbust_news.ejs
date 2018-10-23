@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>
+    <%= title %>
+  </title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    ol, ul {
+      list-style: none;
+    }
+    html {
+      font-size: 50px;
+    }
+    body {
+      font-size: 0.32rem;
+      padding: 0 0.6rem;
+    }
+    h2 {
+      font-family: PingFangSC-Regular;
+      font-size: 0.36rem;
+      font-weight: normal;
+      font-stretch: normal;
+      line-height: 0.53rem;
+      color: #333333;
+      padding: 0.40rem 0;
+    }
+    #articleInfo ul {
+      display: flex;
+      font-family: PingFangSC-Regular;
+      font-size: 0.22rem;
+      font-weight: normal;
+      font-stretch: normal;
+      /* line-height: 0px; */
+      /* letter-spacing: 0px; */
+      color: #cccccc;
+    }
+    #articleInfo ul li {
+      margin-right: 1rem;
+    }
+    #articleInfo {
+      margin-bottom: 0.6rem;
+    }
+    .body {
+      font-size: 0.26rem;
+      font-weight: normal;
+      font-stretch: normal;
+      line-height: 0.51rem;
+      color: #333333;
+    }
+  </style>
+</head>
+<body>
+  <%- content %>
+</body>
+
+</html>
