@@ -52,7 +52,7 @@ const getNewsDetail = async (ctx) => {
   const dom = $('#article').html()
 
   await ctx.render('hrbust_news', {
-    title: 'Hello Koa 2!',
+    title: '教务公告',
     content: dom,
   })
 }
