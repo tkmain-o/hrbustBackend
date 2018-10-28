@@ -26,6 +26,7 @@
     "koa-json": "^2.0.2",
     "koa-logger": "^2.0.1",
     "koa-onerror": "^1.2.1",
+    "koa-proxies": "^0.8.1",
     "koa-router": "^7.1.1",
     "koa-session": "^5.9.0",
     "koa-session-minimal": "^3.0.4",
