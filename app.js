@@ -8,10 +8,22 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const session = require('koa-session-minimal')
+const proxy = require('koa-proxies')
+// const request = require('request')
 const MongoStore = require('koa-generic-session-mongo')
 const moment = require('moment')
 const { keys } = require('./config/config')
 const { mongodb } = require('./utils')
+
+// middleware
+app.use(proxy('/homepage', {
+  target: 'http://jwzx.hrbust.edu.cn',
+  changeOrigin: true,
+  // agent: new httpsProxyAgent('http://1.2.3.4:88'), // if you need or just delete this line
+  // rewrite: path => path.replace(/\/homepage/, ''),
+  logs: false,
+}))
+
 // const WXBizDataCrypt = require('../../utils/WXBizDataCrypt')
 app.proxy = true
 moment.locale('zh-cn')
@@ -39,12 +51,6 @@ app.use(require('koa-static')(`${__dirname}/public`))
 app.use(views(`${__dirname}/views`, {
   extension: 'ejs',
 }))
-
-// session
-//
-// app.use(async (ctx, next) => {
-//   console.log(ctx.session)
-// })
 
 // error wrapper
 app.use(async (ctx, next) => {

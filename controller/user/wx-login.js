@@ -112,7 +112,6 @@ const getUserInfo = async (ctx) => {
       openid,
     }).populate({ path: 'student' })
     const student = user.student
-    // console.log(student.name, 1)
     if (student) {
       ctx.session.username = student.username
       studentInfo = {
