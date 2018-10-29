@@ -11,6 +11,9 @@ const TermCourse = new mongoose.Schema({
   course: {
     type: Array,
   },
+  term: {
+    type: Number, required: true,
+  },
 }, {
   timestamps: true,
 })

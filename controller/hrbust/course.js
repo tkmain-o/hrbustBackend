@@ -80,8 +80,12 @@ const getCourse = async (ctx) => {
   if (errorTerm) ctx.throw(400, errorTerm)
 
   const course = selectResult ? selectResult.course : null
+  const courseTermId = selectResult ? selectResult.term : 0
   ctx.body = {
-    data: course,
+    data: {
+      course,
+      courseTermId,
+    },
     status: 200,
   }
 }
@@ -288,6 +292,7 @@ const updateCourse = async (ctx) => {
     id: termCourseId,
   }, {
     id: termCourseId,
+    term,
     course: lessonList,
   }, {
     upsert: true,
