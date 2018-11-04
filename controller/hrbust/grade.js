@@ -9,7 +9,7 @@ const {
 // 获取成绩
 const getGrade = async (ctx) => {
   const isLogin = await checkLogin(ctx, {
-    autoCaptcha: true,
+    // autoCaptcha: true,
   })
   if (!isLogin) return
 

@@ -25,7 +25,7 @@ moment.locale('zh-cn', {
 // 爬教务在线，更新课表、创建新课表
 const getExam = async (ctx) => {
   const isLogin = await checkLogin(ctx, {
-    autoCaptcha: true,
+    // autoCaptcha: true,
   })
   if (!isLogin) return
 
