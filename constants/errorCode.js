@@ -11,6 +11,9 @@ const errorCode = {
   400004: {
     message: '获取 cookie 错误',
   },
+  400005: {
+    message: '登录已经失效',
+  },
 }
 
 exports.errorCode = errorCode
