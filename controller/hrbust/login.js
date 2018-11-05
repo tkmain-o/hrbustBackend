@@ -5,7 +5,7 @@ const Users = require('../../models/Users')
 const { requestHeader, url, SimulateLogin } = require('../../utils/hrbust')
 
 // 登录处理函数
-async function login (ctx) {
+const login = async (ctx) => {
   const { username, password, captcha } = ctx.request.query
   if (!captcha) {
     ctx.throw(400, '请输入验证码')
@@ -61,7 +61,7 @@ async function login (ctx) {
   }
 }
 
-async function getCaptcha (ctx) {
+const getCaptcha = async (ctx) => {
   try {
     const Login = new SimulateLogin()
     const captcha = await Login.getCaptcha()
@@ -119,8 +119,24 @@ const getWeek = (ctx) => {
     .catch(e => ctx.throw(400, e))
 }
 
+// 登录处理函数
+const logout = async (ctx) => {
+  const { openid } = ctx.session
+  await Users.findOneAndUpdate({
+    openid,
+  }, {
+    student: null,
+  })
+  ctx.session = null
+  ctx.body = {
+    status: 200,
+    message: '解绑成功',
+  }
+}
+
 module.exports = {
   login,
+  logout,
   getCaptcha,
   getWeek,
 }
