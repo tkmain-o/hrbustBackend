@@ -347,13 +347,13 @@ const checkLogin = async (ctx, option = { autoCaptcha: false }) => {
     const [error] = await to(Login.login())
     if (error) {
       if (error.code) {
-        if (+error.code === 400002) {
+        if (+error.code === 400001) {
           // 如果验证码识别错误，返回验证码
           const captchaBuffer = await Login.getCaptcha()
           ctx.session.hrbustCookie = Login.cookie
           ctx.body = {
-            status: 400002,
-            message: '验证码识别错误',
+            status: 400001,
+            message: error.message,
             data: {
               captcha: captchaBuffer,
             },
@@ -366,6 +366,8 @@ const checkLogin = async (ctx, option = { autoCaptcha: false }) => {
       }
       return false
     }
+    ctx.session.username = Login.username
+    ctx.session.hrbustCookie = Login.cookie
     return true
   }
 
