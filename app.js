@@ -5,7 +5,8 @@ const app = new Koa()
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
+// const bodyparser = require('koa-bodyparser')
+const body = require('koa-better-body')
 const logger = require('koa-logger')
 const session = require('koa-session-minimal')
 const proxy = require('koa-proxies')
@@ -24,6 +25,11 @@ app.use(proxy('/homepage', {
   logs: false,
 }))
 
+app.use(body({
+  multipart: true,
+  querystring: require('qs'),
+}))
+
 // const WXBizDataCrypt = require('../../utils/WXBizDataCrypt')
 app.proxy = true
 moment.locale('zh-cn')
@@ -40,9 +46,9 @@ app.use(session({
 }))
 
 // middlewares
-app.use(bodyparser({
-  enableTypes: ['json', 'form', 'text'],
-}))
+// app.use(bodyparser({
+//   enableTypes: ['json', 'form', 'text'],
+// }))
 
 app.use(json())
 app.use(logger())
@@ -56,11 +62,11 @@ app.use(views(`${__dirname}/views`, {
 app.use(async (ctx, next) => {
   ctx.session.count = ctx.session.count ? ctx.session.count + 1 : 1
   try {
-    // if (ctx.request.path.indexOf('/api/user') < 0 && !ctx.session.openid) {
-    //   // 未登录
-    //   ctx.throw(401, '微信登录失效')
-    //   return
-    // }
+    if (ctx.request.path.indexOf('/api/hrbust') >= 0 && !ctx.session.openid) {
+      // 未登录
+      ctx.throw(401, '微信登录失效')
+      return
+    }
     await next()
   } catch (e) {
     switch (e.status) {
@@ -102,6 +108,8 @@ const routes = {
   user: require('./routes/user'),
   // 哈理工 api
   hrbust: require('./routes/hrbust'),
+  // 一些公共 api
+  other: require('./routes/other'),
 }
 
 // routes
