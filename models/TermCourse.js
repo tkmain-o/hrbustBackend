@@ -11,6 +11,9 @@ const TermCourse = new mongoose.Schema({
   course: {
     type: Array,
   },
+  unplanCourse: {
+    type: Array,
+  },
   term: {
     type: Number, required: true,
   },

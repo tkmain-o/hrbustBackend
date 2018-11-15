@@ -81,10 +81,12 @@ const getCourse = async (ctx) => {
 
   const course = selectResult ? selectResult.course : null
   const courseTermId = selectResult ? selectResult.term : 0
+  const unplanCourse = selectResult ? selectResult.unplanCourse : null
   ctx.body = {
     data: {
       course,
       courseTermId,
+      unplanCourse,
     },
     status: 200,
   }
@@ -170,6 +172,7 @@ const updateCourse = async (ctx) => {
   const body = response.text
   const $ = cheerio.load(body, { decodeEntities: false })
   const lessonList = []
+  const lessonListUnplan = []
 
   $('#timetable tr') && $('#timetable tr').each((i, e) => {
     if (i === 0) {
@@ -265,6 +268,21 @@ const updateCourse = async (ctx) => {
     })
   })
 
+  $('#noArrangement tr') && $('#noArrangement tr').each((i, e) => {
+    if (i === 0) return
+
+    let unplanCourse = {
+      courseName: $($(e).children('td')[1]).text().replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, ''),
+      courseTeacher: $($(e).children('td')[3]).text().replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, ''),
+      courseAllClass: $($(e).children('td')[4]).text().replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, ''),
+      coursePeriod: $($(e).children('td')[5]).text().replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, ''),
+      courseWeek: $($(e).children('td')[6]).text().replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, ''),
+      courseLocale: $($(e).children('td')[7]).text().replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, ''),
+    }
+
+    lessonListUnplan.push(unplanCourse)
+  })
+
   if (lessonList.length === 0) {
     ctx.body = {
       data: '当前学期课表为空',
@@ -294,6 +312,7 @@ const updateCourse = async (ctx) => {
     id: termCourseId,
     term,
     course: lessonList,
+    unplanCourse: lessonListUnplan,
   }, {
     upsert: true,
   })
