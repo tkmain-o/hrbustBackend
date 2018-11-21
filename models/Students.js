@@ -9,17 +9,22 @@ const StudentSchema = new mongoose.Schema({
   username: {
     type: String, unique: true, required: true, index: true,
   },
-  password: { type: String, required: true },
-  count: { type: Number, default: 1 },
-  // date: { type: String, required: true },
-  name: { type: String, required: true },
-  school: {
-    type: Schema.Types.ObjectId,
-    ref: 'Schools',
+  password: {
+    type: String, required: true,
   },
-  currentTerm: {
-    type: Number,
-    default: 0,
+  count: {
+    type: Number, default: 1,
+  },
+  name: {
+    type: String, required: true,
+  },
+  school: {
+    type: Schema.Types.ObjectId, ref: 'Schools',
+  },
+  // 当前年级，之前使用username的前两位作为年级，但遇到降级的同学就会出现问题
+  // 此字段是课表页爬到的准确年级
+  grade: {
+    type: Number, default: 0,
   },
   courseMap: {
     0: {
@@ -47,7 +52,6 @@ const StudentSchema = new mongoose.Schema({
       type: Number,
     },
   },
-  // cookie: { type: String },
 }, {
   timestamps: true,
 })

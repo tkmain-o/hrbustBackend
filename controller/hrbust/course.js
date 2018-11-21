@@ -137,21 +137,16 @@ const updateCourse = async (ctx) => {
   }
 
   let cookie = ctx.session.hrbustCookie
-  const { term } = ctx.query
+  let { term } = ctx.query
 
-  // 学生年级 16、17、18...
-  const grade = parseInt(username.substr(0, 2))
+  let { grade, password } = await Students.findOne({ username })
 
-  // term
-  // 大一第一学期 0
-  // 大一第二学期 2
-  // 大二第一学期 3
-  // ...
-  // 大四第二学期 7
-  const yearid = grade + 20 + Math.ceil(term / 2)
-  const termid = (term % 2) ? 1 : 2
+  if (!grade) {
+    grade = parseInt(username.substr(0, 2))
+  }
+  let yearid = grade + 20 + Math.ceil(term / 2)
+  let termid = (term % 2) ? 1 : 2
 
-  const { password } = await Students.findOne({ username })
   const simulateLogin = new SimulateLogin({
     username,
     password,
@@ -163,14 +158,36 @@ const updateCourse = async (ctx) => {
   cookie = loginResult.cookie
 
   const getCourseUrl = await getStudentId(cookie)
-  const response = await superagent
+  let response = await superagent
     .get(`${getCourseUrl}&termid=${termid}&yearid=${yearid}`)
     .charset()
     .set(requestHeader)
     .set('Cookie', cookie)
 
-  const body = response.text
-  const $ = cheerio.load(body, { decodeEntities: false })
+  let body = response.text
+  let $ = cheerio.load(body, { decodeEntities: false })
+
+  const currentGradeStr = $('.content table tr').eq(1).text()
+  const currentGrade = currentGradeStr.split('-')[0].substr(-2)
+  await Students.findOneAndUpdate({ username }, {
+    grade: currentGrade,
+  })
+
+  if (currentGrade !== grade) {
+    let currentTerm = term - ((currentGrade - grade) * 2)
+    term = currentTerm
+    yearid = parseInt(currentGrade) + 20 + Math.ceil(currentTerm / 2)
+
+    response = await superagent
+      .get(`${getCourseUrl}&termid=${termid}&yearid=${yearid}`)
+      .charset()
+      .set(requestHeader)
+      .set('Cookie', cookie)
+
+    body = response.text
+    $ = cheerio.load(body, { decodeEntities: false })
+  }
+
   const lessonList = []
   const lessonListUnplan = []
 
