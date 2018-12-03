@@ -1,0 +1,3 @@
+[submodule "smackgg-config"]
+	path = smackgg-config
+	url = git@git.coding.net:winnerweb/smackgg-config.git
