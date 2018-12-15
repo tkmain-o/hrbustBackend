@@ -45,10 +45,10 @@ const orderInfo = async (ctx) => {
   }
   const { studentId } = ctx.query
 
-  const [errOrder, { _doc }] = await to(OrderCetStudents.findOne({ username: studentId }))
+  const [errOrder, data] = await to(OrderCetStudents.findOne({ username: studentId }))
   if (errOrder) ctx.throw(400, errOrder)
 
-  if (!_doc) {
+  if (!data) {
     ctx.body = {
       data: {
         isOrdered: 0,
@@ -59,7 +59,7 @@ const orderInfo = async (ctx) => {
     ctx.body = {
       data: {
         isOrdered: 1,
-        ..._doc,
+        ...data._doc,
       },
       status: 200,
     }
