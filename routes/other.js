@@ -12,6 +12,11 @@ const {
   getNewsDetail,
 } = require('../controller/hrbust/news')
 
+const {
+  cetOrder,
+  orderInfo,
+} = require('../controller/other/cet-order')
+
 router.prefix('/api')
 
 // 上传文件接口 七牛云
@@ -24,4 +29,6 @@ router.get('/banner', ctx => getBanner(ctx))
 router.get('/news', ctx => getNews(ctx))
 router.get('/news/:id', ctx => getNewsDetail(ctx))
 
+router.post('/cet-order', ctx => cetOrder(ctx))
+router.get('/order-info', ctx => orderInfo(ctx))
 module.exports = router
