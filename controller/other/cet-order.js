@@ -5,13 +5,13 @@ const cetOrder = async (ctx) => {
   const {
     username,
     openid,
-  } = ctx.session.username
+  } = ctx.session
   if (!username) {
     ctx.throw(400, '未登陆')
   }
   const {
     studentId, name, ticketNumber, email,
-  } = ctx.request.body
+  } = ctx.request.fields
 
   const data = {
     openid,
@@ -39,7 +39,7 @@ const cetOrder = async (ctx) => {
 const orderInfo = async (ctx) => {
   const {
     username,
-  } = ctx.session.username
+  } = ctx.session
   if (!username) {
     ctx.throw(400, '未登陆')
   }
