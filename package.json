@@ -7,6 +7,7 @@
     "dev": "DEBUG=hrbust*, ./node_modules/.bin/nodemon --delay 1 bin/www",
     "pro": "pm2 startOrRestart ecosystem.json",
     "python": "cd python && pm2 start server.py --interpreter=python3",
+    "wechat-bot": "NODE_ENV=production pm2 start bin/wechat.js --name wechat-bot",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --fix ./"
   },
