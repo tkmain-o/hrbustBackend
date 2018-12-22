@@ -18,6 +18,7 @@
     "crypto": "^1.0.1",
     "debug": "^2.6.3",
     "ejs": "^2.6.1",
+    "file-box": "^0.8.27",
     "koa": "^2.2.0",
     "koa-better-body": "^3.0.4",
     "koa-bodyparser": "^3.2.0",
@@ -35,12 +36,16 @@
     "moment": "^2.22.2",
     "mongoose": "^5.2.8",
     "node-qiniu": "^6.2.0",
+    "node-schedule": "^1.3.1",
     "node-xml2json": "^1.0.0",
+    "npm": "^6.5.0",
     "pug": "^2.0.0-rc.1",
+    "qrcode-terminal": "^0.12.0",
     "request": "^2.88.0",
     "superagent": "^3.8.3",
     "superagent-charset": "^1.2.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "wechaty": "^0.22.6"
   },
   "devDependencies": {
     "eslint": "^5.3.0",
