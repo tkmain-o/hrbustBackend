@@ -182,7 +182,7 @@ bot.on('message', async (msg) => {
     // if (room.payload.topic) {
 
     // }
-    if (/@CTO/.test(text)) {
+    if (/@Robot/.test(text)) {
       // let room = await bot.Room.find({ topic: '云图test' })
       let memberList = await room.memberList()
       memberList = memberList.filter(item => item !== contact)
@@ -191,7 +191,7 @@ bot.on('message', async (msg) => {
         const c1 = await Students.find({}).count()
         const c2 = await Users.find({}).count()
         const c3 = await OrderCetStudents.find({}).count()
-        await room.say(`实时
+        await room.say(`
 🥇 微信用户总数：${c2}
 🥈 登录教务在线人总数：${c1}
 🥉 预约四六级人总数：${c3}
@@ -205,6 +205,12 @@ bot.on('message', async (msg) => {
         // const user = await bot.Contact.find({ id: memberList[rand] })
         // console.log(user, user)
         await room.say(`你${/取餐/.test(text) ? '取餐' : '傻逼'}`, memberList[rand])
+      } else if (/^谁/.test(text)) {
+        const rand = parseInt(Math.random() * memberList.length)
+        // console.log(memberList, rand)
+        // const user = await bot.Contact.find({ id: memberList[rand] })
+        // console.log(user, user)
+        await room.say(`你${text.slice(1)}`, memberList[rand])
       } else {
         const a = text.replace('@CTO', '')
         const res = await superagent
