@@ -173,7 +173,6 @@ bot.on('message', async (msg) => {
   if (msg.self()) {
     return
   }
-
   if (room) {
     // console.log(room.payload.topic, room.payload.memberIdList, 'room')
     // const topic = await room.topic()
@@ -182,12 +181,13 @@ bot.on('message', async (msg) => {
     // if (room.payload.topic) {
 
     // }
-    if (/@Robot/.test(text)) {
+    if (RegExp(`@${bot.userSelf().payload.name}`).test(text)) {
+      const splitText = text.split(`@${bot.userSelf().payload.name} `)
       // let room = await bot.Room.find({ topic: '云图test' })
       let memberList = await room.memberList()
       memberList = memberList.filter(item => item !== contact)
       // console.log(memberList, 'room memberList')
-      if (/数据/.test(text)) {
+      if (/数据/.test(splitText)) {
         const c1 = await Students.find({}).count()
         const c2 = await Users.find({}).count()
         const c3 = await OrderCetStudents.find({}).count()
@@ -199,27 +199,26 @@ bot.on('message', async (msg) => {
 登录教务在线日活数：去你妈的统计不出来
 预约四六级人日活数：去你妈的统计不出来`, contact)
         // await room.del(contact)
-      } if (/取餐|傻逼/.test(text)) {
+      } else if (/取餐|傻逼/.test(splitText)) {
         const rand = parseInt(Math.random() * memberList.length)
         // console.log(memberList, rand)
         // const user = await bot.Contact.find({ id: memberList[rand] })
         // console.log(user, user)
-        await room.say(`你${/取餐/.test(text) ? '取餐' : '傻逼'}`, memberList[rand])
-      } else if (/^谁/.test(text)) {
+        await room.say(`你${/取餐/.test(splitText) ? '取餐' : '傻逼'}`, memberList[rand])
+      } else if (/^谁/.test(splitText)) {
         const rand = parseInt(Math.random() * memberList.length)
         // console.log(memberList, rand)
         // const user = await bot.Contact.find({ id: memberList[rand] })
         // console.log(user, user)
-        await room.say(`你${text.slice(1)}`, memberList[rand])
+        await room.say(`你${splitText.slice(1)}`, memberList[rand])
       } else {
-        const a = text.replace('@CTO', '')
         const res = await superagent
           .post('http://openapi.tuling123.com/openapi/api/v2')
           .send({
             reqType: 0,
             perception: {
               inputText: {
-                text: a,
+                text: splitText,
               },
             },
             userInfo: {
