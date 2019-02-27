@@ -12,15 +12,15 @@ async function sendMail (fromName, to, subject = '', html = '') {
     secure: true,
     auth: {
       user: smtpConf.user,
-      pass: smtpConf.pwd
-    }
+      pass: smtpConf.pwd,
+    },
   })
 
   const mailOptions = {
     from: `${fromName} <${smtpConf.user}>`,
     to,
     subject,
-    html
+    html,
   }
 
   transporter.sendMail(mailOptions, error => {
@@ -33,5 +33,5 @@ async function sendMail (fromName, to, subject = '', html = '') {
 }
 
 module.exports = {
-  sendMail
+  sendMail,
 }
