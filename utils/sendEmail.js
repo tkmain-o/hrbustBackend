@@ -3,28 +3,21 @@
 */
 
 const nodeMailer = require('nodemailer')
-
-const SMTP_CONF = {
-  host: 'smtp.exmail.qq.com',
-  port: 465,
-  user: 'lgm-smtp@smackgg.cn',
-  pwd: 'liGongmiao2019'
-}
-
+const smtpConf = require('../config/smtpConf')
 
 async function sendMail (fromName, to, subject = '', html = '') {
   const transporter = nodeMailer.createTransport({
-    host: SMTP_CONF.host,
-    port: SMTP_CONF.port,
+    host: smtpConf.host,
+    port: smtpConf.port,
     secure: true,
     auth: {
-      user: SMTP_CONF.user,
-      pass: SMTP_CONF.pwd
+      user: smtpConf.user,
+      pass: smtpConf.pwd
     }
   })
 
   const mailOptions = {
-    from: `${fromName} <${SMTP_CONF.user}>`,
+    from: `${fromName} <${smtpConf.user}>`,
     to,
     subject,
     html
