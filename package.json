@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node bin/www",
-    "dev": "DEBUG=hrbust*, ./node_modules/.bin/nodemon --delay 1 bin/www",
+    "dev": "NODE_ENV=production DEBUG=hrbust*, ./node_modules/.bin/nodemon --delay 1 bin/www",
     "pro": "pm2 startOrRestart ecosystem.json",
     "python": "cd python && pm2 start server.py --interpreter=python3",
     "wechat-bot": "NODE_ENV=production pm2 start bin/wechat.js --name wechat-bot",
@@ -39,6 +39,7 @@
     "node-qiniu": "^6.2.0",
     "node-schedule": "^1.3.1",
     "node-xml2json": "^1.0.0",
+    "nodemailer": "^5.1.1",
     "npm": "^6.5.0",
     "pug": "^2.0.0-rc.1",
     "qrcode-terminal": "^0.12.0",

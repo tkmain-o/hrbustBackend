@@ -23,6 +23,12 @@ const OrderCetStudentsSchema = new mongoose.Schema({
   examDate: {
     type: Number, default: 201812,
   },
+  grade: {
+    type: Object, default: {},
+  },
+  send: {
+    type: Boolean, default: false,
+  },
 })
 
 module.exports = mongoose.model('OrderCetStudents', OrderCetStudentsSchema)

@@ -110,6 +110,8 @@ const routes = {
   hrbust: require('./routes/hrbust'),
   // 一些公共 api
   other: require('./routes/other'),
+  // 后台 api
+  backend: require('./routes/backend'),
 }
 
 // routes
