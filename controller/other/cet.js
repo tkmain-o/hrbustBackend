@@ -8,9 +8,7 @@ const md5 = require('md5')
 const excelName = '2019_1.xls'
 const list = xlsx.parse(path.resolve(`./utils/${excelName}`))
 const data = list[0].data
-console.log(data)
 const len = data.length - 1
-// console.log(data);
 function check (user) {
   let id = ''
   let name = ''
@@ -53,7 +51,13 @@ const getCetCaptcha = (url) => {
     superagent
       .get(urlt)
       .end((err, response) => {
-        const cookie = response.headers['set-cookie']
+        // console.log(response)
+        let cookie
+        try {
+          cookie = response && response.headers['set-cookie']
+        } catch (error) {
+          console.log(error)
+        }
         // console.log(response.body);
         const buffer = Buffer.from(response.body, 'base64')
         resolve({
@@ -81,7 +85,7 @@ const getToken = () => {
       .get('https://weixiao.qq.com/apps/public/cet/index.html')
       .end((err, response) => {
         const cookie = response.headers['set-cookie']
-        resolve(handleToken(cookie))
+        resolve({ token: handleToken(cookie), tcookie: cookie })
       })
   })
 }
@@ -99,10 +103,13 @@ const getCet = async ({
   }
   // const param = `zkzh=${idt}&xm=${namet}`
   // const url = `http://www.chsi.com.cn/cet/query?${encodeURI(param)}`
-  const token = await getToken()
-
+  const {
+    token,
+    tcookie,
+  } = await getToken()
+  options.headers.Cookie = tcookie
   const url = `https://www.wexcampus.com/cet/result?token=${token}`
-  console.log(url)
+  // console.log(url)
   const sendData = {
     number: idt,
     name: namet,
@@ -119,18 +126,18 @@ const getCet = async ({
     .then((response) => {
       const bod = response.text
       const dataP = JSON.parse(bod)
-      console.log(dataP)
       if (dataP.code === 80001) {
         return getCetCaptcha(dataP.img_url).then(result => {
           return Promise.resolve({
             code: 80001,
             base64: result.base64,
             cookie: result.cookie,
+            token: result.token,
           })
         })
       } if (dataP.code === 0) {
         return Promise.resolve({
-          data: [{
+          data: {
             name: namet,
             school: dataP.result.school,
             type: `大学英语${dataP.result.number.substr(9, 1) === '1' ? '四' : '六'}级考试`,
@@ -139,7 +146,7 @@ const getCet = async ({
             listen: dataP.result.hearing,
             reading: dataP.result.reading,
             writing: dataP.result.writing,
-          }],
+          },
         })
       }
       return Promise.resolve({
@@ -167,8 +174,31 @@ const getCetHandler = async (ctx) => {
   })
 
   ctx.body = {
-    status: 200,
-    data: cetData,
+    ...cetData,
+  }
+}
+
+const getCetCaptchaHandler = async (ctx) => {
+  const { username, token, cookie } = ctx.query
+  // await getCetCaptcha();
+  const mes = check(username)
+  const id = mes.id
+  const url = `https://www.wexcampus.com/cet/change-img?number=${id}&token=${token}`
+  options.headers.Cookie = cookie
+  const result = await new Promise((resolve) => {
+    superagent
+      .get(url)
+      .set(options.headers)
+      .end(async (err, response) => {
+        const { base64 } = await getCetCaptcha(response.body.url)
+        resolve({
+          base64,
+        })
+      })
+  })
+  ctx.body = {
+    code: 200,
+    data: result,
   }
 }
 
@@ -176,4 +206,5 @@ module.exports = {
   getCet,
   getCetHandler,
   getCetCaptcha,
+  getCetCaptchaHandler,
 }
