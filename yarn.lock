@@ -3136,6 +3136,10 @@ node-xml2json@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/node-xml2json/-/node-xml2json-1.0.0.tgz#fc6715c2bc270ebcdd4d4aa3250c1274e0999141"
 
+nodemailer@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-5.1.1.tgz#0c48d1ecab02e86d9ff6c620ee75ed944b763505"
+
 nodemon@^1.8.1:
   version "1.18.9"
   resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-1.18.9.tgz#90b467efd3b3c81b9453380aeb2a2cba535d0ead"

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title><%= title %></title>
+  <!-- <link rel="stylesheet" href="/stylesheets/movie-ticket-backend/index.css"> -->
+  <link href="https://cdn.bootcss.com/element-ui/1.3.7/theme-default/index.css" rel="stylesheet">
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://cdn.bootcss.com/element-ui/1.3.7/index.js"></script>
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/jquery-url-parser/2.3.1/purl.min.js"></script>
+</head>
+
+<body>
+
+
+  <div id="app">
+    <el-card class="box-card">
+      <!-- 112432432432423 -->
+      <el-table :data="list" stripe style="width: 100%">
+        <el-table-column prop="name" label="姓名" width="180">
+        </el-table-column>
+        <el-table-column prop="examDate" label="预约日期" width="180">
+        </el-table-column>
+        <el-table-column prop="username" label="学号">
+        </el-table-column>
+        <el-table-column prop="ticketNumber" label="准考证号">
+        </el-table-column>
+        <el-table-column fixed="right" label="状态" width="100">
+          <template slot-scope="scope">
+            {{scope.checked ? '已查询' : '未查询'}}
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="100">
+          <template slot-scope="scope">
+            <el-button @click="handleClick(scope.row)" type="text" size="small">查寻</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+  </div>
+  <script>
+    new Vue({
+      el: '#app',
+      data: function () {
+        return {
+          list: []
+        }
+      },
+      created () {
+        const page = $.url(window.location.href).param().page;
+        this.getList(page);
+      },
+      methods: {
+        getList(page = 0) {
+          const that = this
+          $.ajax({
+            url: `/backend/cet/users?page=${page}`,
+            method: 'GET',
+            error(jqXHR, textStatus, errorThrown) {
+              alert(jqXHR.responseJSON.error)
+            },
+            success(data) {
+              console.log(data)
+              that.list = data.data
+            }
+          })
+        },
+        // onSubmit() {
+        //   this.$confirm('请先预览仔细确认信息是否正确，确认提交将影响线上展示，是否继续?', '提示', {
+        //     confirmButtonText: '确定',
+        //     cancelButtonText: '取消',
+        //     type: 'warning'
+        //   }).then(() => {
+        //     this.formSubmit('movies', (data) => {
+        //       this.$message({
+        //         type: 'success',
+        //         message: data.message,
+        //       });
+        //     })
+        //   }).catch(() => {
+        //     this.$message({
+        //       type: 'info',
+        //       message: '已取消提交',
+        //     });
+        //   });
+        // },
+      },
+    })
+  </script>
+</body>
+
+</html>

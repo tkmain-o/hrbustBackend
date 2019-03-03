@@ -22,13 +22,17 @@ async function sendMail (fromName, to, subject = '', html = '') {
     subject,
     html,
   }
-
-  transporter.sendMail(mailOptions, error => {
-    if (error) {
-      throw new Error('邮件发送失败！！', mailOptions)
-    } else {
-      console.log('邮件发送成功！')
-    }
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, error => {
+      if (error) {
+        // throw new Error('邮件发送失败！！', mailOptions)
+        console.error('邮件发送失败！！', mailOptions, error)
+        reject(new Error('邮件发送失败！！', mailOptions))
+      } else {
+        console.log('邮件发送成功！')
+        resolve()
+      }
+    })
   })
 }
 
