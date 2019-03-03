@@ -105,12 +105,12 @@ const getWeek = async (ctx) => {
       const thisWeek = result.replace(/\s/g, '')
       const week = (thisWeek && thisWeek.match(/第(\w*)周/) && thisWeek.match(/第(\w*)周/)[1]) ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1
       const terms = thisWeek.match(/(\w*)(秋|春)/)
-      const year = parseInt(terms[1]) - 1980
+      const year = parseInt(terms[1]) - 2001
       const termsObj = {
         春: 1,
         秋: 0,
       }
-      const term = (year - 20 - grade) * 2 + termsObj[terms[2]]
+      const term = (year - grade) * 2 + termsObj[terms[2]]
       ctx.body = {
         data: {
           term,
