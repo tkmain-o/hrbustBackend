@@ -79,9 +79,8 @@ const getGrade = async (ctx) => {
 
     const grade = Number(innerTexts[6])
     const xuefen = Number(innerTexts[7])
-
     let GPA = ''
-    if (xuefen > 0) {
+    if (xuefen > 0 && innerTexts[11] !== '重考') {
       if (innerTexts[12] === '不及格') {
         GPA = '0.0'
       } else if (!Number.isNaN(grade)) {
