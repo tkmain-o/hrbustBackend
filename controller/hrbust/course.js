@@ -7,9 +7,10 @@ const Course = require('../../models/Course')
 const TermCourse = require('../../models/TermCourse')
 
 const {
-  SimulateLogin,
+  // SimulateLogin,
   requestHeader,
   url,
+  checkLogin,
 } = require('../../utils/hrbust')
 
 function md5 (text) {
@@ -136,10 +137,16 @@ const updateCourse = async (ctx) => {
     ctx.throw(400, '未登陆')
   }
 
+  const isLogin = await checkLogin(ctx, {
+    // autoCaptcha: true,
+  })
+  if (!isLogin) return
+
+
   let cookie = ctx.session.hrbustCookie
   let { term } = ctx.query
 
-  let { grade, password } = await Students.findOne({ username })
+  let { grade } = await Students.findOne({ username })
 
   if (!grade) {
     grade = parseInt(username.substr(0, 2))
@@ -147,15 +154,15 @@ const updateCourse = async (ctx) => {
   let yearid = grade + 20 + Math.ceil(term / 2)
   let termid = (term % 2) ? 1 : 2
 
-  const simulateLogin = new SimulateLogin({
-    username,
-    password,
-    cookie,
-    autoCaptcha: true,
-  })
-  const [errorLogin, loginResult] = await to(simulateLogin.login())
-  if (errorLogin) ctx.throw(400, errorLogin)
-  cookie = loginResult.cookie
+  // const simulateLogin = new SimulateLogin({
+  //   username,
+  //   password,
+  //   cookie,
+  //   autoCaptcha: true,
+  // })
+  // const [errorLogin, loginResult] = await to(simulateLogin.login())
+  // if (errorLogin) ctx.throw(400, errorLogin)
+  // cookie = loginResult.cookie
 
   const getCourseUrl = await getStudentId(cookie)
   let response = await superagent
