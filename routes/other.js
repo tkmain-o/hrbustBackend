@@ -23,6 +23,10 @@ const {
   getCetCaptchaHandler,
 } = require('../controller/other/cet')
 
+const {
+  getYingxin,
+} = require('../controller/other/yingxin')
+
 router.prefix('/api')
 
 // 上传文件接口 七牛云
@@ -40,5 +44,7 @@ router.get('/order-info', ctx => orderInfo(ctx))
 
 router.get('/cet/captcha', ctx => getCetCaptchaHandler(ctx))
 router.get('/cet', ctx => getCetHandler(ctx))
+
+router.get('/yingxin', ctx => getYingxin(ctx))
 
 module.exports = router
