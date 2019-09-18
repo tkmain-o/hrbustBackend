@@ -104,18 +104,23 @@ const getWeek = async (ctx) => {
       const result = $('#date span').text()
       const thisWeek = result.replace(/\s/g, '')
       const week = (thisWeek && thisWeek.match(/第(\w*)周/) && thisWeek.match(/第(\w*)周/)[1]) ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1
-      const terms = thisWeek.match(/(\w*)(秋|春)/)
-      const year = parseInt(terms[1]) - 1980
-      const termsObj = {
-        春: 1,
-        秋: 0,
+      // eslint-disable-next-line
+      const [f, onlineYear, onlineQuarter] = thisWeek.match(/(\w*)(秋|春)/)
+
+      // 春秋学期计算规则不一样【手动捂脸】，这个规则没问题了
+      let year
+      const quarterMap = { 春: 1, 秋: 0 }
+      if (quarterMap[onlineQuarter] === 1) {
+        // 春
+        year = parseInt(onlineYear) - 2001
+      } else {
+        // 秋
+        year = parseInt(onlineYear) - 2000
       }
-      const term = (year - 20 - grade) * 2 + termsObj[terms[2]]
+      const term = (year - grade) * 2 + quarterMap[onlineQuarter]
+
       ctx.body = {
-        data: {
-          term,
-          week,
-        },
+        data: { term, week },
         status: 200,
       }
     })
