@@ -3,7 +3,7 @@ module.exports = {
   "rules": {
     "camelcase": 0,
     "new-cap": ["error", { "capIsNew": false }],
-    "no-console": [2, { "allow": ["warn", "error"] }],
+    "no-console": 0,
     "radix": ["error", "as-needed"],
     "linebreak-style": 0,
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],

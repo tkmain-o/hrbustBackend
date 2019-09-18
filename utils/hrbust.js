@@ -311,10 +311,20 @@ class SimulateLogin {
           const body = response.text
           const $ = cheerio.load(body)
           const errorText = $('#message').text().replace(/\s/g, '')
-          // resolve(errorText)
+          console.log(errorText)
+          let code = 400001
+
+          if (/验证码/.test(errorText)) {
+            code = 400001
+          } else if (/用户名或密码/.test(errorText)) {
+            code = 400006
+          } else {
+            code = 400007
+          }
+
           return reject(getErrorData({
             message: errorText,
-            code: 400001,
+            code,
           }))
         })
     })
@@ -347,23 +357,22 @@ const checkLogin = async (ctx, option = { autoCaptcha: false }) => {
     const [error] = await to(Login.login())
     if (error) {
       if (error.code) {
-        if (+error.code === 400001) {
-          // 如果验证码识别错误，返回验证码
-          const captchaBuffer = await Login.getCaptcha()
-          ctx.session.hrbustCookie = Login.cookie
-          ctx.body = {
-            status: 400001,
-            message: error.message,
-            data: {
-              captcha: captchaBuffer,
-            },
-          }
-          return false
+        // if (+error.code) {
+        // }
+        // 如果验证码识别错误，返回验证码
+        const captchaBuffer = await Login.getCaptcha()
+        ctx.session.hrbustCookie = Login.cookie
+        ctx.body = {
+          status: error.code,
+          message: error.message,
+          data: {
+            captcha: captchaBuffer,
+          },
         }
-        ctx.throw(400, error.message)
-      } else {
-        ctx.throw(error)
+        return false
+        // ctx.throw(400, error.message)
       }
+      ctx.throw(error)
       return false
     }
     ctx.session.username = Login.username
