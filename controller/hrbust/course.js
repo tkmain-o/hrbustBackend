@@ -175,7 +175,7 @@ const updateCourse = async (ctx) => {
   let $ = cheerio.load(body, { decodeEntities: false })
 
   const currentGradeStr = $('.content table tr').eq(1).text()
-  const currentGrade = currentGradeStr.split('-')[0].substr(-2)
+  const currentGrade = currentGradeStr.replace(/[^0-9]/ig, '')
   await Students.findOneAndUpdate({ username }, {
     grade: currentGrade,
   })
