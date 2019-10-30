@@ -218,7 +218,7 @@ const updateCourse = async (ctx) => {
         // course.push(null)
       } else {
         let html = $(ele).html()
-        html = html.replace(/(\s)|(&lt;)|(&gt;)|(;.)|(<<)|(>>)/g, '')
+        html = html.replace(/(\s)|(&lt;)|(&gt;)|(;.)|(<<)|(>>)|(一下午<br>)|(一上午<br>)/g, '')
         const arr = html.split('<br>')
 
         if (arr.length === 0 || !arr[0]) {
@@ -227,9 +227,9 @@ const updateCourse = async (ctx) => {
         }
 
         // 每五组是一节课
-        for (let i1 = 0; i1 < (arr.length / 6); i1++) {
+        for (let i1 = 0; i1 < (arr.length / 5); i1++) {
           const course = {}
-          const week = `${arr[3 + (i1 * 6)]}`
+          const week = `${arr[3 + (i1 * 5)]}`
 
           // 课表有六种情况
           // normal  1-12周
@@ -279,10 +279,10 @@ const updateCourse = async (ctx) => {
             periodObj = getPeriod(startWeek, endWeek, 0, normalWeekArray)
           }
 
-          course.name = arr[0 + (i1 * 6)]
-          course.locale = arr[1 + (i1 * 6)]
-          course.teacher = arr[2 + (i1 * 6)]
-          course.messege = arr[4 + (i1 * 6)]
+          course.name = arr[0 + (i1 * 5)]
+          course.locale = arr[1 + (i1 * 5)]
+          course.teacher = arr[2 + (i1 * 5)]
+          course.messege = arr[4 + (i1 * 5)]
           course.sectionstart = sectionstart
           course.sectionend = sectionend
           course.period = periodObj
