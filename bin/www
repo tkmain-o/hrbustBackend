@@ -7,6 +7,7 @@
 const http = require('http')
 const mongoose = require('mongoose')
 const debug = require('debug')('hrbust-backend:server')
+const redis = require('redis')
 const { mongodb } = require('../utils')
 const { port } = require('../config/config')
 const app = require('../app')
@@ -76,3 +77,12 @@ mongoose
     debug('server process starting')
   })
   .catch(debugEr)
+
+const redisClient = redis.createClient()
+
+// if you'd like to select database 3, instead of 0 (default), call
+// client.select(3, function() { /* ... */ });
+
+redisClient.on('error', (err) => {
+  console.log(`Error${err}`)
+})

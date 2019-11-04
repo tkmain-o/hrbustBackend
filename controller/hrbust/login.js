@@ -3,6 +3,7 @@ const cheerio = require('cheerio')
 const Students = require('../../models/Students')
 const Users = require('../../models/Users')
 const { requestHeader, url, SimulateLogin } = require('../../utils/hrbust')
+const { redis } = require('../../utils')
 
 // 登录处理函数
 const login = async (ctx) => {
@@ -94,37 +95,55 @@ const getWeek = async (ctx) => {
     grade = parseInt(username.substr(0, 2))
   }
 
-  return superagent
-    .get(url.indexListLeft)
-    .charset()
-    .set(requestHeader)
-    .then((response) => {
-      const body = response.text
-      const $ = cheerio.load(body)
-      const result = $('#date span').text()
-      const thisWeek = result.replace(/\s/g, '')
-      const week = (thisWeek && thisWeek.match(/第(\w*)周/) && thisWeek.match(/第(\w*)周/)[1]) ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1
-      // eslint-disable-next-line
-      const [f, onlineYear, onlineQuarter] = thisWeek.match(/(\w*)(秋|春)/)
+  // redis 数据
+  const weekRedis = await redis.getAsync('hrbust_week')
 
-      // 春秋学期计算规则不一样【手动捂脸】，这个规则没问题了
-      let year
-      const quarterMap = { 春: 1, 秋: 0 }
-      if (quarterMap[onlineQuarter] === 1) {
-        // 春
-        year = parseInt(onlineYear) - 2001
-      } else {
-        // 秋
-        year = parseInt(onlineYear) - 2000
-      }
-      const term = (year - grade) * 2 + quarterMap[onlineQuarter]
+  let weekData = null
 
-      ctx.body = {
-        data: { term, week },
-        status: 200,
-      }
-    })
-    .catch(e => ctx.throw(400, e))
+  if (weekRedis) {
+    weekData = JSON.parse(weekRedis)
+  } else {
+    const response = await superagent
+      .get(url.indexListLeft)
+      .charset()
+      .set(requestHeader)
+      .catch(e => ctx.throw(400, e))
+
+    const body = response.text
+    const $ = cheerio.load(body)
+    const result = $('#date span').text()
+    const thisWeek = result.replace(/\s/g, '')
+    const week = (thisWeek && thisWeek.match(/第(\w*)周/) && thisWeek.match(/第(\w*)周/)[1]) ? parseInt(thisWeek.match(/第(\w*)周/)[1]) : 1
+    // eslint-disable-next-line
+    const [f, onlineYear, onlineQuarter] = thisWeek.match(/(\w*)(秋|春)/)
+
+    // 春秋学期计算规则不一样【手动捂脸】，这个规则没问题了
+    let year
+    const quarterMap = { 春: 1, 秋: 0 }
+    if (quarterMap[onlineQuarter] === 1) {
+      // 春
+      year = parseInt(onlineYear) - 2001
+    } else {
+      // 秋
+      year = parseInt(onlineYear) - 2000
+    }
+
+    weekData = {
+      week,
+      year,
+      quarter: quarterMap[onlineQuarter],
+    }
+    // 数据存入 redis
+
+    redis.set('hrbust_week', JSON.stringify(weekData), 'EX', 60 * 60 * 48)
+  }
+
+  const term = (weekData.year - grade) * 2 + weekData.quarter
+
+  ctx.body = {
+    data: { term, week: weekData.week },
+    status: 200,
+  }
 }
 
 // 登录处理函数

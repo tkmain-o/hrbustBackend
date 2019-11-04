@@ -45,6 +45,7 @@
     "npm": "^6.5.0",
     "pug": "^2.0.0-rc.1",
     "qrcode-terminal": "^0.12.0",
+    "redis": "^2.8.0",
     "request": "^2.88.0",
     "superagent": "^3.8.3",
     "superagent-charset": "^1.2.0",
