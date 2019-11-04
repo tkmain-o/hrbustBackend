@@ -37,6 +37,8 @@ const url = {
   exam_url: 'http://jwzx.hrbust.edu.cn/academic/manager/examstu/studentQueryAllExam.do',
   news_url: 'http://jwzx.hrbust.edu.cn/homepage/infoArticleList.do?columnId=354',
   news_detail_url: 'http://jwzx.hrbust.edu.cn/homepage/infoSingleArticle.do?',
+  roomschedule_url: 'http://jwzx.hrbust.edu.cn/academic/teacher/teachresource/roomschedule_week.jsdo',
+  roomschedulequery: 'http://jwzx.hrbust.edu.cn/academic/teacher/teachresource/roomschedulequery.jsdo'
 }
 
 /**

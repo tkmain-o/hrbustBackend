@@ -1,5 +1,10 @@
 // const debug = require('debug')('techmeme-backend:error');
+const { promisify } = require('util')
+const redis = require('redis')
+const redisClient = redis.createClient()
 const config = require('../config/config')
+
+redisClient.getAsync = promisify(redisClient.get).bind(redisClient);
 
 const PRODUCTION = process.env.NODE_ENV === 'production'
 
@@ -15,4 +20,5 @@ if (PRODUCTION) {
 module.exports = {
   mongodb,
   sessionSecret,
+  redis: redisClient,
 }

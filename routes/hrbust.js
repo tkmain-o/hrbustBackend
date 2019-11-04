@@ -25,6 +25,11 @@ const {
   getNewsDetail,
 } = require('../controller/hrbust/news')
 
+const {
+  roomschedule,
+  roomschedulequery,
+} = require('../controller/hrbust/roomschedule')
+
 router.prefix('/api/hrbust')
 
 // 登录登出
@@ -54,5 +59,9 @@ router.get('/exam', ctx => getExam(ctx))
 // 教务在线
 router.get('/news', ctx => getNews(ctx))
 router.get('/news/:id', ctx => getNewsDetail(ctx))
+
+// 空教室查询
+router.get('/roomschedule', ctx => roomschedule(ctx))
+router.get('/roomschedulequery', ctx => roomschedulequery(ctx))
 
 module.exports = router
