@@ -57,8 +57,6 @@ const roomschedulequery = async (ctx) => {
   Object.keys(result).forEach(key => {
     $(`select[name=${key.substr(0, key.length - 1)}]`).children('option').each((i, item) => {
       const text = $(item).text()
-      console.log(text)
-      console.log('----------')
       if (text !== '请选择') {
         result[key].push({
           id: $(item).attr('value'),
