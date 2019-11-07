@@ -135,7 +135,7 @@ const getWeek = async (ctx) => {
     }
     // 数据存入 redis
 
-    redis.set('hrbust_week', JSON.stringify(weekData), 'EX', 60 * 60 * 48)
+    redis.setAsync('hrbust_week', JSON.stringify(weekData), 'EX', 60 * 60 * 48)
   }
 
   const term = (weekData.year - grade) * 2 + weekData.quarter

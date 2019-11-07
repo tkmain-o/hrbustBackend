@@ -67,7 +67,7 @@ const roomschedulequery = async (ctx) => {
   })
 
   // 写入 redis
-  redis.set(roomQueryKey, JSON.stringify(result), 'EX', 60 * 60 * 24 * 5)
+  redis.setAsync(roomQueryKey, JSON.stringify(result), 'EX', 60 * 60 * 24 * 5)
 
   ctx.body = {
     data: result,
@@ -166,7 +166,7 @@ const roomschedule = async (ctx) => {
   })
 
   // 写入 redis
-  redis.set(roomScheduleKey, JSON.stringify(result), 'EX', 60 * 60 * 24 * 2)
+  redis.setAsync(roomScheduleKey, JSON.stringify(result), 'EX', 60 * 60 * 24 * 2)
 
   ctx.body = {
     data: result,
