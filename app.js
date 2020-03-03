@@ -112,6 +112,8 @@ const routes = {
   other: require('./routes/other'),
   // 后台 api
   backend: require('./routes/backend'),
+  cetv2: require('./routes/cetv2'),
+  wxmp: require('./routes/wxmp'),
 }
 
 // routes

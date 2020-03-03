@@ -11,6 +11,12 @@ router.get('/page/cet', async (ctx) => {
   })
 })
 
+router.get('/page/cetv2', async (ctx) => {
+  await ctx.render('cetv2', {
+    title: 'cetv2',
+  })
+})
+
 router.get('/string', async (ctx) => {
   ctx.body = ctx.session.id || 'fsdjfkhds'
 })
