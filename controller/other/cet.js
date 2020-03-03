@@ -1,29 +1,29 @@
-const xlsx = require('node-xlsx')
+// const xlsx = require('node-xlsx')
 const charset = require('superagent-charset')
 const superagent = charset(require('superagent'))
-const path = require('path')
+// const path = require('path')
 const md5 = require('md5')
 // const cetData = require('./util/getTestData').cetData;
 
-const excelName = '2019_1.xls'
-const list = xlsx.parse(path.resolve(`./utils/${excelName}`))
-const data = list[0].data
-const len = data.length - 1
-function check (user) {
-  let id = ''
-  let name = ''
-  for (let i = 1; i < len; i += 1) {
-    if (data[i][3] === user) {
-      id = data[i][0]
-      name = data[i][1]
-      break
-    }
-  }
-  return {
-    id,
-    name,
-  }
-}
+// const excelName = '2019_1.xls'
+// const list = xlsx.parse(path.resolve(`./utils/${excelName}`))
+// const data = list[0].data
+// const len = data.length - 1
+// function check (user) {
+//   let id = ''
+//   let name = ''
+//   for (let i = 1; i < len; i += 1) {
+//     if (data[i][3] === user) {
+//       id = data[i][0]
+//       name = data[i][1]
+//       break
+//     }
+//   }
+//   return {
+//     id,
+//     name,
+//   }
+// }
 
 const getRandomIp = () => {
   const arr = []
@@ -91,16 +91,16 @@ const getToken = () => {
 }
 
 const getCet = async ({
-  id = '', name = '', username = '', yzm = '', cookie = '',
+  id = '', name = '', yzm = '', cookie = '',
 }) => {
   // const promise = new Promise((resolve) => {
   let idt = id
   let namet = name
-  if (username) {
-    const mes = check(username)
-    idt = mes.id
-    namet = mes.name
-  }
+  // if (username) {
+  //   const mes = check(username)
+  //   idt = mes.id
+  //   namet = mes.name
+  // }
   // const param = `zkzh=${idt}&xm=${namet}`
   // const url = `http://www.chsi.com.cn/cet/query?${encodeURI(param)}`
   const {
@@ -179,10 +179,10 @@ const getCetHandler = async (ctx) => {
 }
 
 const getCetCaptchaHandler = async (ctx) => {
-  const { username, token, cookie } = ctx.query
+  const { id, token, cookie } = ctx.query
   // await getCetCaptcha();
-  const mes = check(username)
-  const id = mes.id
+  // const mes = check(username)
+  // const id = mes.id
   const url = `https://www.wexcampus.com/cet/change-img?number=${id}&token=${token}`
   options.headers.Cookie = cookie
   const result = await new Promise((resolve) => {

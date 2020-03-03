@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 const CetTicketSchema = new mongoose.Schema({
   uuid: { type: String, required: true },
   ticket: { type: String, required: true },
+  subjectName: { type: String, required: true },
 }, {
   timestamps: true,
 })

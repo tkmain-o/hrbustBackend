@@ -140,7 +140,7 @@ const queryTicket = async (ctx) => {
   const uuid = `CET_${generate('ABCDEFGHIJKLMNabcdefghijklmn', 8)}`
   // console.log(uuid)
 
-  const ticket = data[0].TestTicket
+  const { SubjectName, TestTicket: ticket } = data[0]
   const info = await CetTicket.findOne({
     ticket,
   })
@@ -150,6 +150,7 @@ const queryTicket = async (ctx) => {
       code: 200,
       data: {
         uuid: info.uuid,
+        subjectName: SubjectName,
       },
     }
     return
@@ -158,12 +159,14 @@ const queryTicket = async (ctx) => {
   new CetTicket({
     uuid,
     ticket,
+    subjectName: SubjectName,
   }).save()
 
   ctx.body = {
     code: 200,
     data: {
       uuid,
+      subjectName: SubjectName,
     },
   }
 }
