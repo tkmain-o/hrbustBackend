@@ -5,6 +5,8 @@ const cheerio = require('cheerio')
 const generate = require('nanoid/generate')
 const CetTicket = require('../../models/CetTicket')
 // model.id = nanoid()
+const { redis } = require('../../utils')
+
 
 const getRandomIp = () => {
   const arr = []
@@ -33,7 +35,14 @@ const options = {
   },
 }
 
-const getInfo = () => {
+const getInfo = async () => {
+  // redis 数据
+  const cetInfo = await redis.getAsync('cet_info')
+  if (cetInfo) {
+    console.log('get cet_info from redis')
+    return JSON.parse(cetInfo)
+  }
+
   const url = 'http://cet-bm.neea.cn/Home/QueryTestTicket'
   return new Promise((resolve) => {
     superagent
@@ -52,6 +61,13 @@ const getInfo = () => {
           const name = $(item).text()
           provinces[id] = name
         })
+
+        redis.setAsync('cet_info', JSON.stringify({
+          title,
+          provinces,
+          cookie,
+        }), 'EX', 60 * 60 * 24 * 4)
+
         resolve({
           title,
           provinces,
@@ -136,7 +152,7 @@ const queryTicket = async (ctx) => {
   }
 
   const data = JSON.parse(cetData.Message)
-  console.log(data)
+
   const uuid = `CET_${generate('ABCDEFGHIJKLMNabcdefghijklmn', 8)}`
   // console.log(uuid)
 
@@ -201,7 +217,7 @@ const getCetCaptchaHandler = async (ctx) => {
         } catch (error) {
           console.log(error)
         }
-        console.log(cookie)
+
         resolve({
           base64: `data:image/png;base64, ${buffer.toString('base64')}`,
           cookie,
