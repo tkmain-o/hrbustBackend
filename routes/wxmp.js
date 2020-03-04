@@ -17,12 +17,15 @@ router.all('/', wechat(config).middleware(async (message) => {
     })
 
     if (info.ticket) {
-      return `
-        查询成功，
-        您的 ${info.subjectName}准考证号码为：
-        ${info.ticket}
-      `
+
+      return [{
+        title: `点击查询您的${info.subjectName.includes('四') ? '四' : '六'}级成绩`,
+        description: `您的${info.subjectName}准考证号码为 ${info.ticket}`,
+        picurl: 'http://hrbust-static.smackgg.cn/cetlogo.png',
+        url: `http://hrbust-web.smackgg.com?name=${info.name}&id=${info.ticket}`,
+      }]
     }
+
     return '无效校验码，没有查询到您的准考证号，请重新获取校验码'
   }
   // subjectName

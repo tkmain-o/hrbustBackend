@@ -160,6 +160,8 @@ const queryTicket = async (ctx) => {
     uuid,
     ticket,
     subjectName: SubjectName,
+    name,
+    id,
   }).save()
 
   ctx.body = {
