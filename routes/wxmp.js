@@ -16,8 +16,7 @@ router.all('/', wechat(config).middleware(async (message) => {
       uuid: message.Content,
     })
 
-    if (info.ticket) {
-
+    if (info && info.ticket) {
       return [{
         title: `点击查询您的${info.subjectName.includes('四') ? '四' : '六'}级成绩`,
         description: `您的${info.subjectName}准考证号码为 ${info.ticket}`,
