@@ -11,9 +11,9 @@ router.prefix('/wxmp')
 router.all('/', wechat(config).middleware(async (message) => {
   // await CetTicket.
   // console.log(message)
-  if (/^CET_/.test(message)) {
+  if (/^CET_/.test(message.Content)) {
     const info = await CetTicket.findOne({
-      uuid: message,
+      uuid: message.Content,
     })
 
     if (info.ticket) {

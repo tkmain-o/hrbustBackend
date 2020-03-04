@@ -20,7 +20,7 @@ const {
 
 const {
   getCetHandler,
-  getCetCaptchaHandler,
+  getCetCaptcha,
 } = require('../controller/other/cet')
 
 const {
@@ -42,7 +42,7 @@ router.get('/news/:id', ctx => getNewsDetail(ctx))
 router.post('/cet-order', ctx => cetOrder(ctx))
 router.get('/order-info', ctx => orderInfo(ctx))
 
-router.get('/cet/captcha', ctx => getCetCaptchaHandler(ctx))
+router.get('/cet/captcha', ctx => getCetCaptcha(ctx))
 router.get('/cet', ctx => getCetHandler(ctx))
 
 router.get('/yingxin', ctx => getYingxin(ctx))

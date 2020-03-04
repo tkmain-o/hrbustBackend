@@ -2,7 +2,7 @@
 const charset = require('superagent-charset')
 const superagent = charset(require('superagent'))
 // const path = require('path')
-const md5 = require('md5')
+// const md5 = require('md5')
 // const cetData = require('./util/getTestData').cetData;
 
 // const excelName = '2019_1.xls'
@@ -68,48 +68,36 @@ const getCetCaptcha = (url) => {
   })
 }
 
-function handleToken (cookie) {
-  let cookies = {}
+// function handleToken (cookie) {
+//   let cookies = {}
 
-  cookie.forEach(value => {
-    let cookieInfos = value.split('=')
-    cookies[cookieInfos[0]] = cookieInfos[1]
-  })
+//   cookie.forEach(value => {
+//     let cookieInfos = value.split('=')
+//     cookies[cookieInfos[0]] = cookieInfos[1]
+//   })
 
-  return md5(`${decodeURIComponent(cookies.hwJR_2132_token)}weixiao`)
-}
+//   return md5(`${decodeURIComponent(cookies.hwJR_2132_token)}weixiao`)
+// }
 
-const getToken = () => {
-  return new Promise((resolve) => {
-    superagent
-      .get('https://weixiao.qq.com/apps/public/cet/index.html')
-      .end((err, response) => {
-        const cookie = response.headers['set-cookie']
-        resolve({ token: handleToken(cookie), tcookie: cookie })
-      })
-  })
-}
+// const getToken = () => {
+//   return new Promise((resolve) => {
+//     superagent
+//       .get('https://weixiao.qq.com/apps/public/cet/index.html')
+//       .end((err, response) => {
+//         const cookie = response.headers['set-cookie']
+//         console.log(cookie, 11111)
+//         resolve({ token: handleToken(cookie), tcookie: cookie })
+//       })
+//   })
+// }
 
 const getCet = async ({
   id = '', name = '', yzm = '', cookie = '',
 }) => {
-  // const promise = new Promise((resolve) => {
   let idt = id
   let namet = name
-  // if (username) {
-  //   const mes = check(username)
-  //   idt = mes.id
-  //   namet = mes.name
-  // }
-  // const param = `zkzh=${idt}&xm=${namet}`
-  // const url = `http://www.chsi.com.cn/cet/query?${encodeURI(param)}`
-  const {
-    token,
-    tcookie,
-  } = await getToken()
-  options.headers.Cookie = tcookie
-  const url = `https://www.wexcampus.com/cet/result?token=${token}`
-  // console.log(url)
+  const url = 'https://www.wexcampus.com/cet/result'
+
   const sendData = {
     number: idt,
     name: namet,
@@ -117,11 +105,13 @@ const getCet = async ({
   if (yzm) {
     sendData.img_code = yzm
     sendData.type = 1
-    options.headers.Cookie = cookie
   }
   const resultA = await superagent
     .post(url)
-    .set(options.headers)
+    .set({
+      ...options.headers,
+      Cookie: yzm ? cookie : '',
+    })
     .send(sendData)
     .then((response) => {
       const bod = response.text
@@ -150,7 +140,8 @@ const getCet = async ({
         })
       }
       return Promise.resolve({
-        error: dataP.message,
+        code: 400,
+        message: dataP.message,
       })
     })
   return resultA
@@ -174,37 +165,38 @@ const getCetHandler = async (ctx) => {
   })
 
   ctx.body = {
+    code: cetData.code || 200,
     ...cetData,
   }
 }
 
-const getCetCaptchaHandler = async (ctx) => {
-  const { id, token, cookie } = ctx.query
-  // await getCetCaptcha();
-  // const mes = check(username)
-  // const id = mes.id
-  const url = `https://www.wexcampus.com/cet/change-img?number=${id}&token=${token}`
-  options.headers.Cookie = cookie
-  const result = await new Promise((resolve) => {
-    superagent
-      .get(url)
-      .set(options.headers)
-      .end(async (err, response) => {
-        const { base64 } = await getCetCaptcha(response.body.url)
-        resolve({
-          base64,
-        })
-      })
-  })
-  ctx.body = {
-    code: 200,
-    data: result,
-  }
-}
+// const getCetCaptchaHandler = async (ctx) => {
+//   const { id, token, cookie } = ctx.query
+//   // await getCetCaptcha();
+//   // const mes = check(username)
+//   // const id = mes.id
+//   const url = `https://www.wexcampus.com/cet/change-img?number=${id}&token=${token}`
+//   options.headers.Cookie = cookie
+//   const result = await new Promise((resolve) => {
+//     superagent
+//       .get(url)
+//       .set(options.headers)
+//       .end(async (err, response) => {
+//         const { base64 } = await getCetCaptcha(response.body.url)
+//         resolve({
+//           base64,
+//         })
+//       })
+//   })
+//   ctx.body = {
+//     code: 200,
+//     data: result,
+//   }
+// }
 
 module.exports = {
   getCet,
   getCetHandler,
-  getCetCaptcha,
-  getCetCaptchaHandler,
+  // getCetCaptcha,
+  // getCetCaptchaHandler,
 }
