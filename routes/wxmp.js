@@ -11,6 +11,15 @@ router.prefix('/wxmp')
 router.all('/', wechat(config).middleware(async (message) => {
   // await CetTicket.
   // console.log(message)
+  if (/准考证/.test(message.Content)) {
+    return [{
+      title: '点击查询四六级准考证',
+      description: '忘记准考证不用怕，理工喵帮您找回准考证~',
+      picurl: 'http://hrbust-static.smackgg.cn/cetlogo.png',
+      url: 'http://hrbust-web.smackgg.com/query/ticket',
+    }]
+  }
+
   if (/^CET_/.test(message.Content)) {
     const info = await CetTicket.findOne({
       uuid: message.Content,
@@ -21,7 +30,7 @@ router.all('/', wechat(config).middleware(async (message) => {
         title: `点击查询您的${info.subjectName.includes('四') ? '四' : '六'}级成绩`,
         description: `您的${info.subjectName}准考证号码为 ${info.ticket}`,
         picurl: 'http://hrbust-static.smackgg.cn/cetlogo.png',
-        url: `http://hrbust-web.smackgg.com?name=${info.name}&id=${info.ticket}`,
+        url: `http://hrbust-web.smackgg.com/query/cet?name=${info.name}&id=${info.ticket}`,
       }]
     }
 
