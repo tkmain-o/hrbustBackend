@@ -1,29 +1,7 @@
-// const xlsx = require('node-xlsx')
 const charset = require('superagent-charset')
 const superagent = charset(require('superagent'))
-// const path = require('path')
-// const md5 = require('md5')
-// const cetData = require('./util/getTestData').cetData;
 
-// const excelName = '2019_1.xls'
-// const list = xlsx.parse(path.resolve(`./utils/${excelName}`))
-// const data = list[0].data
-// const len = data.length - 1
-// function check (user) {
-//   let id = ''
-//   let name = ''
-//   for (let i = 1; i < len; i += 1) {
-//     if (data[i][3] === user) {
-//       id = data[i][0]
-//       name = data[i][1]
-//       break
-//     }
-//   }
-//   return {
-//     id,
-//     name,
-//   }
-// }
+const md5 = require('md5')
 
 const getRandomIp = () => {
   const arr = []
@@ -45,67 +23,68 @@ const options = {
   },
 }
 
-const getCetCaptcha = (url) => {
+const getToken = (cookie = '') => {
+  const cookies = {}
+
+  cookie.split('; ').forEach((value) => {
+    const cookieInfos = value.split('=')
+    cookies[cookieInfos[0]] = cookieInfos[1]
+  })
+
+  return md5(decodeURIComponent(cookies.hwJR_2132_token) + 'weixiao')
+}
+
+const getCetCaptcha = (url, cookie, tokenCookie) => {
+  const headers = {
+    ...options.headers,
+  }
+  if (cookie) {
+    headers.Cookie = cookie
+  }
   const urlt = url || 'http://www.chsi.com.cn/cet/ValidatorIMG.JPG'
   return new Promise((resolve) => {
     superagent
       .get(urlt)
+      .set(headers)
       .end((err, response) => {
-        // console.log(response)
-        let cookie
+        let cookieR = cookie
         try {
-          cookie = response && response.headers['set-cookie']
+          cookieR = (response && response.headers['set-cookie']) || cookie
         } catch (error) {
           console.log(error)
         }
-        // console.log(response.body);
+
         const buffer = Buffer.from(response.body, 'base64')
+        const token = getToken(tokenCookie)
+
         resolve({
-          base64: buffer.toString('base64'),
-          cookie,
+          base64: `data:image/png;base64, ${buffer.toString('base64')}`,
+          cookie: cookieR,
+          token,
         })
       })
   })
 }
-
-// function handleToken (cookie) {
-//   let cookies = {}
-
-//   cookie.forEach(value => {
-//     let cookieInfos = value.split('=')
-//     cookies[cookieInfos[0]] = cookieInfos[1]
-//   })
-
-//   return md5(`${decodeURIComponent(cookies.hwJR_2132_token)}weixiao`)
-// }
-
-// const getToken = () => {
-//   return new Promise((resolve) => {
-//     superagent
-//       .get('https://weixiao.qq.com/apps/public/cet/index.html')
-//       .end((err, response) => {
-//         const cookie = response.headers['set-cookie']
-//         console.log(cookie, 11111)
-//         resolve({ token: handleToken(cookie), tcookie: cookie })
-//       })
-//   })
-// }
 
 const getCet = async ({
   id = '', name = '', yzm = '', cookie = '',
 }) => {
   let idt = id
   let namet = name
-  const url = 'https://www.wexcampus.com/cet/result'
+  const tokenCookie = `name=${encodeURIComponent(name)}; number=${id}`
+
+  const url = `https://www.wexcampus.com/cet/result?token=${getToken(tokenCookie)}`
 
   const sendData = {
     number: idt,
     name: namet,
   }
+
   if (yzm) {
     sendData.img_code = yzm
     sendData.type = 1
   }
+
   const resultA = await superagent
     .post(url)
     .set({
@@ -116,8 +95,9 @@ const getCet = async ({
     .then((response) => {
       const bod = response.text
       const dataP = JSON.parse(bod)
+
       if (dataP.code === 80001) {
-        return getCetCaptcha(dataP.img_url).then(result => {
+        return getCetCaptcha(dataP.img_url, cookie, tokenCookie).then(result => {
           return Promise.resolve({
             code: 80001,
             base64: result.base64,

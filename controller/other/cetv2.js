@@ -215,7 +215,7 @@ const getCetCaptchaHandler = async (ctx) => {
           // console.log(cookie, '2222')
           cookie = `${a}; ${b}`
         } catch (error) {
-          console.log(error)
+          // console.log(error)
         }
 
         resolve({
