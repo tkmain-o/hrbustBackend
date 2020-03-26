@@ -212,24 +212,35 @@ const updateCourse = async (ctx) => {
     // 小节课的开始数与结束数
     const sectionstart = i * 2 - 1
     const sectionend = i * 2
+
     // const course = []
     $(e).children('td') && $(e).children('td').each((j, ele) => {
       if ($(ele).html() === '&nbsp;') {
         // course.push(null)
       } else {
         let html = $(ele).html()
-        html = html.replace(/(\s)|(&lt;)|(&gt;)|(;.)|(<<)|(>>)|(一下午<br>)|(一上午<br>)/g, '')
-        const arr = html.split('<br>')
+        // html = html.replace(/(\s)|(&lt;)|(&gt;)|(;.)|(<<)|(>>)|(一下午<br>)|(一上午<br>)/g, '')
 
-        if (arr.length === 0 || !arr[0]) {
+        // 拆分课表方式变更，使用破折号区分课程，每个课表标题都是 << *** >>
+        let splitArr = html.split('<<')
+        splitArr.shift()
+
+        if (splitArr.length === 0 || !splitArr[0]) {
           // 没有课
           return
         }
 
-        // 每五组是一节课
-        for (let i1 = 0; i1 < (arr.length / 5); i1++) {
+        splitArr.forEach((item) => {
+          const innerHtml = item.replace(/(\s)|(&lt;)|(&gt;)|(;.)|(<<)|(>>)|(一下午<br>)|(一上午<br>)/g, '')
+          let arr = innerHtml.split('<br>')
+
+          // 没有安排上课时间的课程
+          if (!arr[4] && /周/.test(arr[2])) {
+            arr = [arr[0], '暂无教室安排', ...arr.slice(1, arr.length - 1)]
+          }
+
           const course = {}
-          const week = `${arr[3 + (i1 * 5)]}`
+          const week = arr[3]
 
           // 课表有六种情况
           // normal  1-12周
@@ -279,10 +290,10 @@ const updateCourse = async (ctx) => {
             periodObj = getPeriod(startWeek, endWeek, 0, normalWeekArray)
           }
 
-          course.name = arr[0 + (i1 * 5)]
-          course.locale = arr[1 + (i1 * 5)]
-          course.teacher = arr[2 + (i1 * 5)]
-          course.messege = arr[4 + (i1 * 5)]
+          course.name = arr[0]
+          course.locale = arr[1]
+          course.teacher = arr[2]
+          course.messege = arr[4]
           course.sectionstart = sectionstart
           course.sectionend = sectionend
           course.period = periodObj
@@ -293,14 +304,13 @@ const updateCourse = async (ctx) => {
           course.uniqueId = md5(course.name + course.teacher + course.day)
 
           lessonList.push(course)
-        }
+        })
       }
     })
   })
 
   $('#noArrangement tr') && $('#noArrangement tr').each((i, e) => {
     if (i === 0) return
-
     let unplanCourse = {
       courseName: $($(e).children('td')[1]).text().replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, ''),
       courseTeacher: $($(e).children('td')[3]).text().replace(/(\s+)|(javascript(.*);)|(&nbsp;)/g, ''),
