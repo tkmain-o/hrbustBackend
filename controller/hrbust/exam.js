@@ -78,6 +78,7 @@ const getExam = async (ctx) => {
 
   ctx.body = {
     data: list,
+    status: 200,
   }
 }
 
