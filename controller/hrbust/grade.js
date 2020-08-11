@@ -122,6 +122,7 @@ const getGrade = async (ctx) => {
 
   ctx.body = {
     data: result,
+    status: 200,
   }
 }
 
