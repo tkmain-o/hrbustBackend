@@ -34,6 +34,7 @@ const getNews = async (ctx) => {
   })
   ctx.body = {
     data: list,
+    status: 200,
   }
 }
 

@@ -31,7 +31,7 @@ const getToken = (cookie = '') => {
     cookies[cookieInfos[0]] = cookieInfos[1]
   })
 
-  return md5(decodeURIComponent(cookies.hwJR_2132_token) + 'weixiao')
+  return md5(`${decodeURIComponent(cookies.hwJR_2132_token)}weixiao`)
 }
 
 const getCetCaptcha = (url, cookie, tokenCookie) => {
@@ -147,6 +147,7 @@ const getCetHandler = async (ctx) => {
   ctx.body = {
     code: cetData.code || 200,
     ...cetData,
+    status: 200,
   }
 }
 

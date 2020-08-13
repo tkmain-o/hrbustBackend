@@ -147,6 +147,7 @@ const queryTicket = async (ctx) => {
     ctx.body = {
       code: 799, // 验证码失效
       data: cetData,
+      status: 200,
     }
     return
   }
@@ -168,6 +169,7 @@ const queryTicket = async (ctx) => {
         uuid: info.uuid,
         subjectName: SubjectName,
       },
+      status: 200,
     }
     return
   }
@@ -186,6 +188,7 @@ const queryTicket = async (ctx) => {
       uuid,
       subjectName: SubjectName,
     },
+    status: 200,
   }
 }
 
@@ -240,6 +243,7 @@ const getCetCaptchaHandler = async (ctx) => {
       // cookie,
       ...result,
     },
+    status: 200,
   }
 }
 

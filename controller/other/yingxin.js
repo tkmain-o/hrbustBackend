@@ -62,6 +62,7 @@ const getYingxin = async (ctx) => {
 
   ctx.body = {
     data: response.body,
+    status: 200,
   }
 }
 

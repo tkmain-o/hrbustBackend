@@ -14,7 +14,7 @@ const {
 
 const {
   getGrade,
-} = require('../controller/hrbust/grade')
+} = require('../controller/')
 
 const {
   getExam,

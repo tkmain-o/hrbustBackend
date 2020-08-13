@@ -33,6 +33,7 @@ const roomschedulequery = async (ctx) => {
   if (resultRedis) {
     ctx.body = {
       data: JSON.parse(resultRedis),
+      status: 200,
     }
     return
   }
@@ -71,6 +72,7 @@ const roomschedulequery = async (ctx) => {
 
   ctx.body = {
     data: result,
+    status: 200,
   }
 }
 
@@ -105,6 +107,7 @@ const roomschedule = async (ctx) => {
   if (resultRedis) {
     ctx.body = {
       data: JSON.parse(resultRedis),
+      status: 200,
     }
     return
   }
@@ -170,6 +173,7 @@ const roomschedule = async (ctx) => {
 
   ctx.body = {
     data: result,
+    status: 200,
   }
 }
 
