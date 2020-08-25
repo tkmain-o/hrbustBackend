@@ -114,6 +114,7 @@ const routes = {
   backend: require('./routes/backend'),
   cetv2: require('./routes/cetv2'),
   wxmp: require('./routes/wxmp'),
+  pdd: require('./routes/pdd'),
 }
 
 // routes
