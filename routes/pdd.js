@@ -33,6 +33,7 @@ router.get('/search', async (ctx) => {
     page_size,
     sort_type,
     with_coupon,
+    ...ctx.query,
   })
 
   const goods_id_list = res.goods_list.map((good) => good.goods_id)
@@ -42,13 +43,12 @@ router.get('/search', async (ctx) => {
     generate_we_app: true,
   }).then((r) => {
     console.log(r, 'res')
-    return r
+    return res
   })
   console.log(gRes.goods_promotion_url_list, 'gRes')
 
   ctx.body = {
     data: res.goods_list.map((good, index) => {
-      console.log(gRes.goods_promotion_url_list[index], '------------------')
       return ({
         ...good,
         ...(gRes.goods_promotion_url_list[index] || {}),
