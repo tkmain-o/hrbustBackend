@@ -37,15 +37,17 @@ router.get('/search', async (ctx) => {
   })
 
   const goods_id_list = res.goods_list.map((good) => good.goods_id)
+
+  // TODO 后续有商品详情之后，此接口需要移出，有性能问题
   const gRes = await client.execute('pdd.ddk.goods.promotion.url.generate', {
     goods_id_list,
     p_id: '9924289_153220051',
     generate_we_app: true,
   }).then((r) => {
-    console.log(r, 'res')
-    return res
+    // 测试延迟 code
+    // console.log(r, 'res')
+    return r
   })
-  console.log(gRes.goods_promotion_url_list, 'gRes')
 
   ctx.body = {
     data: res.goods_list.map((good, index) => {
