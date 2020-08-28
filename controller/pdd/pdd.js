@@ -54,7 +54,7 @@ const search = async (ctx) => {
 
 const keywords = async (ctx) => {
   ctx.body = {
-    data: ['毛巾', '壁纸', '衣架', '寝室灯', '洗发水', '纸巾'],
+    data: ['寝室必备', '毛巾', '壁纸', '衣架', '寝室灯', '洗发水', '纸巾'],
     status: 200,
   }
 }
