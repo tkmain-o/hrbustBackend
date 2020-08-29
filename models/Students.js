@@ -51,6 +51,12 @@ const StudentSchema = new mongoose.Schema({
     7: {
       type: Number,
     },
+    8: {
+      type: Number,
+    },
+    9: {
+      type: Number,
+    },
   },
 }, {
   timestamps: true,

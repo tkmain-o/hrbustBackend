@@ -83,6 +83,7 @@ const getCourse = async (ctx) => {
   const course = selectResult ? selectResult.course : null
   const courseTermId = selectResult ? selectResult.term : 0
   const unplanCourse = selectResult ? selectResult.unplanCourse : null
+
   ctx.body = {
     data: {
       course,
@@ -153,7 +154,6 @@ const updateCourse = async (ctx) => {
   }
   let yearid = grade + 20 + Math.ceil(term / 2)
   let termid = (term % 2) ? 1 : 2
-
   // const simulateLogin = new SimulateLogin({
   //   username,
   //   password,
@@ -323,7 +323,7 @@ const updateCourse = async (ctx) => {
     lessonListUnplan.push(unplanCourse)
   })
 
-  if (lessonList.length === 0) {
+  if (lessonList.length === 0 && lessonListUnplan.length === 0) {
     ctx.body = {
       data: '当前学期课表为空',
       status: 404,
@@ -345,7 +345,9 @@ const updateCourse = async (ctx) => {
     }
   }
 
+
   const termCourseId = parseInt(username + term)
+
   await TermCourse.findOneAndUpdate({
     id: termCourseId,
   }, {
