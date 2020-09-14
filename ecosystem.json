@@ -1,14 +1,15 @@
 {
-  "apps": [{
-    "name": "hrbust-server",
-    "script": "./bin/www",
-    "env": {
-      "NODE_ENV": "production"
+  "apps": [
+    {
+      "name": "hrbust-server",
+      "script": "./bin/www",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "instances": "max",
+      "exec_mode": "cluster"
     }
-  }, {
-    "name": "python-server",
-    "interpreter": "python3",
-    "cwd": "./python",
-    "script": "server.py"
-  }]
+  ]
 }
