@@ -11,7 +11,7 @@ const client = new PddClient({
 
 const search = async (ctx) => {
   const {
-    keyword = '大学寝室必备',
+    keyword = '寝室神器',
     page = 1,
     page_size = 20,
     sort_type = 0,
