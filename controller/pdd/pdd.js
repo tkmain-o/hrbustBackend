@@ -1,6 +1,7 @@
 // const { wxLogin, updateUserInfo, getUserInfo } = require('../controller/user/wx-login')
 const PddClient = require('duoduoke-node-sdk')
 const config = require('../../config/config')
+const ShopKeywords = require('../../models/ShopKeywords')
 
 const client = new PddClient({
   clientId: config.pdd.clientId,
@@ -15,6 +16,7 @@ const search = async (ctx) => {
     page_size = 20,
     sort_type = 0,
     with_coupon = false,
+    // flatform = '',
   } = ctx.query
 
   const res = await client.execute('pdd.ddk.goods.search', {
@@ -24,6 +26,14 @@ const search = async (ctx) => {
     sort_type,
     with_coupon,
     ...ctx.query,
+  })
+
+  // 记录 keywords
+  await ShopKeywords.findOneAndUpdate({ keyword }, {
+    keyword,
+    $inc: { count: 1 },
+  }, {
+    upsert: true,
   })
 
   // console.log(keyword, page, res.goods_list)
