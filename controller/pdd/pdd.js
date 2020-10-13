@@ -25,6 +25,7 @@ const search = async (ctx) => {
     page_size,
     sort_type,
     with_coupon,
+    custom_parameters: JSON.stringify({ new: 1 }),
     ...ctx.query,
   })
 
