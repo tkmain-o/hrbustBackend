@@ -1,5 +1,7 @@
 const router = require('koa-router')()
-const { search, keywords } = require('../controller/pdd/pdd')
+const {
+  search, keywords, generateGoods, channel,
+} = require('../controller/pdd/pdd')
 
 
 router.prefix('/api/pdd')
@@ -13,6 +15,7 @@ router.prefix('/api/pdd')
 
 router.get('/search', async (ctx) => search(ctx))
 router.get('/keywords', async (ctx) => keywords(ctx))
-
+router.get('/generateGoods', async (ctx) => generateGoods(ctx))
+router.get('/channel', async (ctx) => channel(ctx))
 
 module.exports = router
