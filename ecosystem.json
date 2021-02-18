@@ -5,10 +5,8 @@
       "script": "./bin/www",
       "env": {
         "NODE_ENV": "production"
-      }
-    },
-    {
-      "instances": "max",
+      },
+      "instances": 4,
       "exec_mode": "cluster"
     }
   ]
