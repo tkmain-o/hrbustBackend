@@ -9,6 +9,9 @@ const client = new PddClient({
   // endpoint: 'pinduoduo open endpoint', // 默认为 http://gw-api.pinduoduo.com/api/router
 })
 
+const UID = 111
+const PID = '9924289_189860448'
+
 const search = async (ctx) => {
   const {
     keyword = '寝室神器',
@@ -19,13 +22,31 @@ const search = async (ctx) => {
     // flatform = '',
   } = ctx.query
 
+  const beiAnRes = await client.execute('pdd.ddk.member.authority.query', {
+    pid: PID,
+    custom_parameters: JSON.stringify({ uid: UID }),
+  })
+
+  if (beiAnRes.authority_query_response.bind === 0) {
+    const r = await client.execute('pdd.ddk.rp.prom.url.generate', {
+      // pid: PID,
+      custom_parameters: JSON.stringify({ uid: UID }),
+      p_id_list: [PID],
+      channel_type: 10,
+      generate_we_app: true,
+    })
+    console.log(r.rp_promotion_url_generate_response.url_list)
+  }
+
   const res = await client.execute('pdd.ddk.goods.search', {
     keyword,
     page,
     page_size,
     sort_type,
     with_coupon,
-    custom_parameters: JSON.stringify({ new: 1 }),
+    pid: PID,
+    custom_parameters: JSON.stringify({ uid: UID }),
+    // custom_parameters: JSON.stringify({ new: 1 }),
     ...ctx.query,
   })
 
@@ -46,7 +67,7 @@ const search = async (ctx) => {
   // const gRes = await client.execute('pdd.ddk.goods.promotion.url.generate', {
   //   // goods_id_list,
   //   goods_sign_list,
-  //   p_id: '9924289_189860448',
+  //   p_id: PID,
   //   generate_we_app: true,
   //   search_id: res.search_id,
   // }).then((r) => {
@@ -72,17 +93,15 @@ const generateGoods = async (ctx) => {
     search_id,
   } = ctx.query
 
-  console.log(goods_sign)
   //  TODO 后续有商品详情之后，此接口需要移出，有性能问题
   const gRes = await client.execute('pdd.ddk.goods.promotion.url.generate', {
     // goods_id_list,
     goods_sign_list: [goods_sign],
-    p_id: '9924289_189860448',
+    p_id: PID,
     generate_we_app: true,
     search_id,
   }).then((r) => {
     // 测试延迟 code
-    console.log(r.client, 'res')
     return r
   })
 
@@ -115,9 +134,10 @@ const channel = async (ctx) => {
   const promises = channels.map(async (item) => {
     const res = await client.execute('pdd.ddk.goods.search', {
       goods_sign_list: item.goods_sign_list,
-      pid: '9924289_189860448',
+      pid: PID,
       page: 1,
       page_size: 10,
+      // custom_parameters: JSON.stringify({ uid: 111 }),
       // sort_type,
       // with_coupon,
       // custom_parameters: JSON.stringify({ new: 1 }),
@@ -144,7 +164,7 @@ const channel = async (ctx) => {
 //   const res = await client.execute('pdd.ddk.goods.search', {
 //     // keyword: 'https://p.pinduoduo.com/ykXclQu6',
 //     goods_sign_list: ['c9f2hBzZgshO-oLxwvbYu2IcGe03_J4rj9CVCu'],
-//     pid: '9924289_189860448',
+//     pid: PID,
 //     page: 1,
 //     page_size: 10,
 //     // sort_type,
