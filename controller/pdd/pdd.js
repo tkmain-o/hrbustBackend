@@ -98,6 +98,7 @@ const generateGoods = async (ctx) => {
     // goods_id_list,
     goods_sign_list: [goods_sign],
     p_id: PID,
+    custom_parameters: JSON.stringify({ uid: UID }),
     generate_we_app: true,
     search_id,
   }).then((r) => {
